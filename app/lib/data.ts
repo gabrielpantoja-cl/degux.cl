@@ -91,7 +91,7 @@ export async function fetchCardData() {
 }
 
 const ITEMS_PER_PAGE = 6;
-export async function fetchFilteredInvoices( query: string, currentPage: number,) {
+export async function fetchFilteredInvoices(query: string, currentPage: number,) {
   noStore();
   const offset = (currentPage - 1) * ITEMS_PER_PAGE;
 
@@ -99,6 +99,9 @@ export async function fetchFilteredInvoices( query: string, currentPage: number,
     const invoices = await sql<InvoicesTable>`
       SELECT
         invoices.id,
+        invoices.fojas,  
+        invoices.numero,
+        invoices.anio,
         invoices.amount,
         invoices.date,
         invoices.status,
