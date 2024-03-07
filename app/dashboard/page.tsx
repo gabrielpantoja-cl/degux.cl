@@ -5,13 +5,12 @@ import LatestInvoices from '@/app/ui/dashboard/latest-invoices';
 import { lusitana } from '@/app/ui/fonts';
 
 export default async function Page() {
-    // Asumiendo que tienes estas variables definidas en algún lugar de tu código
     const totalPaidInvoices = 0;
     const totalPendingInvoices = 0;
     const numberOfInvoices = 0;
     const numberOfCustomers = 0;
     const revenue = 0;
-    const latestInvoices = [];
+    const latestInvoices: { [key: string]: any }[] = [];
 
     return (
         <main>
