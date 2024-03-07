@@ -1,6 +1,4 @@
 import type { NextAuthConfig } from 'next-auth';
-import Providers from 'next-auth/providers';
-
 
 export const authConfig = {
   providers: [],
