@@ -15,7 +15,7 @@
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "jsx": "react", // Cambia esta línea
+    "jsx": "preserve", // Cambia esta línea
     "incremental": true,
     "plugins": [
       {
