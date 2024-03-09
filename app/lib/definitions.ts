@@ -9,7 +9,7 @@ export type User = {
   password: string;
 };
 
-export type Customer = {
+export type Colaborador = {
   id: string;
   name: string;
   email: string;
@@ -18,7 +18,7 @@ export type Customer = {
 
 export type Referencial = {
   id: string;
-  customer_id: string;
+  colaborador_id: string;
   amount: number;
   date: string;
   // In TypeScript, this is called a string union type.
@@ -44,9 +44,9 @@ export type LatestReferencialRaw = Omit<LatestReferencial, 'amount'> & {
   amount: number;
 };
 
-export type ReferencialsTable = {
+export type ReferencialesTable = {
   id: string;
-  customer_id: string;
+  colaborador_id: string;
   name: string;
   email: string;
   image_url: string;
@@ -55,7 +55,7 @@ export type ReferencialsTable = {
   status: 'pending' | 'paid';
 };
 
-export type CustomersTable = {
+export type ColaboradoresTable = {
   id: string;
   name: string;
   email: string;
@@ -65,7 +65,7 @@ export type CustomersTable = {
   total_paid: number;
 };
 
-export type FormattedCustomersTable = {
+export type FormattedColaboradoresTable = {
   id: string;
   name: string;
   email: string;
@@ -75,14 +75,14 @@ export type FormattedCustomersTable = {
   total_paid: string;
 };
 
-export type CustomerField = {
+export type ColaboradorField = {
   id: string;
   name: string;
 };
 
 export type ReferencialForm = {
   id: string;
-  customer_id: string;
+  colaborador_id: string;
   amount: number;
   status: 'pending' | 'paid';
 };
