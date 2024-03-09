@@ -1,4 +1,4 @@
-import Form from '@/app/ui/Referenciales/edit-form';
+import Form from '@/app/ui/referenciales/edit-form';
 import Breadcrumbs from '@/app/ui/referenciales/breadcrumbs';
 import { fetchCustomers, fetchReferencialById } from '@/app/lib/data';
 import { CustomerField, ReferencialForm } from '@/app/lib/definitions';
