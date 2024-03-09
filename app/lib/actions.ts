@@ -76,7 +76,7 @@ const UpdateReferencial = ReferencialSchema.omit({ id: true, date: true });
 
 // ...
 
-export async function update(
+export async function updateReferencial(
   id: string,
   prevState: State,
   formData: FormData
