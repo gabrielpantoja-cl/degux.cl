@@ -187,7 +187,7 @@ Actualmente, su página de inicio no tiene ningún estilo. Veamos las diferentes
 
     **clsx** es una biblioteca que te permite alternar nombres de clases fácilmente. Recomendamos echar un vistazo a la documentación para obtener más detalles, pero aquí está el uso básico:
 
-    Supongamos que desea crear un componente **InvoiceStatus** que acepte el estado de la factura. El estado puede ser **pending** - "pendiente" o **paid** - "pagado".
+    Supongamos que desea crear un componente **ReferencialStatus** que acepte el estado de la factura. El estado puede ser **pending** - "pendiente" o **paid** - "pagado".
     
     - Si es "pago", querrás que el color sea verde.
     - Si está "pendiente", querrás que el color sea gris.
@@ -195,7 +195,7 @@ Actualmente, su página de inicio no tiene ningún estilo. Veamos las diferentes
         ```tsx
         import clsx from 'clsx';
         
-        export default function InvoiceStatus({ status }: { status: string }) {
+        export default function ReferencialStatus({ status }: { status: string }) {
         return (
             <span
             className={clsx(
@@ -469,7 +469,7 @@ export default function Page() {
 
 **Página de clientes:** se debe poder acceder a la página en http://localhost:3000/dashboard/customers. Por ahora, debería devolver un elemento `<p>Página de clientes</p>`.
 
-**Página de facturas:** se debe poder acceder a la página de facturas en http://localhost:3000/dashboard/invoices. Por ahora, también devuelve un elemento `<p>Página de facturas</p>`.
+**Página de facturas:** se debe poder acceder a la página de facturas en http://localhost:3000/dashboard/referenciales. Por ahora, también devuelve un elemento `<p>Página de facturas</p>`.
 
 Deberías tener la siguiente estructura de carpetas:
 
@@ -659,10 +659,10 @@ Puede explorar la base de datos y sus tablas en Vercel en Data > Browse, y ejecu
 Ejecutemos su primera consulta de base de datos. Pegue y ejecute el siguiente código SQL en la interfaz de Vercel:
 
 ```sql
-SELECT invoices.amount, customers.name
-FROM invoices
-JOIN customers ON invoices.customer_id = customers.id
-WHERE invoices.amount = 666;
+SELECT referenciales.amount, customers.name
+FROM referenciales
+JOIN customers ON referenciales.customer_id = customers.id
+WHERE referenciales.amount = 666;
 ```
 > La factura pertenece al cliente Evil Rabbit
 
@@ -733,7 +733,7 @@ Ahora que comprende las diferentes formas de obtener datos, obtengamos datos par
 ```tsx
 import { Card } from '@/app/ui/dashboard/cards';
 import RevenueChart from '@/app/ui/dashboard/revenue-chart';
-import LatestInvoices from '@/app/ui/dashboard/latest-invoices';
+import LatestReferenciales from '@/app/ui/dashboard/latest-referenciales';
 import { lusitana } from '@/app/ui/fonts';
  
 export default async function Page() {
@@ -743,9 +743,9 @@ export default async function Page() {
         Dashboard
       </h1>
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-        {/* <Card title="Collected" value={totalPaidInvoices} type="collected" /> */}
-        {/* <Card title="Pending" value={totalPendingInvoices} type="pending" /> */}
-        {/* <Card title="Total Invoices" value={numberOfInvoices} type="invoices" /> */}
+        {/* <Card title="Collected" value={totalPaidReferenciales} type="collected" /> */}
+        {/* <Card title="Pending" value={totalPendingReferenciales} type="pending" /> */}
+        {/* <Card title="Total Referenciales" value={numberOfReferenciales} type="referenciales" /> */}
         {/* <Card
           title="Total Customers"
           value={numberOfCustomers}
@@ -754,7 +754,7 @@ export default async function Page() {
       </div>
       <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-4 lg:grid-cols-8">
         {/* <RevenueChart revenue={revenue}  /> */}
-        {/* <LatestInvoices latestInvoices={latestInvoices} /> */}
+        {/* <LatestReferenciales latestReferenciales={latestReferenciales} /> */}
       </div>
     </main>
   );
@@ -762,7 +762,7 @@ export default async function Page() {
 ```
 
 La página es un componente asíncrono. Esto le permite utilizar await para recuperar datos.
-También hay 3 componentes que reciben datos: `<Card>, <RevenueChart> y <LatestInvoices>`. Actualmente están comentados para evitar que la aplicación produzca errores.
+También hay 3 componentes que reciben datos: `<Card>, <RevenueChart> y <LatestReferenciales>`. Actualmente están comentados para evitar que la aplicación produzca errores.
 
 ### Obteniendo datos para `<RevenueChart/>`
 
@@ -771,7 +771,7 @@ Para recuperar datos para el componente `<RevenueChart/>`, importe la función f
 ```tsx
 import { Card } from '@/app/ui/dashboard/cards';
 import RevenueChart from '@/app/ui/dashboard/revenue-chart';
-import LatestInvoices from '@/app/ui/dashboard/latest-invoices';
+import LatestReferenciales from '@/app/ui/dashboard/latest-referenciales';
 import { lusitana } from '@/app/ui/fonts';
 import { fetchRevenue } from '@/app/lib/data';
  
@@ -785,31 +785,31 @@ Luego, descomente el componente `<RevenueChart/>` y cualquier cosa dentro de la 
 
 ![Obteniendo datos, gráfico de ingresos](https://nextjs.org/_next/image?url=%2Flearn%2Fdark%2Frecent-revenue.png&w=1080&q=75&dpl=dpl_3KvQ7chUpCwD5geTFxau9SMj51uW)
 
-### Obteniendo datos para `<LatestInvoices/>`
+### Obteniendo datos para `<LatestReferenciales/>`
 
-Para el componente `<LatestInvoices />`, necesitamos obtener las últimas 5 facturas, ordenadas por fecha.
+Para el componente `<LatestReferenciales />`, necesitamos obtener las últimas 5 facturas, ordenadas por fecha.
 
 Puede buscar todas las facturas y ordenarlas usando JavaScript. Esto no es un problema ya que nuestros datos son pequeños, pero a medida que su aplicación crece, puede aumentar significativamente la cantidad de datos transferidos en cada solicitud y el JavaScript necesario para clasificarlos.
 
 En lugar de ordenar las últimas facturas en la memoria, puede utilizar una consulta SQL para recuperar solo las últimas 5 facturas. Por ejemplo, esta es la consulta SQL de su archivo `data.ts`:
 
 ```tsx
-// Fetch the last 5 invoices, sorted by date
-const data = await sql<LatestInvoiceRaw>`
-  SELECT invoices.amount, customers.name, customers.image_url, customers.email
-  FROM invoices
-  JOIN customers ON invoices.customer_id = customers.id
-  ORDER BY invoices.date DESC
+// Fetch the last 5 referenciales, sorted by date
+const data = await sql<LatestReferencialRaw>`
+  SELECT referenciales.amount, customers.name, customers.image_url, customers.email
+  FROM referenciales
+  JOIN customers ON referenciales.customer_id = customers.id
+  ORDER BY referenciales.date DESC
   LIMIT 5`;
 ```
 
-Ahora en su página, importe la función fetchLatestInvoices:
+Ahora en su página, importe la función fetchLatestReferenciales:
 
-Luego, descomente el componente `<LatestInvoices />`.
+Luego, descomente el componente `<LatestReferenciales />`.
 
 Si visita su servidor local, debería ver que solo se devuelven los últimos 5 de la base de datos. ¡Con suerte, estás empezando a ver las ventajas de consultar tu base de datos directamente!
 
-![Gráfico de ingresos y últimas 5 facturas](https://nextjs.org/_next/image?url=%2Flearn%2Fdark%2Flatest-invoices.png&w=1080&q=75&dpl=dpl_3KvQ7chUpCwD5geTFxau9SMj51uW)
+![Gráfico de ingresos y últimas 5 facturas](https://nextjs.org/_next/image?url=%2Flearn%2Fdark%2Flatest-referenciales.png&w=1080&q=75&dpl=dpl_3KvQ7chUpCwD5geTFxau9SMj51uW)
 
 ### Práctica: Obtener datos para los componentes `<Card>`
 
@@ -824,7 +824,7 @@ Nuevamente, podría verse tentado a recuperar todas las facturas y clientes y ut
 Pero con SQL, sólo puedes recuperar los datos que necesitas. Es un poco más largo que usar Array.length, pero significa que es necesario transferir menos datos durante la solicitud. Esta es la alternativa SQL:
 
 ```ts
-const invoiceCountPromise = sql`SELECT COUNT(*) FROM invoices`;
+const referencialCountPromise = sql`SELECT COUNT(*) FROM referenciales`;
 const customerCountPromise = sql`SELECT COUNT(*) FROM customers`;
 ```
 
@@ -835,22 +835,22 @@ La función que necesitará importar se llama `fetchCardData`. Necesitará deses
 ```tsx
 import { Card } from '@/app/ui/dashboard/cards';
 import RevenueChart from '@/app/ui/dashboard/revenue-chart';
-import LatestInvoices from '@/app/ui/dashboard/latest-invoices';
+import LatestReferenciales from '@/app/ui/dashboard/latest-referenciales';
 import { lusitana } from '@/app/ui/fonts';
 import {
   fetchRevenue,
-  fetchLatestInvoices,
+  fetchLatestReferenciales,
   fetchCardData,
 } from '@/app/lib/data';
  
 export default async function Page() {
   const revenue = await fetchRevenue();
-  const latestInvoices = await fetchLatestInvoices();
+  const latestReferenciales = await fetchLatestReferenciales();
   const {
-    numberOfInvoices,
+    numberOfReferenciales,
     numberOfCustomers,
-    totalPaidInvoices,
-    totalPendingInvoices,
+    totalPaidReferenciales,
+    totalPendingReferenciales,
   } = await fetchCardData();
  
   return (
@@ -859,9 +859,9 @@ export default async function Page() {
         Dashboard
       </h1>
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-        <Card title="Collected" value={totalPaidInvoices} type="collected" />
-        <Card title="Pending" value={totalPendingInvoices} type="pending" />
-        <Card title="Total Invoices" value={numberOfInvoices} type="invoices" />
+        <Card title="Collected" value={totalPaidReferenciales} type="collected" />
+        <Card title="Pending" value={totalPendingReferenciales} type="pending" />
+        <Card title="Total Referenciales" value={numberOfReferenciales} type="referenciales" />
         <Card
           title="Total Customers"
           value={numberOfCustomers}
@@ -870,7 +870,7 @@ export default async function Page() {
       </div>
       <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-4 lg:grid-cols-8">
         <RevenueChart revenue={revenue} />
-        <LatestInvoices latestInvoices={latestInvoices} />
+        <LatestReferenciales latestReferenciales={latestReferenciales} />
       </div>
     </main>
   );
@@ -894,7 +894,7 @@ Una "cascada" se refiere a una secuencia de solicitudes de red que dependen de l
 
 ![Representación gráfica de las diferencias entre solicitudes Secuenciales y Paralelas](https://nextjs.org/_next/image?url=%2Flearn%2Fdark%2Fsequential-parallel-data-fetching.png&w=1920&q=75&dpl=dpl_3KvQ7chUpCwD5geTFxau9SMj51uW)
 
-Por ejemplo, debemos esperar a que se ejecute `fetchRevenue()` antes de que `fetchLatestInvoices()` pueda comenzar a ejecutarse, y así sucesivamente.
+Por ejemplo, debemos esperar a que se ejecute `fetchRevenue()` antes de que `fetchLatestReferenciales()` pueda comenzar a ejecutarse, y así sucesivamente.
 
 Este patrón no es necesariamente malo. Puede haber casos en los que desee cascadas porque desea que se cumpla una condición antes de realizar la siguiente solicitud. Por ejemplo, es posible que desee obtener primero el ID de un usuario y la información del perfil. Una vez que tengas la identificación, puedes proceder a buscar su lista de amigos. En este caso, cada solicitud depende de los datos devueltos por la solicitud anterior.
 
@@ -909,17 +909,17 @@ En JavaScript, puede utilizar las funciones `Promise.all()` o `Promise.allSettle
 ```tsx
 export async function fetchCardData() {
   try {
-    const invoiceCountPromise = sql`SELECT COUNT(*) FROM invoices`;
+    const referencialCountPromise = sql`SELECT COUNT(*) FROM referenciales`;
     const customerCountPromise = sql`SELECT COUNT(*) FROM customers`;
-    const invoiceStatusPromise = sql`SELECT
+    const referencialStatusPromise = sql`SELECT
          SUM(CASE WHEN status = 'paid' THEN amount ELSE 0 END) AS "paid",
          SUM(CASE WHEN status = 'pending' THEN amount ELSE 0 END) AS "pending"
-         FROM invoices`;
+         FROM referenciales`;
  
     const data = await Promise.all([
-      invoiceCountPromise,
+      referencialCountPromise,
       customerCountPromise,
-      invoiceStatusPromise,
+      referencialStatusPromise,
     ]);
     // ...
   }
@@ -1003,7 +1003,7 @@ export async function fetchRevenue() {
   // ...
 }
  
-export async function fetchLatestInvoices() {
+export async function fetchLatestReferenciales() {
   noStore();
   // ...
 }
@@ -1013,7 +1013,7 @@ export async function fetchCardData() {
   // ...
 }
  
-export async function fetchFilteredInvoices(
+export async function fetchFilteredReferenciales(
   query: string,
   currentPage: number,
 ) {
@@ -1021,7 +1021,7 @@ export async function fetchFilteredInvoices(
   // ...
 }
  
-export async function fetchInvoicesPages(query: string) {
+export async function fetchReferencialesPages(query: string) {
   noStore();
   // ...
 }
@@ -1031,7 +1031,7 @@ export async function fetchFilteredCustomers(query: string) {
   // ...
 }
  
-export async function fetchInvoiceById(query: string) {
+export async function fetchReferencialById(query: string) {
   noStore();
   // ...
 }
@@ -1153,9 +1153,9 @@ Luego, actualice http://localhost:3000/dashboard y ahora debería ver:
 
 **Arreglando el error del esqueleto de carga con grupos de rutas**
 
-En este momento, su esqueleto de carga se aplicará también a las páginas de invoices y customers.
+En este momento, su esqueleto de carga se aplicará también a las páginas de referenciales y customers.
 
-Dado que `loading.tsx` tiene un nivel superior a **/invoices/page.tsx** y **/customers/page.tsx** en el sistema de archivos, también se aplica a esas páginas.
+Dado que `loading.tsx` tiene un nivel superior a **/referenciales/page.tsx** y **/customers/page.tsx** en el sistema de archivos, también se aplica a esas páginas.
 
 Podemos cambiar esto con **Grupos de Rutas**. Cree una nueva carpeta llamada /(overview) dentro de la carpeta del panel. Luego, mueva sus archivos `loading.tsx` y `page.tsx` dentro de la carpeta:
 
@@ -1187,19 +1187,19 @@ Luego, importe `<Suspense>` desde React y envuélvalo alrededor de `<RevenueChar
 ```tsx
 import { Card } from '@/app/ui/dashboard/cards';
 import RevenueChart from '@/app/ui/dashboard/revenue-chart';
-import LatestInvoices from '@/app/ui/dashboard/latest-invoices';
+import LatestReferenciales from '@/app/ui/dashboard/latest-referenciales';
 import { lusitana } from '@/app/ui/fonts';
-import { fetchLatestInvoices, fetchCardData } from '@/app/lib/data';
+import { fetchLatestReferenciales, fetchCardData } from '@/app/lib/data';
 import { Suspense } from 'react';
 import { RevenueChartSkeleton } from '@/app/ui/skeletons';
  
 export default async function Page() {
-  const latestInvoices = await fetchLatestInvoices();
+  const latestReferenciales = await fetchLatestReferenciales();
   const {
-    numberOfInvoices,
+    numberOfReferenciales,
     numberOfCustomers,
-    totalPaidInvoices,
-    totalPendingInvoices,
+    totalPaidReferenciales,
+    totalPendingReferenciales,
   } = await fetchCardData();
  
   return (
@@ -1208,9 +1208,9 @@ export default async function Page() {
         Dashboard
       </h1>
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-        <Card title="Collected" value={totalPaidInvoices} type="collected" />
-        <Card title="Pending" value={totalPendingInvoices} type="pending" />
-        <Card title="Total Invoices" value={numberOfInvoices} type="invoices" />
+        <Card title="Collected" value={totalPaidReferenciales} type="collected" />
+        <Card title="Pending" value={totalPendingReferenciales} type="pending" />
+        <Card title="Total Referenciales" value={numberOfReferenciales} type="referenciales" />
         <Card
           title="Total Customers"
           value={numberOfCustomers}
@@ -1221,7 +1221,7 @@ export default async function Page() {
         <Suspense fallback={<RevenueChartSkeleton />}>
           <RevenueChart />
         </Suspense>
-        <LatestInvoices latestInvoices={latestInvoices} />
+        <LatestReferenciales latestReferenciales={latestReferenciales} />
       </div>
     </main>
   );
@@ -1234,16 +1234,16 @@ Ahora actualice la página, debería ver la información del panel casi de inmed
 
 **Práctica: Streaming `<ÚltimasFacturas>`**
 
-¡Ahora es tu turno! Practique lo que acaba de aprender transmitiendo el componente `<LatestInvoices>`.
+¡Ahora es tu turno! Practique lo que acaba de aprender transmitiendo el componente `<LatestReferenciales>`.
 
-Mueva fetchLatestInvoices() hacia abajo desde la página al componente `<LatestInvoices>`. Envuelva el componente en un límite `<Suspense>` con un respaldo llamado `<LatestInvoicesSkeleton>`.
+Mueva fetchLatestReferenciales() hacia abajo desde la página al componente `<LatestReferenciales>`. Envuelva el componente en un límite `<Suspense>` con un respaldo llamado `<LatestReferencialesSkeleton>`.
 
 ```tsx
 import { fetchCardData } from '@/app/lib/data';
 import { Suspense } from 'react';
 import {
   RevenueChartSkeleton,
-  LatestInvoicesSkeleton,
+  LatestReferencialesSkeleton,
 } from '@/app/ui/skeletons';
 //...
 
@@ -1251,13 +1251,13 @@ import {
     <Suspense fallback={<RevenueChartSkeleton />}>
         <RevenueChart />
     </Suspense>
-    <Suspense fallback={<LatestInvoicesSkeleton />}>
-        <LatestInvoices />
+    <Suspense fallback={<LatestReferencialesSkeleton />}>
+        <LatestReferenciales />
     </Suspense>
 </div>
 ```
 
-> Recuerda eliminar las props de `<LatestInvoices>` component.
+> Recuerda eliminar las props de `<LatestReferenciales>` component.
 
 **Componentes de agrupación**
 
@@ -1279,7 +1279,7 @@ import CardWrapper from '@/app/ui/dashboard/cards';
 // ...
 import {
   RevenueChartSkeleton,
-  LatestInvoicesSkeleton,
+  LatestReferencialesSkeleton,
   CardsSkeleton,
 } from '@/app/ui/skeletons';
  
@@ -1309,17 +1309,17 @@ import { fetchCardData } from '@/app/lib/data';
  
 export default async function CardWrapper() {
   const {
-    numberOfInvoices,
+    numberOfReferenciales,
     numberOfCustomers,
-    totalPaidInvoices,
-    totalPendingInvoices,
+    totalPaidReferenciales,
+    totalPendingReferenciales,
   } = await fetchCardData();
  
   return (
     <>
-      <Card title="Collected" value={totalPaidInvoices} type="collected" />
-      <Card title="Pending" value={totalPendingInvoices} type="pending" />
-      <Card title="Total Invoices" value={numberOfInvoices} type="invoices" />
+      <Card title="Collected" value={totalPaidReferenciales} type="collected" />
+      <Card title="Pending" value={totalPendingReferenciales} type="pending" />
+      <Card title="Total Referenciales" value={numberOfReferenciales} type="referenciales" />
       <Card
         title="Total Customers"
         value={numberOfCustomers}
@@ -1404,7 +1404,7 @@ En resumen, ha hecho algunas cosas para optimizar la obtención de datos en su a
 
 ## Agregar búsqueda y paginación
 
-En el capítulo anterior, mejoró el rendimiento de carga inicial de su panel con la transmisión. Ahora pasemos a la página /invoices y aprendamos cómo agregar búsqueda y paginación.
+En el capítulo anterior, mejoró el rendimiento de carga inicial de su panel con la transmisión. Ahora pasemos a la página /referenciales y aprendamos cómo agregar búsqueda y paginación.
 
 Estos son los temas que cubriremos
 
@@ -1412,28 +1412,28 @@ Estos son los temas que cubriremos
 
 - Implemente búsqueda y paginación utilizando parámetros de búsqueda de URL.
 
-Dentro de su archivo `/dashboard/invoices/page.tsx`, pegue el siguiente código:
+Dentro de su archivo `/dashboard/referenciales/page.tsx`, pegue el siguiente código:
 
 ```tsx
-import Pagination from '@/app/ui/invoices/pagination';
+import Pagination from '@/app/ui/referenciales/pagination';
 import Search from '@/app/ui/search';
-import Table from '@/app/ui/invoices/table';
-import { CreateInvoice } from '@/app/ui/invoices/buttons';
+import Table from '@/app/ui/referenciales/table';
+import { CreateReferencial } from '@/app/ui/referenciales/buttons';
 import { lusitana } from '@/app/ui/fonts';
-import { InvoicesTableSkeleton } from '@/app/ui/skeletons';
+import { ReferencialesTableSkeleton } from '@/app/ui/skeletons';
 import { Suspense } from 'react';
  
 export default async function Page() {
   return (
     <div className="w-full">
       <div className="flex w-full items-center justify-between">
-        <h1 className={`${lusitana.className} text-2xl`}>Invoices</h1>
+        <h1 className={`${lusitana.className} text-2xl`}>Referenciales</h1>
       </div>
       <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
-        <Search placeholder="Search invoices..." />
-        <CreateInvoice />
+        <Search placeholder="Search referenciales..." />
+        <CreateReferencial />
       </div>
-      {/*  <Suspense key={query + currentPage} fallback={<InvoicesTableSkeleton />}>
+      {/*  <Suspense key={query + currentPage} fallback={<ReferencialesTableSkeleton />}>
         <Table query={query} currentPage={currentPage} />
       </Suspense> */}
       <div className="mt-5 flex w-full justify-center">
@@ -1468,9 +1468,9 @@ Hay un par de beneficios al implementar la búsqueda con parámetros de URL:
 
 Hay tres *hooks* del lado cliente que Next.js utilizará para implementar la funcionalidad de búsqueda:
 
-- **useSearchParams:** le permite acceder a los parámetros de la URL actual. Por ejemplo, los parámetros de búsqueda para esta URL /dashboard/invoices?page=1&query=pending se verían así: `{página: '1', consulta: 'pendiente'}`
+- **useSearchParams:** le permite acceder a los parámetros de la URL actual. Por ejemplo, los parámetros de búsqueda para esta URL /dashboard/referenciales?page=1&query=pending se verían así: `{página: '1', consulta: 'pendiente'}`
 
-- **usePathname:** le permite leer el nombre de ruta de la URL actual. Por ejemplo, la ruta **/dashboard/invoices**, usePathname devolvería `'/dashboard/invoices'`.
+- **usePathname:** le permite leer el nombre de ruta de la URL actual. Por ejemplo, la ruta **/dashboard/referenciales**, usePathname devolvería `'/dashboard/referenciales'`.
 
 - **useRouter:** permite la navegación entre rutas dentro de los componentes del cliente mediante programación. Hay varios métodos que puedes utilizar.
 
@@ -1611,9 +1611,9 @@ Hay tres *hooks* del lado cliente que Next.js utilizará para implementar la fun
     
     Aquí hay un desglose de lo que está sucediendo:
 
-    - `${pathname}` es la ruta actual, en su caso, **"/dashboard/invoices"**.
+    - `${pathname}` es la ruta actual, en su caso, **"/dashboard/referenciales"**.
     - A medida que el usuario escribe en la barra de búsqueda, `params.toString()` traduce esta entrada a un formato compatible con URL.
-    - El `replace(${pathname}?${params.toString()})`; El comando actualiza la URL con los datos de búsqueda del usuario. Por ejemplo, **/dashboard/invoices?query=lee** si el usuario busca "lee".
+    - El `replace(${pathname}?${params.toString()})`; El comando actualiza la URL con los datos de búsqueda del usuario. Por ejemplo, **/dashboard/referenciales?query=lee** si el usuario busca "lee".
     - La URL se actualiza sin recargar la página, gracias a la navegación del lado del cliente de Next.js (que aprendió en el capítulo sobre navegación entre páginas).
 
 3. Mantenga la URL sincronizada con el campo de entrada.
@@ -1643,13 +1643,13 @@ Hay tres *hooks* del lado cliente que Next.js utilizará para implementar la fun
   - Finalmente, debe actualizar el componente de la tabla para reflejar la consulta de búsqueda. Vuelva a la página de facturas. Los componentes de la página aceptan un accesorio llamado **searchParams**, por lo que puede pasar los parámetros de URL actuales al componente `<Table>`.
 
       ```tsx
-      import Pagination from '@/app/ui/invoices/pagination';
+      import Pagination from '@/app/ui/referenciales/pagination';
       import Search from '@/app/ui/search';
-      import Table from '@/app/ui/invoices/table';
-      import { CreateInvoice } from '@/app/ui/invoices/buttons';
+      import Table from '@/app/ui/referenciales/table';
+      import { CreateReferencial } from '@/app/ui/referenciales/buttons';
       import { lusitana } from '@/app/ui/fonts';
       import { Suspense } from 'react';
-      import { InvoicesTableSkeleton } from '@/app/ui/skeletons';
+      import { ReferencialesTableSkeleton } from '@/app/ui/skeletons';
       
       export default async function Page({
         searchParams,
@@ -1665,13 +1665,13 @@ Hay tres *hooks* del lado cliente que Next.js utilizará para implementar la fun
         return (
           <div className="w-full">
             <div className="flex w-full items-center justify-between">
-              <h1 className={`${lusitana.className} text-2xl`}>Invoices</h1>
+              <h1 className={`${lusitana.className} text-2xl`}>Referenciales</h1>
             </div>
             <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
-              <Search placeholder="Search invoices..." />
-              <CreateInvoice />
+              <Search placeholder="Search referenciales..." />
+              <CreateReferencial />
             </div>
-            <Suspense key={query + currentPage} fallback={<InvoicesTableSkeleton />}>
+            <Suspense key={query + currentPage} fallback={<ReferencialesTableSkeleton />}>
               <Table query={query} currentPage={currentPage} />
             </Suspense>
             <div className="mt-5 flex w-full justify-center">
@@ -1682,18 +1682,18 @@ Hay tres *hooks* del lado cliente que Next.js utilizará para implementar la fun
       }
       ```
 
-  - Si navega al componente `<Table>`, verá que los dos accesorios, consulta y página actual, se pasan a la función `fetchFilteredInvoices()` que devuelve las facturas que coinciden con la consulta.
+  - Si navega al componente `<Table>`, verá que los dos accesorios, consulta y página actual, se pasan a la función `fetchFilteredReferenciales()` que devuelve las facturas que coinciden con la consulta.
 
       ```tsx
       // ...
-      export default async function InvoicesTable({
+      export default async function ReferencialesTable({
         query,
         currentPage,
       }: {
         query: string;
         currentPage: number;
       }) {
-        const invoices = await fetchFilteredInvoices(query, currentPage);
+        const referenciales = await fetchFilteredReferenciales(query, currentPage);
         // ...
       }
       ```
@@ -1772,17 +1772,17 @@ Al eliminar el rebote, puede reducir la cantidad de solicitudes enviadas a su ba
 
 ## Agregar paginación
 
-Después de introducir la función de búsqueda, notará que la tabla muestra solo 6 facturas a la vez. Esto se debe a que la función `fetchFilteredInvoices()` en data.ts devuelve un máximo de 6 facturas por página.
+Después de introducir la función de búsqueda, notará que la tabla muestra solo 6 facturas a la vez. Esto se debe a que la función `fetchFilteredReferenciales()` en data.ts devuelve un máximo de 6 facturas por página.
 
 Agregar paginación permite a los usuarios navegar por las diferentes páginas para ver todas las facturas. Veamos cómo puedes implementar la paginación usando parámetros de URL, tal como lo hiciste con la búsqueda.
 
 Navegue hasta el componente `<Pagination/>` y notará que es un componente de cliente. No desea recuperar datos del cliente, ya que esto expondría los secretos de su base de datos (recuerde, no está utilizando una capa API). En su lugar, puede recuperar los datos en el servidor y pasarlos al componente como accesorio.
 
-En **/dashboard/invoices/page.tsx**, importe una nueva función llamada `fetchInvoicesPages` y pase la consulta de **searchParams** como argumento:
+En **/dashboard/referenciales/page.tsx**, importe una nueva función llamada `fetchReferencialesPages` y pase la consulta de **searchParams** como argumento:
 
 ```tsx
 // ...
-import { fetchInvoicesPages } from '@/app/lib/data';
+import { fetchReferencialesPages } from '@/app/lib/data';
  
 export default async function Page({
   searchParams,
@@ -1795,7 +1795,7 @@ export default async function Page({
   const query = searchParams?.query || '';
   const currentPage = Number(searchParams?.page) || 1;
  
-  const totalPages = await fetchInvoicesPages(query);
+  const totalPages = await fetchReferencialesPages(query);
  
   return (
     // ...
@@ -1803,7 +1803,7 @@ export default async function Page({
 }
 ```
 
-`fetchInvoicesPages` devuelve el número total de páginas según la consulta de búsqueda. Por ejemplo, si hay 12 facturas que coinciden con la consulta de búsqueda y cada página muestra 6 facturas, entonces el número total de páginas sería 2.
+`fetchReferencialesPages` devuelve el número total de páginas según la consulta de búsqueda. Por ejemplo, si hay 12 facturas que coinciden con la consulta de búsqueda y cada página muestra 6 facturas, entonces el número total de páginas sería 2.
 
 A continuación, pase la propiedad totalPages al componente `<Pagination/>`:
 
@@ -1821,18 +1821,18 @@ export default async function Page({
   const query = searchParams?.query || '';
   const currentPage = Number(searchParams?.page) || 1;
  
-  const totalPages = await fetchInvoicesPages(query);
+  const totalPages = await fetchReferencialesPages(query);
  
   return (
     <div className="w-full">
       <div className="flex w-full items-center justify-between">
-        <h1 className={`${lusitana.className} text-2xl`}>Invoices</h1>
+        <h1 className={`${lusitana.className} text-2xl`}>Referenciales</h1>
       </div>
       <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
-        <Search placeholder="Search invoices..." />
-        <CreateInvoice />
+        <Search placeholder="Search referenciales..." />
+        <CreateReferencial />
       </div>
-      <Suspense key={query + currentPage} fallback={<InvoicesTableSkeleton />}>
+      <Suspense key={query + currentPage} fallback={<ReferencialesTableSkeleton />}>
         <Table query={query} currentPage={currentPage} />
       </Suspense>
       <div className="mt-5 flex w-full justify-center">
@@ -1991,21 +1991,21 @@ Una ventaja de invocar una acción del servidor dentro de un componente del serv
 
 Las acciones del servidor también están profundamente integradas con el almacenamiento en caché de Next.js. Cuando se envía un formulario a través de una acción del servidor, no solo puede usar la acción para mutar datos, sino que también puede revalidar el caché asociado usando API como `revalidatePath` y `revalidateTag`.
 
-### Creando una factura - Invoice
+### Creando una factura - Referencial
 
 Estos son los pasos que deberás seguir para crear una nueva factura:
 
 1. **Cree un formulario para capturar la entrada del usuario.**
 
-    - Para comenzar, dentro de la carpeta /invoices, agregue un nuevo segmento de ruta llamado /create con un archivo page.tsx:
+    - Para comenzar, dentro de la carpeta /referenciales, agregue un nuevo segmento de ruta llamado /create con un archivo page.tsx:
 
-    ![Estructura de archivos](https://nextjs.org/_next/image?url=%2Flearn%2Fdark%2Fcreate-invoice-route.png&w=1920&q=75&dpl=dpl_3h1BESzeFKFcy7pGi2Svm9s7FMVm)
+    ![Estructura de archivos](https://nextjs.org/_next/image?url=%2Flearn%2Fdark%2Fcreate-referencial-route.png&w=1920&q=75&dpl=dpl_3h1BESzeFKFcy7pGi2Svm9s7FMVm)
 
     Dentro de su archivo page.tsx, pegue el siguiente código y luego dedique un tiempo a estudiarlo:
 
       ```tsx
-      import Form from '@/app/ui/invoices/create-form';
-      import Breadcrumbs from '@/app/ui/invoices/breadcrumbs';
+      import Form from '@/app/ui/referenciales/create-form';
+      import Breadcrumbs from '@/app/ui/referenciales/breadcrumbs';
       import { fetchCustomers } from '@/app/lib/data';
       
       export default async function Page() {
@@ -2015,10 +2015,10 @@ Estos son los pasos que deberás seguir para crear una nueva factura:
           <main>
             <Breadcrumbs
               breadcrumbs={[
-                { label: 'Invoices', href: '/dashboard/invoices' },
+                { label: 'Referenciales', href: '/dashboard/referenciales' },
                 {
-                  label: 'Create Invoice',
-                  href: '/dashboard/invoices/create',
+                  label: 'Create Referencial',
+                  href: '/dashboard/referenciales/create',
                   active: true,
                 },
               ]}
@@ -2037,7 +2037,7 @@ Estos son los pasos que deberás seguir para crear una nueva factura:
       - Tiene un elemento `<input>` para el monto con `type="number"`.
       - Tiene un botón con `type="submit"`.
 
-      ![Vista del formulario /invoice/create](https://nextjs.org/_next/image?url=%2Flearn%2Fdark%2Fcreate-invoice-page.png&w=1080&q=75&dpl=dpl_3h1BESzeFKFcy7pGi2Svm9s7FMVm)
+      ![Vista del formulario /referencial/create](https://nextjs.org/_next/image?url=%2Flearn%2Fdark%2Fcreate-referencial-page.png&w=1080&q=75&dpl=dpl_3h1BESzeFKFcy7pGi2Svm9s7FMVm)
 
 2. **Cree una acción del servidor e invoquela desde el formulario.**
 
@@ -2052,10 +2052,10 @@ Estos son los pasos que deberás seguir para crear una nueva factura:
       ```tsx
       'use server';
   
-      export async function createInvoice(formData: FormData) {}
+      export async function createReferencial(formData: FormData) {}
       ```
 
-    Luego, en su componente `<Form>`, importe el `createInvoice` desde su archivo `actions.ts` .Agregue un atributo de acción al elemento `<Form>` y llame a la acción `createInvoice`.
+    Luego, en su componente `<Form>`, importe el `createReferencial` desde su archivo `actions.ts` .Agregue un atributo de acción al elemento `<Form>` y llame a la acción `createReferencial`.
 
         ```tsx
         'use client';
@@ -2069,7 +2069,7 @@ Estos son los pasos que deberás seguir para crear una nueva factura:
           UserCircleIcon,
         } from '@heroicons/react/24/outline';
         import { Button } from '@/app/ui/button';
-        import { createInvoice } from '@/app/lib/actions';
+        import { createReferencial } from '@/app/lib/actions';
         
         export default function Form({
           customers,
@@ -2077,7 +2077,7 @@ Estos son los pasos que deberás seguir para crear una nueva factura:
           customers: customerField[];
         }) {
           return (
-            <form action={createInvoice}>
+            <form action={createReferencial}>
               // ...
           )
         }
@@ -2096,7 +2096,7 @@ Estos son los pasos que deberás seguir para crear una nueva factura:
             ```tsx
             'use server';
       
-              export async function createInvoice(formData: FormData) {
+              export async function createReferencial(formData: FormData) {
                 const rawFormData = {
                   customerId: formData.get('customerId'),
                   amount: formData.get('amount'),
@@ -2119,7 +2119,7 @@ Estos son los pasos que deberás seguir para crear una nueva factura:
   - Antes de enviar los datos del formulario a su base de datos, desea asegurarse de que esté en el formato correcto y con los tipos correctos. Si recuerda desde anteriormente en el curso, la tabla de sus facturas espera datos en el siguiente formato:
 
           ```ts
-          export type Invoice = {
+          export type Referencial = {
             id: string; // Will be created on the database
             customer_id: string;
             amount: number; // Stored in cents
@@ -2142,7 +2142,7 @@ Estos son los pasos que deberás seguir para crear una nueva factura:
  
         import { z } from 'zod';
         
-        const InvoiceSchema = z.object({
+        const ReferencialSchema = z.object({
           id: z.string(),
           customerId: z.string(),
           amount: z.coerce.number(),
@@ -2150,21 +2150,21 @@ Estos son los pasos que deberás seguir para crear una nueva factura:
           date: z.string(),
         });
         
-        const CreateInvoice = InvoiceSchema.omit({ id: true, date: true });
+        const CreateReferencial = ReferencialSchema.omit({ id: true, date: true });
         
-        export async function createInvoice(formData: FormData) {
+        export async function createReferencial(formData: FormData) {
           // ...
         }
       ```
 
   El campo amount se establece específicamente para coaccionar (cambiar) `z.coerce.number()` de una cadena a un número al tiempo que también valida su tipo.
 
-  Luego puede pasar su **RawFormData** a `crearInvoice` para validar los tipos:
+  Luego puede pasar su **RawFormData** a `crearReferencial` para validar los tipos:
 
         ```tsx
         // ...
-        export async function createInvoice(formData: FormData) {
-          const { customerId, amount, status } = CreateInvoice.parse({
+        export async function createReferencial(formData: FormData) {
+          const { customerId, amount, status } = CreateReferencial.parse({
             customerId: formData.get('customerId'),
             amount: formData.get('amount'),
             status: formData.get('status'),
@@ -2176,8 +2176,8 @@ Estos son los pasos que deberás seguir para crear una nueva factura:
 
       ```tsx
       // ...
-      export async function createInvoice(formData: FormData) {
-        const { customerId, amount, status } = CreateInvoice.parse({
+      export async function createReferencial(formData: FormData) {
+        const { customerId, amount, status } = CreateReferencial.parse({
           customerId: formData.get('customerId'),
           amount: formData.get('amount'),
           status: formData.get('status'),
@@ -2190,8 +2190,8 @@ Estos son los pasos que deberás seguir para crear una nueva factura:
 
       ```tsx
       // ...
-        export async function createInvoice(formData: FormData) {
-          const { customerId, amount, status } = CreateInvoice.parse({
+        export async function createReferencial(formData: FormData) {
+          const { customerId, amount, status } = CreateReferencial.parse({
             customerId: formData.get('customerId'),
             amount: formData.get('amount'),
             status: formData.get('status'),
@@ -2211,8 +2211,8 @@ Estos son los pasos que deberás seguir para crear una nueva factura:
       
       // ...
       
-      export async function createInvoice(formData: FormData) {
-        const { customerId, amount, status } = CreateInvoice.parse({
+      export async function createReferencial(formData: FormData) {
+        const { customerId, amount, status } = CreateReferencial.parse({
           customerId: formData.get('customerId'),
           amount: formData.get('amount'),
           status: formData.get('status'),
@@ -2221,7 +2221,7 @@ Estos son los pasos que deberás seguir para crear una nueva factura:
         const date = new Date().toISOString().split('T')[0];
       
         await sql`
-          INSERT INTO invoices (customer_id, amount, status, date)
+          INSERT INTO referenciales (customer_id, amount, status, date)
           VALUES (${customerId}, ${amountInCents}, ${status}, ${date})
         `;
       }
@@ -2244,8 +2244,8 @@ Estos son los pasos que deberás seguir para crear una nueva factura:
     
     // ...
     
-      export async function createInvoice(formData: FormData) {
-        const { customerId, amount, status } = CreateInvoice.parse({
+      export async function createReferencial(formData: FormData) {
+        const { customerId, amount, status } = CreateReferencial.parse({
           customerId: formData.get('customerId'),
           amount: formData.get('amount'),
           status: formData.get('status'),
@@ -2254,15 +2254,15 @@ Estos son los pasos que deberás seguir para crear una nueva factura:
         const date = new Date().toISOString().split('T')[0];
       
         await sql`
-          INSERT INTO invoices (customer_id, amount, status, date)
+          INSERT INTO referenciales (customer_id, amount, status, date)
           VALUES (${customerId}, ${amountInCents}, ${status}, ${date})
         `;
       
-        revalidatePath('/dashboard/invoices');
+        revalidatePath('/dashboard/referenciales');
       }
     ```
 
-  - Una vez que se haya actualizado la base de datos, la ruta **/dasboard/invoices** se revalidará y se obtendrán datos nuevos del servidor. En este punto, también desea redirigir al usuario de regreso a la página **/dasboard/invoices**. Puede hacer esto con la función de redirección `redirect` de Next.js:
+  - Una vez que se haya actualizado la base de datos, la ruta **/dasboard/referenciales** se revalidará y se obtendrán datos nuevos del servidor. En este punto, también desea redirigir al usuario de regreso a la página **/dasboard/referenciales**. Puede hacer esto con la función de redirección `redirect` de Next.js:
 
           ```tsx
             'use server';
@@ -2274,17 +2274,17 @@ Estos son los pasos que deberás seguir para crear una nueva factura:
             
             // ...
             
-            export async function createInvoice(formData: FormData) {
+            export async function createReferencial(formData: FormData) {
               // ...
             
-              revalidatePath('/dashboard/invoices');
-              redirect('/dashboard/invoices');
+              revalidatePath('/dashboard/referenciales');
+              redirect('/dashboard/referenciales');
             }
           ```
 
   - ¡Felicidades! Acaba de implementar su primer Server Action. Pruébelo agregando una nueva factura, si todo funciona correctamente:
 
-    - Debe ser redirigido a la ruta **/dasboard/invoices** en el submit.
+    - Debe ser redirigido a la ruta **/dasboard/referenciales** en el submit.
     - Debería ver la nueva factura en la parte superior de la tabla.
 
 ### Actualizar una factura
@@ -2299,28 +2299,28 @@ Estos son los pasos que tomará para actualizar una factura:
 
   En su carpeta **/facturas**, cree una nueva ruta dinámica llamada [id], luego una nueva ruta llamada Editar con un archivo `page.tsx`. La estructura de su archivo debe verse así:
 
-  ![Estructura del archivo](https://nextjs.org/_next/image?url=%2Flearn%2Fdark%2Fedit-invoice-route.png&w=1920&q=75&dpl=dpl_3h1BESzeFKFcy7pGi2Svm9s7FMVm)
+  ![Estructura del archivo](https://nextjs.org/_next/image?url=%2Flearn%2Fdark%2Fedit-referencial-route.png&w=1920&q=75&dpl=dpl_3h1BESzeFKFcy7pGi2Svm9s7FMVm)
 
-  En su componente `<Table>`, observe que hay un botón `<UpdateInvoice />` que recibe la ID de la factura de los registros de la tabla.
+  En su componente `<Table>`, observe que hay un botón `<UpdateReferencial />` que recibe la ID de la factura de los registros de la tabla.
 
   ```tsx
-      export default async function InvoicesTable({
-      invoices,
+      export default async function ReferencialesTable({
+      referenciales,
     }: {
-      invoices: InvoiceTable[];
+      referenciales: ReferencialTable[];
     }) {
       return (
         // ...
         <td className="flex justify-end gap-2 whitespace-nowrap px-6 py-4 text-sm">
-          <UpdateInvoice id={invoice.id} />
-          <DeleteInvoice id={invoice.id} />
+          <UpdateReferencial id={referencial.id} />
+          <DeleteReferencial id={referencial.id} />
         </td>
         // ...
       );
     }
   ```
 
-    Navegue a su componente `<UpdateInvoice />` y actualice el href del enlace para aceptar el Prop.Puede usar literales de plantilla para vincular a un segmento de ruta dinámica:
+    Navegue a su componente `<UpdateReferencial />` y actualice el href del enlace para aceptar el Prop.Puede usar literales de plantilla para vincular a un segmento de ruta dinámica:
 
     ```tsx
     import { PencilIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
@@ -2328,10 +2328,10 @@ Estos son los pasos que tomará para actualizar una factura:
     
     // ...
     
-    export function UpdateInvoice({ id }: { id: string }) {
+    export function UpdateReferencial({ id }: { id: string }) {
       return (
         <Link
-          href={`/dashboard/invoices/${id}/edit`}
+          href={`/dashboard/referenciales/${id}/edit`}
           className="rounded-md border p-2 hover:bg-gray-100"
         >
           <PencilIcon className="w-5" />
@@ -2344,8 +2344,8 @@ Estos son los pasos que tomará para actualizar una factura:
     
     - En su `<Page>` componente, pegue el siguiente código:
     ```tsx
-    import Form from '@/app/ui/invoices/edit-form';
-    import Breadcrumbs from '@/app/ui/invoices/breadcrumbs';
+    import Form from '@/app/ui/referenciales/edit-form';
+    import Breadcrumbs from '@/app/ui/referenciales/breadcrumbs';
     import { fetchCustomers } from '@/app/lib/data';
     
     export default async function Page() {
@@ -2353,27 +2353,27 @@ Estos son los pasos que tomará para actualizar una factura:
         <main>
           <Breadcrumbs
             breadcrumbs={[
-              { label: 'Invoices', href: '/dashboard/invoices' },
+              { label: 'Referenciales', href: '/dashboard/referenciales' },
               {
-                label: 'Edit Invoice',
-                href: `/dashboard/invoices/${id}/edit`,
+                label: 'Edit Referencial',
+                href: `/dashboard/referenciales/${id}/edit`,
                 active: true,
               },
             ]}
           />
-          <Form invoice={invoice} customers={customers} />
+          <Form referencial={referencial} customers={customers} />
         </main>
       );
     }
     ```
 
-    Observe cómo es similar a su página **/create** invoices, excepto que importa un formulario diferente (desde el archivo edit-form.tsx). Este formulario debe estar previamente poblado con un valor predeterminado para el nombre del cliente, el monto de la factura y el estado. Para prepoblar los campos de formulario, debe obtener la factura específica con su **id**.
+    Observe cómo es similar a su página **/create** referenciales, excepto que importa un formulario diferente (desde el archivo edit-form.tsx). Este formulario debe estar previamente poblado con un valor predeterminado para el nombre del cliente, el monto de la factura y el estado. Para prepoblar los campos de formulario, debe obtener la factura específica con su **id**.
 
     Además de **searchParams**, los componentes de la página también aceptan un accesorio llamado **params** que puede usar para acceder a la id. Actualice su componente `<Page>` para recibir el accesorio:
 
     ```tsx
-    import Form from '@/app/ui/invoices/edit-form';
-    import Breadcrumbs from '@/app/ui/invoices/breadcrumbs';
+    import Form from '@/app/ui/referenciales/edit-form';
+    import Breadcrumbs from '@/app/ui/referenciales/breadcrumbs';
     import { fetchCustomers } from '@/app/lib/data';
     
     export default async function Page({ params }: { params: { id: string } }) {
@@ -2386,20 +2386,20 @@ Estos son los pasos que tomará para actualizar una factura:
 
   - Para lograr esto vamos a tener que:
 
-    - Importar una nueva función llamada `fetchInvoiceById`  y pasar la identificación **id** como argumento.
+    - Importar una nueva función llamada `fetchReferencialById`  y pasar la identificación **id** como argumento.
     - Importar `fetchCustomers` para obtener los nombres de los clientes para el menú desplegable.
 
   Puede usar `Promise.all`. Todo para obtener la factura y los clientes en paralelo.
 
   ```tsx
-  import Form from '@/app/ui/invoices/edit-form';
-  import Breadcrumbs from '@/app/ui/invoices/breadcrumbs';
-  import { fetchInvoiceById, fetchCustomers } from '@/app/lib/data';
+  import Form from '@/app/ui/referenciales/edit-form';
+  import Breadcrumbs from '@/app/ui/referenciales/breadcrumbs';
+  import { fetchReferencialById, fetchCustomers } from '@/app/lib/data';
   
   export default async function Page({ params }: { params: { id: string } }) {
     const id = params.id;
-    const [invoice, customers] = await Promise.all([
-      fetchInvoiceById(id),
+    const [referencial, customers] = await Promise.all([
+      fetchReferencialById(id),
       fetchCustomers(),
     ]);
     // ...
@@ -2414,37 +2414,37 @@ Estos son los pasos que tomará para actualizar una factura:
 
   ```tsx
   // ...
-  import { updateInvoice } from '@/app/lib/actions';
+  import { updateReferencial } from '@/app/lib/actions';
   
-  export default function EditInvoiceForm({
-    invoice,
+  export default function EditReferencialForm({
+    referencial,
     customers,
   }: {
-    invoice: InvoiceForm;
+    referencial: ReferencialForm;
     customers: CustomerField[];
   }) {
-    const updateInvoiceWithId = updateInvoice.bind(null, invoice.id);
+    const updateReferencialWithId = updateReferencial.bind(null, referencial.id);
   
     return (
-      <form action={updateInvoiceWithId}>
-        <input type="hidden" name="id" value={invoice.id} />
+      <form action={updateReferencialWithId}>
+        <input type="hidden" name="id" value={referencial.id} />
       </form>
     );
   }
   ```
 
-> Nota: El uso de un campo de entrada oculto en su forma también funciona (por ejemplo, `<input type = "hidden" name="id" value={invoice.id} />`). Sin embargo, los valores aparecerán como texto completo en la fuente HTML, que no es ideal para datos confidenciales como **IDS**.
+> Nota: El uso de un campo de entrada oculto en su forma también funciona (por ejemplo, `<input type = "hidden" name="id" value={referencial.id} />`). Sin embargo, los valores aparecerán como texto completo en la fuente HTML, que no es ideal para datos confidenciales como **IDS**.
 
-Luego, en su archivo Actions.ts, cree una nueva acción, `updateInvoice`:
+Luego, en su archivo Actions.ts, cree una nueva acción, `updateReferencial`:
 
 ```tsx
 // Use Zod to update the expected types
-const UpdateInvoice = InvoiceSchema.omit({ date: true, id: true });
+const UpdateReferencial = ReferencialSchema.omit({ date: true, id: true });
  
 // ...
  
-export async function updateInvoice(id: string, formData: FormData) {
-  const { customerId, amount, status } = UpdateInvoice.parse({
+export async function updateReferencial(id: string, formData: FormData) {
+  const { customerId, amount, status } = UpdateReferencial.parse({
     customerId: formData.get('customerId'),
     amount: formData.get('amount'),
     status: formData.get('status'),
@@ -2453,17 +2453,17 @@ export async function updateInvoice(id: string, formData: FormData) {
   const amountInCents = amount * 100;
  
   await sql`
-    UPDATE invoices
+    UPDATE referenciales
     SET customer_id = ${customerId}, amount = ${amountInCents}, status = ${status}
     WHERE id = ${id}
   `;
  
-  revalidatePath('/dashboard/invoices');
-  redirect('/dashboard/invoices');
+  revalidatePath('/dashboard/referenciales');
+  redirect('/dashboard/referenciales');
 }
 ```
 
-De manera similar a la acción `createInvoice`, aquí está:
+De manera similar a la acción `createReferencial`, aquí está:
 
 1. Extracción de los datos de FormData.
 2. Validando los tipos con Zod.
@@ -2472,22 +2472,22 @@ De manera similar a la acción `createInvoice`, aquí está:
 5. Llamar a `revalidatePath` para borrar el caché del cliente y hacer una nueva solicitud del servidor.
 6. Llamar a `redirect` para redirigir al usuario a la página de la factura.
 
-¡No olvide importar la acción updateInvoice en su componente `<Form>`!
+¡No olvide importar la acción updateReferencial en su componente `<Form>`!
 
 ### Eliminar una factura
 
 Para eliminar una factura utilizando una acción de servidor, envuelva el botón Eliminar en un elemento `<form>` y pase la **id** a la acción del servidor usando bind:
 
 ```tsx
-import { deleteInvoice } from '@/app/lib/actions';
+import { deleteReferencial } from '@/app/lib/actions';
  
 // ...
  
-export function DeleteInvoice({ id }: { id: string }) {
-  const deleteInvoiceWithId = deleteInvoice.bind(null, id);
+export function DeleteReferencial({ id }: { id: string }) {
+  const deleteReferencialWithId = deleteReferencial.bind(null, id);
  
   return (
-    <form action={deleteInvoiceWithId}>
+    <form action={deleteReferencialWithId}>
       <button className="rounded-md border p-2 hover:bg-gray-100">
         <span className="sr-only">Delete</span>
         <TrashIcon className="w-4" />
@@ -2500,16 +2500,16 @@ export function DeleteInvoice({ id }: { id: string }) {
 Dentro de su archivo `actions.ts`, cree una nueva acción llamada `deleteInVoice`.
 
 ```tsx
-const UpdateInvoice = FormSchema.omit({ date: true, id: true });
+const UpdateReferencial = FormSchema.omit({ date: true, id: true });
 // ...
  
-export async function deleteInvoice(id: string) {
-  await sql`DELETE FROM invoices WHERE id = ${id}`;
-  revalidatePath('/dashboard/invoices');
+export async function deleteReferencial(id: string) {
+  await sql`DELETE FROM referenciales WHERE id = ${id}`;
+  revalidatePath('/dashboard/referenciales');
 }
 ```
 
-Dado que esta acción se llama en la ruta **/dashboard/invoices**, no necesita llamar a redirección.Llamar a `revalidatePath` activará una nueva solicitud del servidor y volverá a renderizar la tabla.
+Dado que esta acción se llama en la ruta **/dashboard/referenciales**, no necesita llamar a redirección.Llamar a `revalidatePath` activará una nueva solicitud del servidor y volverá a renderizar la tabla.
 
 En este capítulo, aprendió a usar acciones del servidor para mutar datos. También aprendió a usar la API `revalidatePath` para revalidar el Next.js cache y `redirect` para redirigir al usuario a una nueva página.
 
@@ -2531,19 +2531,19 @@ Primero, agregemos las declaraciones de **try/catch** de JavaScript a las accion
 
 Tenga en cuenta cómo se llama redirección fuera del bloque de **try/catch**. Esto se debe a que la redirección funciona arrojando un error, que sería capturado por el bloque de captura. Para evitar esto, puede llamar a Redirect después de **try/catch**. **Redirect** solo sería accesible si la prueba es exitosa.
 
-Ahora, verifiquemos qué sucede cuando se lanza un error en la acción de su servidor. Puede hacer esto lanzando un error antes. Por ejemplo, en la acción deleteInvoice, arroje un error en la parte superior de la función:
+Ahora, verifiquemos qué sucede cuando se lanza un error en la acción de su servidor. Puede hacer esto lanzando un error antes. Por ejemplo, en la acción deleteReferencial, arroje un error en la parte superior de la función:
 
 ```tsx
-export async function deleteInvoice(id: string) {
-  throw new Error('Failed to Delete Invoice');
+export async function deleteReferencial(id: string) {
+  throw new Error('Failed to Delete Referencial');
  
   // Unreachable code block
   try {
-    await sql`DELETE FROM invoices WHERE id = ${id}`;
-    revalidatePath('/dashboard/invoices');
-    return { message: 'Deleted Invoice' };
+    await sql`DELETE FROM referenciales WHERE id = ${id}`;
+    revalidatePath('/dashboard/referenciales');
+    return { message: 'Deleted Referencial' };
   } catch (error) {
-    return { message: 'Database Error: Failed to Delete Invoice' };
+    return { message: 'Database Error: Failed to Delete Referencial' };
   }
 }
 ```
@@ -2558,7 +2558,7 @@ Aquí es donde entra el archivo Next.js `error.tsx`.
 
 El archivo `error.tsx` se puede usar para definir un límite de UI para un segmento de ruta. Sirve como una trampa para errores inesperados y le permite mostrar una interfaz UI de respaldo a sus usuarios.
 
-Dentro de su carpeta **/dashboard/invoices**, cree un nuevo archivo llamado `error.tsx` y pegue el siguiente código:
+Dentro de su carpeta **/dashboard/referenciales**, cree un nuevo archivo llamado `error.tsx` y pegue el siguiente código:
 
 ```tsx
 'use client';
@@ -2583,7 +2583,7 @@ export default function Error({
       <button
         className="mt-4 rounded-md bg-blue-500 px-4 py-2 text-sm text-white transition-colors hover:bg-blue-400"
         onClick={
-          // Attempt to recover by trying to re-render the invoices route
+          // Attempt to recover by trying to re-render the referenciales route
           () => reset()
         }
       >
@@ -2611,29 +2611,29 @@ Otra forma en que puede manejar los errores es usar la función **notFound**. Si
 
 Por ejemplo, visite http://localhost:3000/tablero/facturas/2e94d1ed-d220-449f-9f11-f0bbBed9645/edit
 
-Este es un uuid falso que no existe en su base de datos. Verá inmediatamente `error.tsx` se inicia porque esta es una ruta hija de /invoices donde se define el `error.tsx`
+Este es un uuid falso que no existe en su base de datos. Verá inmediatamente `error.tsx` se inicia porque esta es una ruta hija de /referenciales donde se define el `error.tsx`
 
 Sin embargo, si desea ser más específico, puede mostrar un error 404 para decirle al usuario que no se ha encontrado el recurso que intenta acceder.
 
-Puede confirmar que el recurso no se ha encontrado al entrar en su función `fetchInvoiceById` en `data.tsx`, y registrar en la consola la factura devuelta:
+Puede confirmar que el recurso no se ha encontrado al entrar en su función `fetchReferencialById` en `data.tsx`, y registrar en la consola la factura devuelta:
 
-Ahora que sabe que la factura no existe en su base de datos, usemos Notfound para manejarla. Navegue a `/dashboard/invoices/[id]/edit/page.tsx`, e `import {nofound} from 'next/navigation'`.
+Ahora que sabe que la factura no existe en su base de datos, usemos Notfound para manejarla. Navegue a `/dashboard/referenciales/[id]/edit/page.tsx`, e `import {nofound} from 'next/navigation'`.
 
 Luego, puede usar un condicional para invocar nofund si la factura no existe:
 
 ```tsx
-import { fetchInvoiceById, fetchCustomers } from '@/app/lib/data';
-import { updateInvoice } from '@/app/lib/actions';
+import { fetchReferencialById, fetchCustomers } from '@/app/lib/data';
+import { updateReferencial } from '@/app/lib/actions';
 import { notFound } from 'next/navigation';
  
 export default async function Page({ params }: { params: { id: string } }) {
   const id = params.id;
-  const [invoice, customers] = await Promise.all([
-    fetchInvoiceById(id),
+  const [referencial, customers] = await Promise.all([
+    fetchReferencialById(id),
     fetchCustomers(),
   ]);
  
-  if (!invoice) {
+  if (!referencial) {
     notFound();
   }
  
@@ -2656,9 +2656,9 @@ export default function NotFound() {
     <main className="flex h-full flex-col items-center justify-center gap-2">
       <FaceFrownIcon className="w-10 text-gray-400" />
       <h2 className="text-xl font-semibold">404 Not Found</h2>
-      <p>Could not find the requested invoice.</p>
+      <p>Could not find the requested referencial.</p>
       <Link
-        href="/dashboard/invoices"
+        href="/dashboard/referenciales"
         className="mt-4 rounded-md bg-blue-500 px-4 py-2 text-sm text-white transition-colors hover:bg-blue-400"
       >
         Go Back
@@ -2747,7 +2747,7 @@ Estas prácticas sientan una buena base para hacer que sus formularios sean más
 
 ### Validación de formulario
 
-Vaya a http://localhost:3000/dashboard/invoices/create, y envíe un formulario vacío. ¿que sucede?
+Vaya a http://localhost:3000/dashboard/referenciales/create, y envíe un formulario vacío. ¿que sucede?
 
 ¡Recibes un error! Esto se debe a que está enviando valores de formulario vacíos a la acción de su servidor. Puede evitar esto validando su formulario en el cliente o en el servidor.
 
@@ -2783,7 +2783,7 @@ Dentro de su componente de formulario, el gancho `useFormState`:
 - Toma dos argumentos: `(action, inicialState)`.
 - Devuelve dos valores: `[state, dispatch]` el estado del formulario y una función de despacho (similar a `useReducer`)
 
-Pase su acción `createInvoice` como un argumento de `useFormState`, y dentro de su `<form action={}>` use el dispatch.
+Pase su acción `createReferencial` como un argumento de `useFormState`, y dentro de su `<form action={}>` use el dispatch.
 
 El `initialState` puede ser cualquier cosa que define, en este caso, cree un objeto con dos claves vacías: `{ message: null, errors: {} }`
 
@@ -2793,17 +2793,17 @@ import { useFormState } from 'react-dom';
  
 export default function Form({ customers }: { customers: CustomerField[] }) {
   const initialState = { message: null, errors: {} };
-  const [state, dispatch] = useFormState(createInvoice, initialState);
+  const [state, dispatch] = useFormState(createReferencial, initialState);
  
   return <form action={dispatch}>...</form>;
 }
 ```
 Esto puede parecer confuso inicialmente, pero tendrá más sentido una vez que actualice la acción del servidor. Hagamos eso ahora.
 
-En su archivo `action.ts`, puede usar Zod para validar los datos de formulario. Actualice su InvoiceSchema de la siguiente manera:
+En su archivo `action.ts`, puede usar Zod para validar los datos de formulario. Actualice su ReferencialSchema de la siguiente manera:
 
 ```ts
-const InvoiceSchema = z.object({
+const ReferencialSchema = z.object({
   id: z.string(),
   customerId: z.string({
     invalid_type_error: 'Please select a customer.',
@@ -2812,7 +2812,7 @@ const InvoiceSchema = z.object({
     .number()
     .gt(0, { message: 'Please enter an amount greater than $0.' }),
   status: z.enum(['pending', 'paid'], {
-    invalid_type_error: 'Please select an invoice status.',
+    invalid_type_error: 'Please select an referencial status.',
   }),
   date: z.string(),
 });
@@ -2824,7 +2824,7 @@ const InvoiceSchema = z.object({
 
 - **status:** Zod ya lanza un error si el campo de estado está vacío, ya que espera "pendiente" o "pagado". También agregemos un mensaje amigable si el usuario no selecciona un estado.
 
-A continuación, actualice su acción createInvoice para aceptar dos parámetros:
+A continuación, actualice su acción createReferencial para aceptar dos parámetros:
 
 ```tsx
 // This is temporary until @types/react-dom is updated
@@ -2837,7 +2837,7 @@ export type State = {
   message?: string | null;
 };
  
-export async function createInvoice(prevState: State, formData: FormData) {
+export async function createReferencial(prevState: State, formData: FormData) {
   // ...
 }
 ```
@@ -2848,9 +2848,9 @@ export async function createInvoice(prevState: State, formData: FormData) {
 Luego, cambie la función Zod `parse()` a `safeParse()`
 
 ```tsx
-export async function createInvoice(prevState: State, formData: FormData) {
+export async function createReferencial(prevState: State, formData: FormData) {
   // Validate form fields using Zod
-  const validatedFields = CreateInvoice.safeParse({
+  const validatedFields = CreateReferencial.safeParse({
     customerId: formData.get('customerId'),
     amount: formData.get('amount'),
     status: formData.get('status'),
@@ -2865,9 +2865,9 @@ export async function createInvoice(prevState: State, formData: FormData) {
 Antes de enviar la información a su base de datos, verifique si los campos de formulario se validaron correctamente con un condicional:
 
 ```tsx
-export async function createInvoice(prevState: State, formData: FormData) {
+export async function createReferencial(prevState: State, formData: FormData) {
   // Validate form fields using Zod
-  const validatedFields = CreateInvoice.safeParse({
+  const validatedFields = CreateReferencial.safeParse({
     customerId: formData.get('customerId'),
     amount: formData.get('amount'),
     status: formData.get('status'),
@@ -2877,7 +2877,7 @@ export async function createInvoice(prevState: State, formData: FormData) {
   if (!validatedFields.success) {
     return {
       errors: validatedFields.error.flatten().fieldErrors,
-      message: 'Missing Fields. Failed to Create Invoice.',
+      message: 'Missing Fields. Failed to Create Referencial.',
     };
   }
 ```
@@ -2887,9 +2887,9 @@ Si `validatedFields` no es exitoso, devolvemos los mensajes de error de Zod.
 Finalmente, dado que está manejando la validación del formulario por separado, fuera de su bloque `try/catch`, puede devolver un mensaje específico para cualquier error de base de datos, su código final debería verse así:
 
 ```tsx
-export async function createInvoice(prevState: State, formData: FormData) {
+export async function createReferencial(prevState: State, formData: FormData) {
   // Validate form using Zod
-  const validatedFields = CreateInvoice.safeParse({
+  const validatedFields = CreateReferencial.safeParse({
     customerId: formData.get('customerId'),
     amount: formData.get('amount'),
     status: formData.get('status'),
@@ -2899,7 +2899,7 @@ export async function createInvoice(prevState: State, formData: FormData) {
   if (!validatedFields.success) {
     return {
       errors: validatedFields.error.flatten().fieldErrors,
-      message: 'Missing Fields. Failed to Create Invoice.',
+      message: 'Missing Fields. Failed to Create Referencial.',
     };
   }
  
@@ -2911,19 +2911,19 @@ export async function createInvoice(prevState: State, formData: FormData) {
   // Insert data into the database
   try {
     await sql`
-      INSERT INTO invoices (customer_id, amount, status, date)
+      INSERT INTO referenciales (customer_id, amount, status, date)
       VALUES (${customerId}, ${amountInCents}, ${status}, ${date})
     `;
   } catch (error) {
     // If a database error occurs, return a more specific error.
     return {
-      message: 'Database Error: Failed to Create Invoice.',
+      message: 'Database Error: Failed to Create Referencial.',
     };
   }
  
-  // Revalidate the cache for the invoices page and redirect the user.
-  revalidatePath('/dashboard/invoices');
-  redirect('/dashboard/invoices');
+  // Revalidate the cache for the referenciales page and redirect the user.
+  revalidatePath('/dashboard/referenciales');
+  redirect('/dashboard/referenciales');
 }
 ```
 
@@ -2995,21 +2995,21 @@ Si desea desafiarse, tome el conocimiento que ha aprendido en este capítulo y a
 Tendrás que:
 
 - Agregue `useFormState` a su componente `edit-form.tsx`.
-- Edite la acción `updateInvoice` para manejar los errores de validación de Zod.
+- Edite la acción `updateReferencial` para manejar los errores de validación de Zod.
 - Muestre los errores en su componente y agregue aria labels para mejorar la accesibilidad.
 
-> **/app/ui/invoices/edit-form.tsx**
+> **/app/ui/referenciales/edit-form.tsx**
 ```tsx
-export default function EditInvoiceForm({
-  invoice,
+export default function EditReferencialForm({
+  referencial,
   customers,
 }: {
-  invoice: InvoiceForm;
+  referencial: ReferencialForm;
   customers: CustomerField[];
 }) {
   const initialState = { message: null, errors: {} };
-  const updateInvoiceWithId = updateInvoice.bind(null, invoice.id);
-  const [state, dispatch] = useFormState(updateInvoiceWithId, initialState);
+  const updateReferencialWithId = updateReferencial.bind(null, referencial.id);
+  const [state, dispatch] = useFormState(updateReferencialWithId, initialState);
  
   return <form action={dispatch}></form>;
 }
@@ -3017,12 +3017,12 @@ export default function EditInvoiceForm({
 
 > **/app/lib/actions.ts**
 ```tsx
-export async function updateInvoice(
+export async function updateReferencial(
   id: string,
   prevState: State,
   formData: FormData,
 ) {
-  const validatedFields = UpdateInvoice.safeParse({
+  const validatedFields = UpdateReferencial.safeParse({
     customerId: formData.get('customerId'),
     amount: formData.get('amount'),
     status: formData.get('status'),
@@ -3031,7 +3031,7 @@ export async function updateInvoice(
   if (!validatedFields.success) {
     return {
       errors: validatedFields.error.flatten().fieldErrors,
-      message: 'Missing Fields. Failed to Update Invoice.',
+      message: 'Missing Fields. Failed to Update Referencial.',
     };
   }
  
@@ -3040,16 +3040,16 @@ export async function updateInvoice(
  
   try {
     await sql`
-      UPDATE invoices
+      UPDATE referenciales
       SET customer_id = ${customerId}, amount = ${amountInCents}, status = ${status}
       WHERE id = ${id}
     `;
   } catch (error) {
-    return { message: 'Database Error: Failed to Update Invoice.' };
+    return { message: 'Database Error: Failed to Update Referencial.' };
   }
  
-  revalidatePath('/dashboard/invoices');
-  redirect('/dashboard/invoices');
+  revalidatePath('/dashboard/referenciales');
+  redirect('/dashboard/referenciales');
 }
 ```
 
@@ -3542,13 +3542,13 @@ Next.js agregará automáticamente el título y los metadatos a su aplicación.
 
 Pero, ¿qué pasa si desea agregar un título personalizado para una página específica? Puede hacerlo agregando un objeto de metadatos a la página misma. Los metadatos en las páginas anidados anularán los metadatos en el padre.
 
-Por ejemplo, en la página **/dashboard/invoices**, puede agregar el título de la página:
+Por ejemplo, en la página **/dashboard/referenciales**, puede agregar el título de la página:
 
 ```tsx
 import { Metadata } from 'next';
  
 export const metadata: Metadata = {
-  title: 'Invoices | Acme Dashboard',
+  title: 'Referenciales | Acme Dashboard',
 };
 ```
 
@@ -3574,11 +3574,11 @@ export const metadata: Metadata = {
 
 El %s en la plantilla se reemplazará con el título de página específico.
 
-Ahora, en su página de `/dashboard/invoices` puede agregar el título de la página:
+Ahora, en su página de `/dashboard/referenciales` puede agregar el título de la página:
 
 ```tsx
 export const metadata: Metadata = {
-  title: 'Invoices',
+  title: 'Referenciales',
 };
 ```
 
@@ -3589,8 +3589,8 @@ Ahora que ha aprendido sobre los metadatos, practique agregando títulos a sus o
 1. /login page.
 2. /dashboard/ page.
 3. /dashboard/customers page.
-4. /dashboard/invoices/create page.
-5. /dashboard/invoices/[id]/edit page.
+4. /dashboard/referenciales/create page.
+5. /dashboard/referenciales/[id]/edit page.
 
 La API de metadatos Next.JS es potente y flexible, lo que le brinda control total sobre los metadatos de su aplicación. Aquí, le hemos mostrado cómo agregar algunos metadatos básicos, pero puede agregar múltiples campos, incluidas palabras `keywords, robots, canonical `y más. Siéntase libre de explorar la documentación y agregar cualquier metadato adicional que desee a su aplicación.
 

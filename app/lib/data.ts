@@ -2,9 +2,9 @@ import { sql } from '@vercel/postgres';
 import {
   CustomerField,
   CustomersTable,
-  InvoiceForm,
-  InvoicesTable,
-  LatestInvoiceRaw,
+  ReferencialForm,
+  ReferencialesTable,
+  LatestReferencialRaw,
   User,
   Revenue,
 } from './definitions';
@@ -33,24 +33,24 @@ export async function fetchRevenue() {
   }
 }
 
-export async function fetchLatestInvoices() {
+export async function fetchLatestReferenciales() {
   noStore();
   try {
-    const data = await sql<LatestInvoiceRaw>`
-      SELECT invoices.amount, customers.name, customers.image_url, customers.email, invoices.id
-      FROM invoices
-      JOIN customers ON invoices.customer_id = customers.id
-      ORDER BY invoices.date DESC
+    const data = await sql<LatestReferencialRaw>`
+      SELECT referenciales.amount, customers.name, customers.image_url, customers.email, referenciales.id
+      FROM referenciales
+      JOIN customers ON referenciales.customer_id = customers.id
+      ORDER BY referenciales.date DESC
       LIMIT 5`;
 
-    const latestInvoices = data.rows.map((invoice) => ({
-      ...invoice,
-      amount: formatCurrency(invoice.amount),
+    const latestReferenciales = data.rows.map((referencial) => ({
+      ...referencial,
+      amount: formatCurrency(referencial.amount),
     }));
-    return latestInvoices;
+    return latestReferenciales;
   } catch (error) {
     console.error('Database Error:', error);
-    throw new Error('Failed to fetch the latest invoices.');
+    throw new Error('Failed to fetch the latest referenciales.');
   }
 }
 
@@ -60,29 +60,29 @@ export async function fetchCardData() {
     // You can probably combine these into a single SQL query
     // However, we are intentionally splitting them to demonstrate
     // how to initialize multiple queries in parallel with JS.
-    const invoiceCountPromise = sql`SELECT COUNT(*) FROM invoices`;
+    const referencialCountPromise = sql`SELECT COUNT(*) FROM referenciales`;
     const customerCountPromise = sql`SELECT COUNT(*) FROM customers`;
-    const invoiceStatusPromise = sql`SELECT
+    const referencialStatusPromise = sql`SELECT
          SUM(CASE WHEN status = 'paid' THEN amount ELSE 0 END) AS "paid",
          SUM(CASE WHEN status = 'pending' THEN amount ELSE 0 END) AS "pending"
-         FROM invoices`;
+         FROM referenciales`;
 
     const data = await Promise.all([
-      invoiceCountPromise,
+      referencialCountPromise,
       customerCountPromise,
-      invoiceStatusPromise,
+      referencialStatusPromise,
     ]);
 
-    const numberOfInvoices = Number(data[0].rows[0].count ?? '0');
+    const numberOfReferenciales = Number(data[0].rows[0].count ?? '0');
     const numberOfCustomers = Number(data[1].rows[0].count ?? '0');
-    const totalPaidInvoices = formatCurrency(data[2].rows[0].paid ?? '0');
-    const totalPendingInvoices = formatCurrency(data[2].rows[0].pending ?? '0');
+    const totalPaidReferenciales = formatCurrency(data[2].rows[0].paid ?? '0');
+    const totalPendingReferenciales = formatCurrency(data[2].rows[0].pending ?? '0');
 
     return {
       numberOfCustomers,
-      numberOfInvoices,
-      totalPaidInvoices,
-      totalPendingInvoices,
+      numberOfReferenciales,
+      totalPaidReferenciales,
+      totalPendingReferenciales,
     };
   } catch (error) {
     console.error('Database Error:', error);
@@ -91,84 +91,84 @@ export async function fetchCardData() {
 }
 
 const ITEMS_PER_PAGE = 6;
-export async function fetchFilteredInvoices(query: string, currentPage: number,) {
+export async function fetchFilteredReferenciales(query: string, currentPage: number,) {
   noStore();
   const offset = (currentPage - 1) * ITEMS_PER_PAGE;
 
   try {
-    const invoices = await sql<InvoicesTable>`
+    const referenciales = await sql<ReferencialesTable>`
       SELECT
-        invoices.id,
-        invoices.fojas,  
-        invoices.numero,
-        invoices.anio,
-        invoices.amount,
-        invoices.date,
-        invoices.status,
+        referenciales.id,
+        referenciales.fojas,  
+        referenciales.numero,
+        referenciales.anio,
+        referenciales.amount,
+        referenciales.date,
+        referenciales.status,
         customers.name,
         customers.email,
         customers.image_url
-      FROM invoices
-      JOIN customers ON invoices.customer_id = customers.id
+      FROM referenciales
+      JOIN customers ON referenciales.customer_id = customers.id
       WHERE
         customers.name ILIKE ${`%${query}%`} OR
         customers.email ILIKE ${`%${query}%`} OR
-        invoices.amount::text ILIKE ${`%${query}%`} OR
-        invoices.date::text ILIKE ${`%${query}%`} OR
-        invoices.status ILIKE ${`%${query}%`}
-      ORDER BY invoices.date DESC
+        referenciales.amount::text ILIKE ${`%${query}%`} OR
+        referenciales.date::text ILIKE ${`%${query}%`} OR
+        referenciales.status ILIKE ${`%${query}%`}
+      ORDER BY referenciales.date DESC
       LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}
     `;
 
-    return invoices.rows;
+    return referenciales.rows;
   } catch (error) {
     console.error('Database Error:', error);
-    throw new Error('Failed to fetch invoices.');
+    throw new Error('Failed to fetch referenciales.');
   }
 }
 
-export async function fetchInvoicesPages(query: string) {
+export async function fetchReferencialesPages(query: string) {
   noStore();
   try {
     const count = await sql`SELECT COUNT(*)
-    FROM invoices
-    JOIN customers ON invoices.customer_id = customers.id
+    FROM referenciales
+    JOIN customers ON referenciales.customer_id = customers.id
     WHERE
       customers.name ILIKE ${`%${query}%`} OR
       customers.email ILIKE ${`%${query}%`} OR
-      invoices.amount::text ILIKE ${`%${query}%`} OR
-      invoices.date::text ILIKE ${`%${query}%`} OR
-      invoices.status ILIKE ${`%${query}%`}
+      referenciales.amount::text ILIKE ${`%${query}%`} OR
+      referenciales.date::text ILIKE ${`%${query}%`} OR
+      referenciales.status ILIKE ${`%${query}%`}
   `;
 
     const totalPages = Math.ceil(Number(count.rows[0].count) / ITEMS_PER_PAGE);
     return totalPages;
   } catch (error) {
     console.error('Database Error:', error);
-    throw new Error('Failed to fetch total number of invoices.');
+    throw new Error('Failed to fetch total number of referenciales.');
   }
 }
 
-export async function fetchInvoiceById(id: string) {
+export async function fetchReferencialById(id: string) {
   noStore();
   try {
-    const data = await sql<InvoiceForm>`
+    const data = await sql<ReferencialForm>`
       SELECT
-        invoices.id,
-        invoices.customer_id,
-        invoices.amount,
-        invoices.status
-      FROM invoices
-      WHERE invoices.id = ${id};
+        referenciales.id,
+        referenciales.customer_id,
+        referenciales.amount,
+        referenciales.status
+      FROM referenciales
+      WHERE referenciales.id = ${id};
     `;
 
-    const invoice = data.rows.map((invoice) => ({
-      ...invoice,
+    const referencial = data.rows.map((referencial) => ({
+      ...referencial,
       // Convert amount from cents to dollars
-      amount: invoice.amount / 100,
+      amount: referencial.amount / 100,
     }));
 
-    return invoice[0];
+    return referencial[0];
   } catch (error) {
     console.error('Database Error:', error);
   }
@@ -202,11 +202,11 @@ export async function fetchFilteredCustomers(query: string) {
 		  customers.name,
 		  customers.email,
 		  customers.image_url,
-		  COUNT(invoices.id) AS total_invoices,
-		  SUM(CASE WHEN invoices.status = 'pending' THEN invoices.amount ELSE 0 END) AS total_pending,
-		  SUM(CASE WHEN invoices.status = 'paid' THEN invoices.amount ELSE 0 END) AS total_paid
+		  COUNT(referenciales.id) AS total_referenciales,
+		  SUM(CASE WHEN referenciales.status = 'pending' THEN referenciales.amount ELSE 0 END) AS total_pending,
+		  SUM(CASE WHEN referenciales.status = 'paid' THEN referenciales.amount ELSE 0 END) AS total_paid
 		FROM customers
-		LEFT JOIN invoices ON customers.id = invoices.customer_id
+		LEFT JOIN referenciales ON customers.id = referenciales.customer_id
 		WHERE
 		  customers.name ILIKE ${`%${query}%`} OR
         customers.email ILIKE ${`%${query}%`}

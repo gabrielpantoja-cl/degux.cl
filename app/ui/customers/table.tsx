@@ -4,7 +4,7 @@ import Search from '@/app/ui/search';
 import { CustomersTable, FormattedCustomersTable } from '@/app/lib/definitions';
 import { fetchFilteredCustomers } from '@/app/lib/data';
 
-export default async function CustomersTable({query}:{query: string}) {
+export default async function CustomersTable({ query }: { query: string }) {
 
   const customers: FormattedCustomersTable[] = await fetchFilteredCustomers(query)
 
@@ -54,7 +54,7 @@ export default async function CustomersTable({query}:{query: string}) {
                       </div>
                     </div>
                     <div className="pt-4 text-sm">
-                      <p>{customer.total_invoices} invoices</p>
+                      <p>{customer.total_referenciales} referenciales</p>
                     </div>
                   </div>
                 ))}
@@ -69,7 +69,7 @@ export default async function CustomersTable({query}:{query: string}) {
                       Email
                     </th>
                     <th scope="col" className="px-3 py-5 font-medium">
-                      Total Invoices
+                      Total Referenciales
                     </th>
                     <th scope="col" className="px-3 py-5 font-medium">
                       Total Pending
@@ -99,7 +99,7 @@ export default async function CustomersTable({query}:{query: string}) {
                         {customer.email}
                       </td>
                       <td className="whitespace-nowrap bg-white px-4 py-5 text-sm">
-                        {customer.total_invoices}
+                        {customer.total_referenciales}
                       </td>
                       <td className="whitespace-nowrap bg-white px-4 py-5 text-sm">
                         {customer.total_pending}

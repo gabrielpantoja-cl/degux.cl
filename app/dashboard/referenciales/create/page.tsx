@@ -1,18 +1,18 @@
-import Form from '@/app/ui/invoices/create-form';
-import Breadcrumbs from '@/app/ui/invoices/breadcrumbs';
+import Form from '@/app/ui/referenciales/create-form';
+import Breadcrumbs from '@/app/ui/feferenciales/breadcrumbs';
 import { fetchCustomers } from '@/app/lib/data';
- 
+
 export default async function Page() {
   const customers = await fetchCustomers();
- 
+
   return (
     <main>
       <Breadcrumbs
         breadcrumbs={[
-          { label: 'Invoices', href: '/dashboard/invoices' },
+          { label: 'Referenciales', href: '/dashboard/referenciales' },
           {
-            label: 'Create Invoice',
-            href: '/dashboard/invoices/create',
+            label: 'Create Referencial',
+            href: '/dashboard/referenciales/create',
             active: true,
           },
         ]}

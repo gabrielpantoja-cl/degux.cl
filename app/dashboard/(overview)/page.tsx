@@ -1,10 +1,10 @@
 // app/dashboard/(overview)/page.tsx
 import CardWrapper, { Card } from '@/app/ui/dashboard/cards';
 import RevenueChart from '@/app/ui/dashboard/revenue-chart';
-import LatestInvoices from '@/app/ui/dashboard/latest-invoices';
+import LatestReferenciales from '@/app/ui/dashboard/latest-referenciales';
 import { lusitana } from '@/app/ui/fonts';
 import { Suspense } from 'react';
-import { CardsSkeleton, LatestInvoicesSkeleton, RevenueChartSkeleton } from '@/app/ui/skeletons';
+import { CardsSkeleton, LatestReferencialesSkeleton, RevenueChartSkeleton } from '@/app/ui/skeletons';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -21,9 +21,9 @@ export default async function Page() {
                 <Suspense fallback={<CardsSkeleton />}>
                     <CardWrapper />
                 </Suspense>
-                {/* <Card title="Collected" value={totalPaidInvoices} type="collected" />
-            <Card title="Pending" value={totalPendingInvoices} type="pending" />
-            <Card title="Total Invoices" value={numberOfInvoices} type="invoices" />
+                {/* <Card title="Collected" value={totalPaidReferenciales} type="collected" />
+            <Card title="Pending" value={totalPendingReferenciales} type="pending" />
+            <Card title="Total Referenciales" value={numberOfReferenciales} type="Referenciales" />
             <Card
             title="Total Customers"
             value={numberOfCustomers}
@@ -34,8 +34,8 @@ export default async function Page() {
                 <Suspense fallback={<RevenueChartSkeleton />}>
                     <RevenueChart />
                 </Suspense>
-                <Suspense fallback={<LatestInvoicesSkeleton />}>
-                    <LatestInvoices />
+                <Suspense fallback={<LatestReferencialesSkeleton />}>
+                    <LatestReferenciales />
                 </Suspense>
             </div>
         </main>

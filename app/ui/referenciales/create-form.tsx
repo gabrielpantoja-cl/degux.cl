@@ -9,13 +9,13 @@ import {
   UserCircleIcon,
 } from '@heroicons/react/24/outline';
 import { Button } from '@/app/ui/button';
-import { createInvoice } from '@/app/lib/actions';
+import { createReferencial } from '@/app/lib/actions';
 import { useFormState } from 'react-dom';
 
 export default function Form({ customers }: { customers: CustomerField[] }) {
 
   const initialState = { message: null, errors: {} };
-  const [state, dispatch] = useFormState(createInvoice, initialState);
+  const [state, dispatch] = useFormState(createReferencial, initialState);
 
   return (
     <form action={dispatch}>
@@ -57,7 +57,7 @@ export default function Form({ customers }: { customers: CustomerField[] }) {
           ) : null}
         </div>
 
-        {/* Invoice Amount */}
+        {/* Referencial Amount */}
         <div className="mb-4">
           <label htmlFor="amount" className="mb-2 block text-sm font-medium">
             Choose an amount
@@ -89,10 +89,10 @@ export default function Form({ customers }: { customers: CustomerField[] }) {
           ) : null}
         </div>
 
-        {/* Invoice Status */}
+        {/* Referencial Status */}
         <fieldset>
           <legend className="mb-2 block text-sm font-medium">
-            Set the invoice status
+            Set the referencial status
           </legend>
           <div className="rounded-md border border-gray-200 bg-white px-[14px] py-3">
             <div className="flex gap-4">
@@ -132,34 +132,34 @@ export default function Form({ customers }: { customers: CustomerField[] }) {
           </div>
         </fieldset>
         {state.errors?.status ? (
-            <div
-              id="status-error"
-              aria-live="polite"
-              className="mt-2 text-sm text-red-500"
-            >
-              {state.errors.status.map((error: string) => (
-                <p key={error}>{error}</p>
-              ))}
-            </div>
-          ) : null}
-          {state.message ? (
-            <div
-              id="message-error"
-              aria-live="polite"
-              className="mt-2 text-sm text-red-500"
-            >
-              <p key={state.message}>{state.message}</p>
-            </div>
-          ) : null}
+          <div
+            id="status-error"
+            aria-live="polite"
+            className="mt-2 text-sm text-red-500"
+          >
+            {state.errors.status.map((error: string) => (
+              <p key={error}>{error}</p>
+            ))}
+          </div>
+        ) : null}
+        {state.message ? (
+          <div
+            id="message-error"
+            aria-live="polite"
+            className="mt-2 text-sm text-red-500"
+          >
+            <p key={state.message}>{state.message}</p>
+          </div>
+        ) : null}
       </div>
       <div className="mt-6 flex justify-end gap-4">
         <Link
-          href="/dashboard/invoices"
+          href="/dashboard/referenciales"
           className="flex h-10 items-center rounded-lg bg-gray-100 px-4 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-200"
         >
           Cancel
         </Link>
-        <Button type="submit">Create Invoice</Button>
+        <Button type="submit">Create Referencial</Button>
       </div>
     </form>
   );
