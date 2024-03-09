@@ -1,9 +1,9 @@
 import Form from '@/app/ui/referenciales/create-form';
 import Breadcrumbs from '@/app/ui/referenciales/breadcrumbs';
-import { fetchCustomers } from '@/app/lib/data';
+import { fetchColaboradores } from '@/app/lib/data';
 
 export default async function Page() {
-  const customers = await fetchCustomers();
+  const colaboradores = await fetchColaboradores();
 
   return (
     <main>
@@ -17,7 +17,7 @@ export default async function Page() {
           },
         ]}
       />
-      <Form customers={customers} />
+      <Form colaboradores={colaboradores} />
     </main>
   );
 }
