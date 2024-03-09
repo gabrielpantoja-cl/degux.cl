@@ -1,4 +1,4 @@
-import CustomersTable from '@/app/ui/customers/table';
+import CustomersTable from '@/app/ui/colaboradores/table';
 import { Metadata } from 'next';
 import { Suspense } from 'react';
 
@@ -15,9 +15,9 @@ export default async function CustomersPage({
 }) {
 
   const query = searchParams?.query || '';
-    return (
-      <Suspense fallback={<p>Loading...</p>}>
-        <CustomersTable query={query}/>
-      </Suspense>
-    )
+  return (
+    <Suspense fallback={<p>Loading...</p>}>
+      <CustomersTable query={query} />
+    </Suspense>
+  )
 }

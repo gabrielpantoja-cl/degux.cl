@@ -1,7 +1,7 @@
 import { sql } from '@vercel/postgres';
 import {
-  CustomerField,
-  CustomersTable,
+  ColaboradorField,
+  ColaboradoresTable,
   ReferencialForm,
   ReferencialesTable,
   LatestReferencialRaw,
@@ -37,9 +37,9 @@ export async function fetchLatestReferenciales() {
   noStore();
   try {
     const data = await sql<LatestReferencialRaw>`
-      SELECT referenciales.amount, customers.name, customers.image_url, customers.email, referenciales.id
+      SELECT referenciales.amount, colaboradores.name, colaboradores.image_url, colaboradores.email, referenciales.id
       FROM referenciales
-      JOIN customers ON referenciales.customer_id = customers.id
+      JOIN colaboradores ON referenciales.colaborador_id = colaboradores.id
       ORDER BY referenciales.date DESC
       LIMIT 5`;
 
@@ -61,7 +61,7 @@ export async function fetchCardData() {
     // However, we are intentionally splitting them to demonstrate
     // how to initialize multiple queries in parallel with JS.
     const referencialCountPromise = sql`SELECT COUNT(*) FROM referenciales`;
-    const customerCountPromise = sql`SELECT COUNT(*) FROM customers`;
+    const colaboradorCountPromise = sql`SELECT COUNT(*) FROM colaboradores`;
     const referencialStatusPromise = sql`SELECT
          SUM(CASE WHEN status = 'paid' THEN amount ELSE 0 END) AS "paid",
          SUM(CASE WHEN status = 'pending' THEN amount ELSE 0 END) AS "pending"
@@ -69,17 +69,17 @@ export async function fetchCardData() {
 
     const data = await Promise.all([
       referencialCountPromise,
-      customerCountPromise,
+      colaboradorCountPromise,
       referencialStatusPromise,
     ]);
 
     const numberOfReferenciales = Number(data[0].rows[0].count ?? '0');
-    const numberOfCustomers = Number(data[1].rows[0].count ?? '0');
+    const numberOfColaboradores = Number(data[1].rows[0].count ?? '0');
     const totalPaidReferenciales = formatCurrency(data[2].rows[0].paid ?? '0');
     const totalPendingReferenciales = formatCurrency(data[2].rows[0].pending ?? '0');
 
     return {
-      numberOfCustomers,
+      numberOfColaboradores,
       numberOfReferenciales,
       totalPaidReferenciales,
       totalPendingReferenciales,
@@ -105,14 +105,14 @@ export async function fetchFilteredReferenciales(query: string, currentPage: num
         referenciales.amount,
         referenciales.date,
         referenciales.status,
-        customers.name,
-        customers.email,
-        customers.image_url
+        colaboradores.name,
+        colaboradores.email,
+        colaboradores.image_url
       FROM referenciales
-      JOIN customers ON referenciales.customer_id = customers.id
+      JOIN colaboradores ON referenciales.colaborador_id = colaboradores.id
       WHERE
-        customers.name ILIKE ${`%${query}%`} OR
-        customers.email ILIKE ${`%${query}%`} OR
+        colaboradores.name ILIKE ${`%${query}%`} OR
+        colaboradores.email ILIKE ${`%${query}%`} OR
         referenciales.amount::text ILIKE ${`%${query}%`} OR
         referenciales.date::text ILIKE ${`%${query}%`} OR
         referenciales.status ILIKE ${`%${query}%`}
@@ -132,10 +132,10 @@ export async function fetchReferencialesPages(query: string) {
   try {
     const count = await sql`SELECT COUNT(*)
     FROM referenciales
-    JOIN customers ON referenciales.customer_id = customers.id
+    JOIN colaboradores ON referenciales.colaborador_id = colaboradores.id
     WHERE
-      customers.name ILIKE ${`%${query}%`} OR
-      customers.email ILIKE ${`%${query}%`} OR
+      colaboradores.name ILIKE ${`%${query}%`} OR
+      colaboradores.email ILIKE ${`%${query}%`} OR
       referenciales.amount::text ILIKE ${`%${query}%`} OR
       referenciales.date::text ILIKE ${`%${query}%`} OR
       referenciales.status ILIKE ${`%${query}%`}
@@ -155,7 +155,7 @@ export async function fetchReferencialById(id: string) {
     const data = await sql<ReferencialForm>`
       SELECT
         referenciales.id,
-        referenciales.customer_id,
+        referenciales.colaborador_id,
         referenciales.amount,
         referenciales.status
       FROM referenciales
@@ -174,56 +174,56 @@ export async function fetchReferencialById(id: string) {
   }
 }
 
-export async function fetchCustomers() {
+export async function fetchColaboradores() {
   noStore();
   try {
-    const data = await sql<CustomerField>`
+    const data = await sql<ColaboradorField>`
       SELECT
         id,
         name
-      FROM customers
+      FROM colaboradores
       ORDER BY name ASC
     `;
 
-    const customers = data.rows;
-    return customers;
+    const colaboradores = data.rows;
+    return colaboradores;
   } catch (err) {
     console.error('Database Error:', err);
-    throw new Error('Failed to fetch all customers.');
+    throw new Error('Failed to fetch all colaboradores.');
   }
 }
 
-export async function fetchFilteredCustomers(query: string) {
+export async function fetchFilteredColaboradores(query: string) {
   noStore();
   try {
-    const data = await sql<CustomersTable>`
+    const data = await sql<ColaboradoresTable>`
 		SELECT
-		  customers.id,
-		  customers.name,
-		  customers.email,
-		  customers.image_url,
+		  colaboradores.id,
+		  colaboradores.name,
+		  colaboradores.email,
+		  colaboradores.image_url,
 		  COUNT(referenciales.id) AS total_referenciales,
 		  SUM(CASE WHEN referenciales.status = 'pending' THEN referenciales.amount ELSE 0 END) AS total_pending,
 		  SUM(CASE WHEN referenciales.status = 'paid' THEN referenciales.amount ELSE 0 END) AS total_paid
-		FROM customers
-		LEFT JOIN referenciales ON customers.id = referenciales.customer_id
+		FROM colaboradores
+		LEFT JOIN referenciales ON colaboradores.id = referenciales.colaborador_id
 		WHERE
-		  customers.name ILIKE ${`%${query}%`} OR
-        customers.email ILIKE ${`%${query}%`}
-		GROUP BY customers.id, customers.name, customers.email, customers.image_url
-		ORDER BY customers.name ASC
+		  colaboradores.name ILIKE ${`%${query}%`} OR
+        colaboradores.email ILIKE ${`%${query}%`}
+		GROUP BY colaboradores.id, colaboradores.name, colaboradores.email, colaboradores.image_url
+		ORDER BY colaboradores.name ASC
 	  `;
 
-    const customers = data.rows.map((customer) => ({
-      ...customer,
-      total_pending: formatCurrency(customer.total_pending),
-      total_paid: formatCurrency(customer.total_paid),
+    const colaboradores = data.rows.map((colaborador) => ({
+      ...colaborador,
+      total_pending: formatCurrency(colaborador.total_pending),
+      total_paid: formatCurrency(colaborador.total_paid),
     }));
 
-    return customers;
+    return colaboradores;
   } catch (err) {
     console.error('Database Error:', err);
-    throw new Error('Failed to fetch customer table.');
+    throw new Error('Failed to fetch colaborador table.');
   }
 }
 
