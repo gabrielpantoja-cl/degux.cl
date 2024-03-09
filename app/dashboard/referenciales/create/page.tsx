@@ -1,5 +1,5 @@
 import Form from '@/app/ui/referenciales/create-form';
-import Breadcrumbs from '@/app/ui/feferenciales/breadcrumbs';
+import Breadcrumbs from '@/app/ui/referenciales/breadcrumbs';
 import { fetchCustomers } from '@/app/lib/data';
 
 export default async function Page() {
