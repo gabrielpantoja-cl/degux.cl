@@ -35,7 +35,7 @@ export default async function ReferencialesTable({
                       />
                       <p>{referencial.name}</p>
                     </div>
-                    <p className="text-sm text-gray-500">{referencial.email}</p>
+                    <p className="text-sm text-gray-500">{referencial.numero}</p>
                   </div>
                   <ReferencialStatus status={referencial.status} />
                 </div>
@@ -96,7 +96,7 @@ export default async function ReferencialesTable({
                     </div>
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    {referencial.email}
+                    {referencial.numero}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
                     {formatCurrency(referencial.amount)}
