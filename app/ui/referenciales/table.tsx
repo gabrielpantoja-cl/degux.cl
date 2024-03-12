@@ -31,9 +31,9 @@ export default async function ReferencialesTable({
                         className="mr-2 rounded-full"
                         width={28}
                         height={28}
-                        alt={`${referencial.name}'s profile picture`}
+                        alt={`${referencial.fojas}'s profile picture`}
                       />
-                      <p>{referencial.name}</p>
+                      <p>{referencial.fojas}</p>
                     </div>
                     <p className="text-sm text-gray-500">{referencial.numero}</p>
                   </div>
@@ -90,9 +90,9 @@ export default async function ReferencialesTable({
                         className="rounded-full"
                         width={28}
                         height={28}
-                        alt={`${referencial.name}'s profile picture`}
+                        alt={`${referencial.fojas}'s profile picture`}
                       />
-                      <p>{referencial.name}</p>
+                      <p>{referencial.fojas}</p>
                     </div>
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">

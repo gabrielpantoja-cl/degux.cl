@@ -4,12 +4,12 @@
 
 ![Vista princiapal de la Aplicación Acme en múltiples dispositivos](https://nextjs.org/_next/image?url=%2Flearn%2Fcourse-explainer.png&w=750&q=75&dpl=dpl_Ejtt9BCyCFNeRJdBoVsM9Es9x8xe)
 
-Para este curso, crearemos una versión simplificada de un panel financiero que tiene:
+Para este curso, crearemos una versión simplificada de un panel de transacciones de suelo que tiene:
 
 - Una página de inicio pública.
 - Una página de inicio de sesión.
 - Páginas del panel que están protegidas mediante autenticación.
-- La capacidad de los usuarios para agregar, editar y eliminar facturas.
+- La capacidad de los usuarios para agregar, editar y eliminar referenciales.
 - El panel también tendrá una base de datos adjunta, que configurará en un capítulo posterior.
 
 ## Descripción general
