@@ -17,6 +17,7 @@ export default async function ReferencialesTable({
     <div className="mt-6 flow-root">
       <div className="inline-block min-w-full align-middle">
         <div className="rounded-lg bg-gray-50 p-2 md:pt-0">
+          {/* Mobile view starts here */}
           <div className="md:hidden">
             {referenciales?.map((referencial: any) => (
               <div
@@ -54,6 +55,8 @@ export default async function ReferencialesTable({
               </div>
             ))}
           </div>
+          {/* Mobile view ends here */}
+          {/* Desktop view starts here */}
           <table className="hidden min-w-full text-gray-900 md:table">
             <thead className="rounded-lg text-left text-sm font-normal">
               <tr>
@@ -117,6 +120,8 @@ export default async function ReferencialesTable({
               ))}
             </tbody>
           </table>
+          {/* Desktop view ends here */}
+
         </div>
       </div>
     </div>
