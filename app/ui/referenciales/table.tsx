@@ -42,7 +42,7 @@ export default async function ReferencialesTable({
                 <div className="flex w-full items-center justify-between pt-4">
                   <div>
                     <p className="text-xl font-medium">
-                      {formatCurrency(referencial.anio)}
+                      {referencial.anio}
                     </p>
                     <p>{formatDateToLocal(referencial.date)}</p>
                   </div>
@@ -99,7 +99,7 @@ export default async function ReferencialesTable({
                     {referencial.numero}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    {formatCurrency(referencial.anio)}
+                    {referencial.anio}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
                     {formatDateToLocal(referencial.date)}
