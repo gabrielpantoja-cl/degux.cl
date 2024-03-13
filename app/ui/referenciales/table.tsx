@@ -18,7 +18,7 @@ export default async function ReferencialesTable({
       <div className="inline-block min-w-full align-middle">
         <div className="rounded-lg bg-gray-50 p-2 md:pt-0">
           <div className="md:hidden">
-            {referenciales?.map((referencial) => (
+            {referenciales?.map((referencial: any) => (
               <div
                 key={referencial.id}
                 className="mb-2 w-full rounded-md bg-white p-4"
@@ -42,7 +42,7 @@ export default async function ReferencialesTable({
                 <div className="flex w-full items-center justify-between pt-4">
                   <div>
                     <p className="text-xl font-medium">
-                      {formatCurrency(referencial.amount)}
+                      {formatCurrency(referencial.anio)}
                     </p>
                     <p>{formatDateToLocal(referencial.date)}</p>
                   </div>
@@ -61,7 +61,7 @@ export default async function ReferencialesTable({
                   Fojas
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
-                  Numero
+                  Número
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
                   Año
@@ -78,7 +78,7 @@ export default async function ReferencialesTable({
               </tr>
             </thead>
             <tbody className="bg-white">
-              {referenciales?.map((referencial) => (
+              {referenciales?.map((referencial: any) => (
                 <tr
                   key={referencial.id}
                   className="w-full border-b py-3 text-sm last-of-type:border-none [&:first-child>td:first-child]:rounded-tl-lg [&:first-child>td:last-child]:rounded-tr-lg [&:last-child>td:first-child]:rounded-bl-lg [&:last-child>td:last-child]:rounded-br-lg"
@@ -99,7 +99,7 @@ export default async function ReferencialesTable({
                     {referencial.numero}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    {formatCurrency(referencial.amount)}
+                    {formatCurrency(referencial.anio)}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
                     {formatDateToLocal(referencial.date)}

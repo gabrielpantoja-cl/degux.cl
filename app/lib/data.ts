@@ -29,7 +29,7 @@ export async function fetchLatestReferenciales() {
   noStore();
   try {
     const data = await sql<LatestReferencialRaw>`
-      SELECT referenciales.amount, colaboradores.name, colaboradores.image_url, colaboradores.email, referenciales.id
+      SELECT referenciales.anio, colaboradores.name, colaboradores.image_url, colaboradores.email, referenciales.id
       FROM referenciales
       JOIN colaboradores ON referenciales.colaborador_id = colaboradores.id
       ORDER BY referenciales.date DESC
