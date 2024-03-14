@@ -1,44 +1,44 @@
-import { sql } from '@vercel/postgres';
+import { PrismaClient } from '@prisma/client';
 import {
   ColaboradorField,
   ColaboradoresTable,
   ReferencialForm,
   ReferencialesTable,
-  LatestReferencialRaw,
   User,
-  Revenue,
 } from './definitions';
 import { formatCurrency } from './utils';
 import { unstable_noStore as noStore } from 'next/cache';
 
-export async function fetchRevenue() {
-  noStore();
-  try {
-    await new Promise((resolve) => setTimeout(resolve, 3000));
-
-    const data = await sql`SELECT * FROM revenue`;
-
-    return data.rows;
-  } catch (error) {
-    console.error('Database Error:', error);
-    throw new Error('Failed to fetch revenue data.');
-  }
-}
+const prisma = new PrismaClient();
 
 export async function fetchLatestReferenciales() {
   noStore();
   try {
-    const data = await sql<LatestReferencialRaw>`
-      SELECT referenciales.anio, colaboradores.name, colaboradores.image_url, colaboradores.email, referenciales.id
-      FROM referenciales
-      JOIN colaboradores ON referenciales.colaborador_id = colaboradores.id
-      ORDER BY referenciales.date DESC
-      LIMIT 5`;
+    const data = await prisma.referencial.findMany({
+      take: 5,
+      orderBy: [
+        {
+          date: 'desc',
+        },
+      ],
+      select: {
+        anio: true,
+        colaborador_id: {
+          select: {
+            name: true,
+            imageUrl: true,
+            email: true,
+          },
+        },
+        id: true,
+      },
+    });
 
-    const latestReferenciales = data.rows.map((referencial) => ({
+    const latestReferenciales = data.map((referencial) => ({
       ...referencial,
       amount: formatCurrency(referencial.amount),
     }));
+
     return latestReferenciales;
   } catch (error) {
     console.error('Database Error:', error);
@@ -49,26 +49,39 @@ export async function fetchLatestReferenciales() {
 export async function fetchCardData() {
   noStore();
   try {
-    // You can probably combine these into a single SQL query
-    // However, we are intentionally splitting them to demonstrate
-    // how to initialize multiple queries in parallel with JS.
-    const referencialCountPromise = sql`SELECT COUNT(*) FROM referenciales`;
-    const colaboradorCountPromise = sql`SELECT COUNT(*) FROM colaboradores`;
-    const referencialStatusPromise = sql`SELECT
-         SUM(CASE WHEN status = 'paid' THEN amount ELSE 0 END) AS "paid",
-         SUM(CASE WHEN status = 'pending' THEN amount ELSE 0 END) AS "pending"
-         FROM referenciales`;
+    const referencialCountPromise = prisma.referencial.count();
+    const referencialStatusPromise = prisma.referencial.groupBy({
+      by: ['status'],
+
+    });
 
     const data = await Promise.all([
       referencialCountPromise,
-      colaboradorCountPromise,
       referencialStatusPromise,
     ]);
 
-    const numberOfReferenciales = Number(data[0].rows[0].count ?? '0');
-    const numberOfColaboradores = Number(data[1].rows[0].count ?? '0');
-    const totalPaidReferenciales = formatCurrency(data[2].rows[0].paid ?? '0');
-    const totalPendingReferenciales = formatCurrency(data[2].rows[0].pending ?? '0');
+    const [numberOfReferenciales, numberOfColaboradores, referencialStatus] = await Promise.all([
+      prisma.referencial.count(),
+      prisma.colaboradores.count(),
+      prisma.referencial.groupBy({
+        by: ['status'],
+        sum: {
+          monto: true
+        }
+      }),
+    ]);
+
+    const totalPaidReferenciales = formatCurrency(
+      referencialStatus
+        .filter((group) => group.status === 'PAID')
+        .reduce((sum, group) => sum + group.monto, 0)
+    );
+
+    const totalPendingReferenciales = formatCurrency(
+      referencialStatus
+        .filter((group) => group.status === 'PENDING')
+        .reduce((sum, group) => sum + group.monto, 0)
+    );
 
     return {
       numberOfColaboradores,
