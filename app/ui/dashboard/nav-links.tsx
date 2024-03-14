@@ -1,9 +1,9 @@
 'use client'
 
 import {
-  UserGroupIcon,
   HomeIcon,
   DocumentDuplicateIcon,
+  MapPinIcon,
 } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -17,7 +17,7 @@ const links = [
     href: '/dashboard/referenciales',
     icon: DocumentDuplicateIcon,
   },
-  { name: 'Customers', href: '/dashboard/customers', icon: UserGroupIcon },
+  { name: 'Mapa', href: '/dashboard/mapa', icon: MapPinIcon }, // Use the LocationMarkerIcon for the Mapa link
 ];
 
 export default function NavLinks() {
