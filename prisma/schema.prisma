@@ -8,8 +8,22 @@ generator client {
 }
 
 model Referencial {
-  id   Int    @id @default(autoincrement())
-  lat  Float
-  lng  Float
-  name String
+  id               Int      @id @default(autoincrement())
+  colaboradorId    Int
+  lat              Float
+  lng              Float
+  fojas            String
+  numero           String
+  anio             Int
+  cbr              String
+  comprador        String
+  vendedor         String
+  predio           String
+  comuna           String
+  rol              String
+  fechaDeEscritura DateTime
+  superficie       Float
+  monto            Int
+  status           String
+  observaciones    String?
 }
