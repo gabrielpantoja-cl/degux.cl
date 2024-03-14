@@ -1,7 +1,7 @@
 import Image from 'next/image';
-import { UpdateReferencial, DeleteReferencial } from '@/app/ui/referenciales/buttons';
+import { UpdateReferencial } from '@/app/ui/referenciales/buttons';
 import ReferencialStatus from '@/app/ui/referenciales/status';
-import { formatDateToLocal, formatCurrency } from '@/app/lib/utils';
+import { formatDateToLocal } from '@/app/lib/utils';
 import { fetchFilteredReferenciales } from '@/app/lib/data';
 
 export default async function ReferencialesTable({
@@ -49,7 +49,6 @@ export default async function ReferencialesTable({
                   </div>
                   <div className="flex justify-end gap-2">
                     <UpdateReferencial id={referencial.id} />
-                    <DeleteReferencial id={referencial.id} />
                   </div>
                 </div>
               </div>
@@ -113,7 +112,6 @@ export default async function ReferencialesTable({
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex justify-end gap-3">
                       <UpdateReferencial id={referencial.id} />
-                      <DeleteReferencial id={referencial.id} />
                     </div>
                   </td>
                 </tr>
@@ -121,7 +119,6 @@ export default async function ReferencialesTable({
             </tbody>
           </table>
           {/* Desktop view ends here */}
-
         </div>
       </div>
     </div>
