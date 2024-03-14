@@ -1,3 +1,6 @@
+// Este archivo es una semilla inicial para crear la base de datos.
+// Sin embargo, se han realizado muchas modificaciones posteriores utilizando pgAdmin4.
+
 const { db } = require('@vercel/postgres');
 const {
   invoices,
