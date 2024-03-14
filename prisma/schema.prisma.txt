@@ -1,0 +1,15 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Referencial {
+  id   Int    @id @default(autoincrement())
+  lat  Float
+  lng  Float
+  name String
+}
