@@ -31,8 +31,7 @@ export type State = {
   message?: string | null;
 };
 
-export async function createReferencial(prevState: State, formData: FormData) {
-
+export async function createReferencial(formData: FormData) {
   // Validate form fields using Zod
   const validatedFields = CreateReferencial.safeParse({
     customerId: formData.get('customerId'),
@@ -53,8 +52,6 @@ export async function createReferencial(prevState: State, formData: FormData) {
   const amountInCents = amount * 100;
   const date = new Date().toISOString().split('T')[0];
 
-  // Test it out:
-  // console.log();
   // Insert data into the database
   try {
     await sql`
@@ -74,14 +71,10 @@ export async function createReferencial(prevState: State, formData: FormData) {
 // Use Zod to update the expected types
 const UpdateReferencial = ReferencialSchema.omit({ id: true, date: true });
 
-// ...
-
 export async function updateReferencial(
   id: string,
-  prevState: State,
   formData: FormData
 ) {
-
   // Validate form fields using Zod
   const validatedFields = UpdateReferencial.safeParse({
     customerId: formData.get('customerId'),
@@ -115,19 +108,7 @@ export async function updateReferencial(
   redirect('/dashboard/referenciales');
 }
 
-export async function deleteReferencial(id: string) {
-  // throw new Error('Failed to Delete Referencial');
-  try {
-    await sql`DELETE FROM referenciales WHERE id = ${id}`;
-    revalidatePath('/dashboard/referenciales');
-  } catch (error) {
-    return { message: 'Database Error: Failed to Delete Referencial.' };
-  }
-}
-
-
 export async function authenticate(
-  prevState: string | undefined,
   formData: FormData,
 ) {
   try {
