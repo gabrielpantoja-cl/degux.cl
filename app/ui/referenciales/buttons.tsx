@@ -1,6 +1,5 @@
-import { PencilIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
+import { PencilIcon, PlusIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
-import { deleteReferencial } from '@/app/lib/actions';
 
 export function CreateReferencial() {
   return (
@@ -22,19 +21,5 @@ export function UpdateReferencial({ id }: { id: string }) {
     >
       <PencilIcon className="w-5" />
     </Link>
-  );
-}
-
-export function DeleteReferencial({ id }: { id: string }) {
-
-  const deleteReferencialWithId = deleteReferencial.bind(null, id);
-
-  return (
-    <form action={deleteReferencialWithId}>
-      <button className="rounded-md border p-2 hover:bg-gray-100">
-        <span className="sr-only">Delete</span>
-        <TrashIcon className="w-5" />
-      </button>
-    </form>
   );
 }
