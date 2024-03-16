@@ -1,14 +1,20 @@
 import NextAuth from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
 import { authConfig } from './auth.config';
-import { sql } from '@vercel/postgres';
 import { z } from 'zod';
 import bcrypt from 'bcrypt';
+import { PrismaClient, User } from '@prisma/client';
 
-async function getUser(email: string): Promise<User | undefined> {
+const prisma = new PrismaClient();
+
+async function getUser(email: string): Promise<User | null> {
   try {
-    const user = await sql<User>`SELECT * from USERS where email=${email}`;
-    return user.rows[0];
+    const user = await prisma.user.findUnique({
+      where: {
+        email: email,
+      },
+    });
+    return user;
   } catch (error) {
     console.error('Failed to fetch user:', error);
     throw new Error('Failed to fetch user.');
@@ -30,7 +36,15 @@ export const { auth, signIn, signOut } = NextAuth({
           if (!user) return null;
           const passwordsMatch = await bcrypt.compare(password, user.password);
 
-          if (passwordsMatch) return user;
+          if (passwordsMatch) {
+            // Devuelve el objeto sin la contraseña
+            return {
+              id: user.id,
+              name: user.name,
+              email: user.email,
+              // Añade aquí cualquier otra propiedad que necesites
+            };
+          }
         }
 
         console.log('Invalid credentials');

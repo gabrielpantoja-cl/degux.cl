@@ -120,7 +120,7 @@ export async function fetchReferencialById(id: string) {
   try {
     const referencial = await prisma.referencialesTable.findUnique({
       where: {
-        id: Number(id),
+        id: id,
       },
     });
 

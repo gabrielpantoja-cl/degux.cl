@@ -11,9 +11,9 @@ generator client {
 }
 
 model referencialesTable {
-  id               Int           @id @default(autoincrement())
-  colaboradorId    Int
-  colaborador      Colaboradores @relation(fields: [colaboradorId], references: [id])
+  id               String        @id @default(uuid())
+  colaborador_id   String
+  colaborador      Colaboradores @relation(fields: [colaborador_id], references: [id])
   lat              Float
   lng              Float
   fojas            String
@@ -33,14 +33,14 @@ model referencialesTable {
 }
 
 model User {
-  id       Int    @id @default(autoincrement())
+  id       String @id @default(uuid())
   name     String
   email    String @unique
   password String
 }
 
 model Colaboradores {
-  id            Int                  @id @default(autoincrement())
+  id            String               @id @default(uuid())
   referenciales referencialesTable[]
   name          String
   email         String               @unique
