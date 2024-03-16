@@ -19,7 +19,7 @@ export default async function CardWrapper() {
     totalPaidReferenciales,
     totalPendingReferenciales,
     numberOfReferenciales,
-    numberOfCustomers
+    numberOfColaboradores
   } = await fetchCardData();
   return (
     <>
@@ -30,7 +30,7 @@ export default async function CardWrapper() {
       <Card title="Total Referenciales" value={numberOfReferenciales} type="referenciales" />
       <Card
         title="Total Customers"
-        value={numberOfCustomers}
+        value={numberOfColaboradores}
         type="colaboradores"
       />
     </>
@@ -46,8 +46,7 @@ export function Card({
   value: number | string;
   type: 'referenciales' | 'colaboradores' | 'pending' | 'collected';
 }) {
-  const Icon = iconMap[type];
-
+  const Icon = iconMap[type === 'colaboradores' ? 'colaborador' : type];
   return (
     <div className="rounded-xl bg-gray-50 p-2 shadow-sm">
       <div className="flex p-4">

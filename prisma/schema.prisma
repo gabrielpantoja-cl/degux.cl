@@ -10,9 +10,10 @@ generator client {
   provider = "prisma-client-js"
 }
 
-model Referencial {
-  id               Int      @id @default(autoincrement())
+model referencialesTable {
+  id               Int         @id @default(autoincrement())
   colaboradorId    Int
+  colaborador      Colaborador @relation(fields: [colaboradorId], references: [id])
   lat              Float
   lng              Float
   fojas            String
@@ -39,8 +40,9 @@ model User {
 }
 
 model Colaborador {
-  id       Int    @id @default(autoincrement())
-  name     String
-  email    String @unique
-  imageUrl String
+  id            Int                  @id @default(autoincrement())
+  referenciales referencialesTable[]
+  name          String
+  email         String               @unique
+  imageUrl      String
 }

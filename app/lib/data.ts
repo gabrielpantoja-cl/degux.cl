@@ -1,43 +1,25 @@
-import { sql } from '@vercel/postgres';
-import {
-  ColaboradorField,
-  ColaboradoresTable,
-  ReferencialForm,
-  ReferencialesTable,
-  LatestReferencialRaw,
-  User,
-  Revenue,
-} from './definitions';
+import { PrismaClient } from '@prisma/client';
 import { formatCurrency } from './utils';
 import { unstable_noStore as noStore } from 'next/cache';
 
-export async function fetchRevenue() {
-  noStore();
-  try {
-    await new Promise((resolve) => setTimeout(resolve, 3000));
-
-    const data = await sql`SELECT * FROM revenue`;
-
-    return data.rows;
-  } catch (error) {
-    console.error('Database Error:', error);
-    throw new Error('Failed to fetch revenue data.');
-  }
-}
+const prisma = new PrismaClient();
 
 export async function fetchLatestReferenciales() {
   noStore();
   try {
-    const data = await sql<LatestReferencialRaw>`
-      SELECT referenciales.anio, colaboradores.name, colaboradores.image_url, colaboradores.email, referenciales.id
-      FROM referenciales
-      JOIN colaboradores ON referenciales.colaborador_id = colaboradores.id
-      ORDER BY referenciales.date DESC
-      LIMIT 5`;
+    const data = await prisma.referencialesTable.findMany({
+      take: 5,
+      orderBy: {
+        fechaDeEscritura: 'desc',
+      },
+      include: {
+        colaborador: true,
+      },
+    });
 
-    const latestReferenciales = data.rows.map((referencial) => ({
+    const latestReferenciales = data.map((referencial) => ({
       ...referencial,
-      amount: formatCurrency(referencial.amount),
+      amount: formatCurrency(referencial.monto),
     }));
     return latestReferenciales;
   } catch (error) {
@@ -49,15 +31,17 @@ export async function fetchLatestReferenciales() {
 export async function fetchCardData() {
   noStore();
   try {
-    // You can probably combine these into a single SQL query
-    // However, we are intentionally splitting them to demonstrate
-    // how to initialize multiple queries in parallel with JS.
-    const referencialCountPromise = sql`SELECT COUNT(*) FROM referenciales`;
-    const colaboradorCountPromise = sql`SELECT COUNT(*) FROM colaboradores`;
-    const referencialStatusPromise = sql`SELECT
-         SUM(CASE WHEN status = 'paid' THEN amount ELSE 0 END) AS "paid",
-         SUM(CASE WHEN status = 'pending' THEN amount ELSE 0 END) AS "pending"
-         FROM referenciales`;
+    const referencialCountPromise = prisma.referencialesTable.count();
+    const colaboradorCountPromise = prisma.colaborador.count();
+    const referencialStatusPromise = prisma.referencialesTable.groupBy({
+      by: ['status'],
+      where: {
+        OR: [
+          { status: 'paid' },
+          { status: 'pending' }
+        ]
+      }
+    });
 
     const data = await Promise.all([
       referencialCountPromise,
@@ -65,16 +49,12 @@ export async function fetchCardData() {
       referencialStatusPromise,
     ]);
 
-    const numberOfReferenciales = Number(data[0].rows[0].count ?? '0');
-    const numberOfColaboradores = Number(data[1].rows[0].count ?? '0');
-    const totalPaidReferenciales = formatCurrency(data[2].rows[0].paid ?? '0');
-    const totalPendingReferenciales = formatCurrency(data[2].rows[0].pending ?? '0');
+    const numberOfReferenciales = Number(data[0]);
+    const numberOfColaboradores = Number(data[1]);
 
     return {
       numberOfColaboradores,
       numberOfReferenciales,
-      totalPaidReferenciales,
-      totalPendingReferenciales,
     };
   } catch (error) {
     console.error('Database Error:', error);
@@ -83,36 +63,38 @@ export async function fetchCardData() {
 }
 
 const ITEMS_PER_PAGE = 6;
-export async function fetchFilteredReferenciales(query: string, currentPage: number,) {
+export async function fetchFilteredReferenciales(query: string, currentPage: number) {
   noStore();
   const offset = (currentPage - 1) * ITEMS_PER_PAGE;
 
   try {
-    const referenciales = await sql<ReferencialesTable>`
-      SELECT
-        referenciales.id,
-        referenciales.fojas,  
-        referenciales.numero,
-        referenciales.anio,
-        referenciales.amount,
-        referenciales.date,
-        referenciales.status,
-        colaboradores.name,
-        colaboradores.email,
-        colaboradores.image_url
-      FROM referenciales
-      JOIN colaboradores ON referenciales.colaborador_id = colaboradores.id
-      WHERE
-        colaboradores.name ILIKE ${`%${query}%`} OR
-        colaboradores.email ILIKE ${`%${query}%`} OR
-        referenciales.amount::text ILIKE ${`%${query}%`} OR
-        referenciales.date::text ILIKE ${`%${query}%`} OR
-        referenciales.status ILIKE ${`%${query}%`}
-      ORDER BY referenciales.date DESC
-      LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}
-    `;
+    const referenciales = await prisma.referencialesTable.findMany({
+      where: {
+        OR: [
+          { colaborador: { name: { contains: query, mode: "insensitive" } } },
+          { colaborador: { email: { contains: query, mode: "insensitive" } } },
+          { amount: { contains: query, mode: "insensitive" } },
+          { date: { contains: query, mode: "insensitive" } },
+          { status: { contains: query, mode: "insensitive" } },
+        ],
+      },
+      orderBy: {
+        date: 'desc',
+      },
+      take: ITEMS_PER_PAGE,
+      skip: offset,
+      include: {
+        colaborador: {
+          select: {
+            name: true,
+            email: true,
+            image_url: true,
+          },
+        },
+      },
+    });
 
-    return referenciales.rows;
+    return referenciales;
   } catch (error) {
     console.error('Database Error:', error);
     throw new Error('Failed to fetch referenciales.');
