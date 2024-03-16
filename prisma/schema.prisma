@@ -3,7 +3,7 @@
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url      = env("POSTGRES_PRISMA_URL")
 }
 
 generator client {
@@ -11,9 +11,9 @@ generator client {
 }
 
 model referencialesTable {
-  id               Int         @id @default(autoincrement())
+  id               Int           @id @default(autoincrement())
   colaboradorId    Int
-  colaborador      Colaborador @relation(fields: [colaboradorId], references: [id])
+  colaborador      Colaboradores @relation(fields: [colaboradorId], references: [id])
   lat              Float
   lng              Float
   fojas            String
@@ -39,7 +39,7 @@ model User {
   password String
 }
 
-model Colaborador {
+model Colaboradores {
   id            Int                  @id @default(autoincrement())
   referenciales referencialesTable[]
   name          String

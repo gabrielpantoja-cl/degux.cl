@@ -32,21 +32,11 @@ export async function fetchCardData() {
   noStore();
   try {
     const referencialCountPromise = prisma.referencialesTable.count();
-    const colaboradorCountPromise = prisma.colaborador.count();
-    const referencialStatusPromise = prisma.referencialesTable.groupBy({
-      by: ['status'],
-      where: {
-        OR: [
-          { status: 'paid' },
-          { status: 'pending' }
-        ]
-      }
-    });
+    const colaboradorCountPromise = prisma.colaboradores.count();
 
     const data = await Promise.all([
       referencialCountPromise,
       colaboradorCountPromise,
-      referencialStatusPromise,
     ]);
 
     const numberOfReferenciales = Number(data[0]);
@@ -58,7 +48,11 @@ export async function fetchCardData() {
     };
   } catch (error) {
     console.error('Database Error:', error);
-    throw new Error('Failed to card data.');
+    if (error instanceof Error) {
+      throw new Error('Failed to fetch card data. Original error: ' + error.message);
+    } else {
+      throw new Error('Failed to fetch card data.');
+    }
   }
 }
 
@@ -75,7 +69,6 @@ export async function fetchFilteredReferenciales(query: string, currentPage: num
           { colaborador: { email: { contains: query, mode: "insensitive" } } },
           { monto: { equals: Number(query) } },
           { fechaDeEscritura: { equals: new Date(query) } },
-          { status: { contains: query, mode: "insensitive" } },
         ],
       },
       orderBy: {
@@ -110,7 +103,6 @@ export async function fetchReferencialesPages(query: string) {
           { colaborador: { email: { contains: query, mode: "insensitive" } } },
           { monto: { equals: Number(query) } },
           { fechaDeEscritura: { equals: new Date(query) } },
-          { status: { contains: query, mode: "insensitive" } },
         ],
       },
     });
@@ -148,7 +140,7 @@ export async function fetchReferencialById(id: string) {
 export async function fetchColaboradores() {
   noStore();
   try {
-    const colaboradores = await prisma.colaborador.findMany({
+    const colaboradores = await prisma.colaboradores.findMany({
       orderBy: {
         name: 'asc',
       },
@@ -168,7 +160,7 @@ export async function fetchColaboradores() {
 export async function fetchFilteredColaboradores(query: string) {
   noStore();
   try {
-    const colaboradores = await prisma.colaborador.groupBy({
+    const colaboradores = await prisma.colaboradores.groupBy({
       by: ['id', 'name', 'email', 'imageUrl'],
       _count: {
         id: true,
