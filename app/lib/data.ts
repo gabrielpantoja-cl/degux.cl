@@ -73,13 +73,13 @@ export async function fetchFilteredReferenciales(query: string, currentPage: num
         OR: [
           { colaborador: { name: { contains: query, mode: "insensitive" } } },
           { colaborador: { email: { contains: query, mode: "insensitive" } } },
-          { amount: { contains: query, mode: "insensitive" } },
-          { date: { contains: query, mode: "insensitive" } },
+          { monto: { equals: Number(query) } },
+          { fechaDeEscritura: { equals: new Date(query) } },
           { status: { contains: query, mode: "insensitive" } },
         ],
       },
       orderBy: {
-        date: 'desc',
+        fechaDeEscritura: 'desc',
       },
       take: ITEMS_PER_PAGE,
       skip: offset,
@@ -88,7 +88,6 @@ export async function fetchFilteredReferenciales(query: string, currentPage: num
           select: {
             name: true,
             email: true,
-            image_url: true,
           },
         },
       },
@@ -104,16 +103,17 @@ export async function fetchFilteredReferenciales(query: string, currentPage: num
 export async function fetchReferencialesPages(query: string) {
   noStore();
   try {
-    const count = await sql`SELECT COUNT(*)
-    FROM referenciales
-    JOIN colaboradores ON referenciales.colaborador_id = colaboradores.id
-    WHERE
-      colaboradores.name ILIKE ${`%${query}%`} OR
-      colaboradores.email ILIKE ${`%${query}%`} OR
-      referenciales.amount::text ILIKE ${`%${query}%`} OR
-      referenciales.date::text ILIKE ${`%${query}%`} OR
-      referenciales.status ILIKE ${`%${query}%`}
-  `;
+    const count = await prisma.referencialesTable.count({
+      where: {
+        OR: [
+          { colaborador: { name: { contains: query, mode: "insensitive" } } },
+          { colaborador: { email: { contains: query, mode: "insensitive" } } },
+          { monto: { equals: Number(query) } },
+          { fechaDeEscritura: { equals: new Date(query) } },
+          { status: { contains: query, mode: "insensitive" } },
+        ],
+      },
+    });
 
     const totalPages = Math.ceil(Number(count.rows[0].count) / ITEMS_PER_PAGE);
     return totalPages;
