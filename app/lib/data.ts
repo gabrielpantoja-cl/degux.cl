@@ -126,23 +126,20 @@ export async function fetchReferencialesPages(query: string) {
 export async function fetchReferencialById(id: string) {
   noStore();
   try {
-    const data = await sql<ReferencialForm>`
-      SELECT
-        referenciales.id,
-        referenciales.colaborador_id,
-        referenciales.amount,
-        referenciales.status
-      FROM referenciales
-      WHERE referenciales.id = ${id};
-    `;
+    const referencial = await prisma.referencialesTable.findUnique({
+      where: {
+        id: Number(id),
+      },
+    });
 
-    const referencial = data.rows.map((referencial) => ({
+    if (!referencial) {
+      throw new Error(`No referencial found with id: ${id}`);
+    }
+
+    return {
       ...referencial,
-      // Convert amount from cents to dollars
-      amount: referencial.amount / 100,
-    }));
-
-    return referencial[0];
+      amount: referencial.monto / 100,
+    };
   } catch (error) {
     console.error('Database Error:', error);
   }
@@ -151,18 +148,19 @@ export async function fetchReferencialById(id: string) {
 export async function fetchColaboradores() {
   noStore();
   try {
-    const data = await sql<ColaboradorField>`
-      SELECT
-        id,
-        name
-      FROM colaboradores
-      ORDER BY name ASC
-    `;
+    const colaboradores = await prisma.colaborador.findMany({
+      orderBy: {
+        name: 'asc',
+      },
+      select: {
+        id: true,
+        name: true,
+      },
+    });
 
-    const colaboradores = data.rows;
     return colaboradores;
-  } catch (err) {
-    console.error('Database Error:', err);
+  } catch (error) {
+    console.error('Database Error:', error);
     throw new Error('Failed to fetch all colaboradores.');
   }
 }
@@ -170,31 +168,38 @@ export async function fetchColaboradores() {
 export async function fetchFilteredColaboradores(query: string) {
   noStore();
   try {
-    const data = await sql<ColaboradoresTable>`
-		SELECT
-		  colaboradores.id,
-		  colaboradores.name,
-		  colaboradores.email,
-		  colaboradores.image_url,
-		  COUNT(referenciales.id) AS total_referenciales,
-		  SUM(CASE WHEN referenciales.status = 'pending' THEN referenciales.amount ELSE 0 END) AS total_pending,
-		  SUM(CASE WHEN referenciales.status = 'paid' THEN referenciales.amount ELSE 0 END) AS total_paid
-		FROM colaboradores
-		LEFT JOIN referenciales ON colaboradores.id = referenciales.colaborador_id
-		WHERE
-		  colaboradores.name ILIKE ${`%${query}%`} OR
-        colaboradores.email ILIKE ${`%${query}%`}
-		GROUP BY colaboradores.id, colaboradores.name, colaboradores.email, colaboradores.image_url
-		ORDER BY colaboradores.name ASC
-	  `;
+    const colaboradores = await prisma.colaborador.groupBy({
+      by: ['id', 'name', 'email', 'imageUrl'],
+      _count: {
+        id: true,
+      },
+      where: {
+        OR: [
+          {
+            name: {
+              contains: query,
+              mode: 'insensitive',
+            },
+          },
+          {
+            email: {
+              contains: query,
+              mode: 'insensitive',
+            },
+          },
+        ],
+      },
+      orderBy: {
+        name: 'asc',
+      },
+    });
 
-    const colaboradores = data.rows.map((colaborador) => ({
-      ...colaborador,
-      total_pending: formatCurrency(colaborador.total_pending),
-      total_paid: formatCurrency(colaborador.total_paid),
+    return colaboradores.map((colaborador) => ({
+      id: colaborador.id,
+      name: colaborador.name,
+      email: colaborador.email,
+      imageUrl: colaborador.imageUrl,
     }));
-
-    return colaboradores;
   } catch (err) {
     console.error('Database Error:', err);
     throw new Error('Failed to fetch colaborador table.');
@@ -204,8 +209,13 @@ export async function fetchFilteredColaboradores(query: string) {
 export async function getUser(email: string) {
   noStore();
   try {
-    const user = await sql`SELECT * from USERS where email=${email}`;
-    return user.rows[0] as User;
+    const user = await prisma.user.findUnique({
+      where: {
+        email: email,
+      },
+    });
+
+    return user;
   } catch (error) {
     console.error('Failed to fetch user:', error);
     throw new Error('Failed to fetch user.');
