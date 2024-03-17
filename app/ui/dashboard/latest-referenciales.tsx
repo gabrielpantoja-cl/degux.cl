@@ -1,9 +1,25 @@
 import { ArrowPathIcon } from '@heroicons/react/24/outline';
 import clsx from 'clsx';
-import Image from 'next/image';
 import { lusitana } from '@/app/ui/fonts';
-import { LatestReferencial } from '@/app/lib/definitions';
 import { fetchLatestReferenciales } from '@/app/lib/data';
+import ReferencialesTable from '../referenciales/table';
+
+type LatestReferencial = {
+  id: string;
+  colaborador_id: string;
+  lat: number;
+  lng: number;
+  fojas: string;
+  numero: string;
+  anio: number;
+  cbr: string;
+  monto: number;
+  colaborador: {
+    id: string;
+    name: string;
+    email: string;
+  };
+};
 
 export default async function LatestReferenciales() {
   const latestReferenciales: LatestReferencial[] = await fetchLatestReferenciales();
@@ -16,10 +32,10 @@ export default async function LatestReferenciales() {
         {/* NOTE: comment in this code when you get to this point in the course */}
 
         <div className="bg-white px-6">
-          {latestReferenciales.map((invoice, i) => {
+          {latestReferenciales.map((referencial, i) => {
             return (
               <div
-                key={invoice.id}
+                key={referencial.id}
                 className={clsx(
                   'flex flex-row items-center justify-between py-4',
                   {
@@ -28,26 +44,16 @@ export default async function LatestReferenciales() {
                 )}
               >
                 <div className="flex items-center">
-                  <Image
-                    src={invoice.image_url}
-                    alt={`${invoice.name}'s profile picture`}
-                    className="mr-4 rounded-full"
-                    width={32}
-                    height={32}
-                  />
                   <div className="min-w-0">
                     <p className="truncate text-sm font-semibold md:text-base">
-                      {invoice.name}
-                    </p>
-                    <p className="hidden text-sm text-gray-500 sm:block">
-                      {invoice.email}
+                      {ReferencialesTable({ query: '', currentPage: 1 })}
                     </p>
                   </div>
                 </div>
                 <p
                   className={`${lusitana.className} truncate text-sm font-medium md:text-base`}
                 >
-                  {invoice.amount}
+                  {referencial.monto}
                 </p>
               </div>
             );
