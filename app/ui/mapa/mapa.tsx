@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import ReactMapGL from 'react-map-gl';
+import ReactMapGL, { ViewState } from 'react-map-gl';
 
 const Mapa = () => {
-    const [viewport, setViewport] = useState({
+    const [viewport, setViewport] = useState<ViewState>({
         latitude: 51.505,
         longitude: -0.09,
         zoom: 13,
@@ -13,8 +13,8 @@ const Mapa = () => {
     return (
         <ReactMapGL
             {...viewport}
-            mapboxApiAccessToken={process.env.MAPBOX_TOKEN}
-            onViewportChange={nextViewport => setViewport(nextViewport)}
+            mapboxAccessToken={process.env.MAPBOX_TOKEN}
+            onViewportChange={(nextViewport: ViewState) => setViewport(nextViewport)}
         />
     );
 };
