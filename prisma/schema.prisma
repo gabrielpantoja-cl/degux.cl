@@ -10,10 +10,10 @@ generator client {
   provider = "prisma-client-js"
 }
 
-model referencialesTable {
+model referenciales {
   id               String        @id @default(uuid())
   colaborador_id   String
-  colaborador      Colaboradores @relation(fields: [colaborador_id], references: [id])
+  colaborador      colaboradores @relation(fields: [colaborador_id], references: [id])
   lat              Float
   lng              Float
   fojas            String
@@ -32,17 +32,17 @@ model referencialesTable {
   observaciones    String?
 }
 
-model User {
+model users {
   id       String @id @default(uuid())
   name     String
   email    String @unique
   password String
 }
 
-model Colaboradores {
-  id            String               @id @default(uuid())
-  referenciales referencialesTable[]
+model colaboradores {
+  id            String          @id @default(uuid())
   name          String
-  email         String               @unique
+  email         String          @unique
   imageUrl      String
+  referenciales referenciales[]
 }
