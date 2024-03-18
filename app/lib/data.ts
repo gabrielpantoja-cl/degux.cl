@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
 import { formatCurrency } from './utils';
 import { unstable_noStore as noStore } from 'next/cache';
 
@@ -17,14 +18,31 @@ export async function fetchLatestReferenciales() {
       },
     });
 
-    const latestReferenciales = data.map((referencial) => ({
-      ...referencial,
-      amount: formatCurrency(referencial.monto),
-    }));
+    if (!Array.isArray(data)) {
+      throw new Error('Unexpected response from the database.');
+    }
+
+    const latestReferenciales = data.map((referencial) => {
+      if (typeof referencial.monto !== 'number') {
+        throw new Error('Unexpected data type for "monto".');
+      }
+
+      return {
+        ...referencial,
+        amount: formatCurrency(referencial.monto),
+      };
+    });
+
     return latestReferenciales;
   } catch (error) {
     console.error('Database Error:', error);
-    throw new Error('Failed to fetch the latest referenciales.');
+
+    if (error instanceof PrismaClientKnownRequestError) {
+      // Handle known Prisma errors here
+      console.error('Prisma Error Code:', error.code);
+    }
+
+    throw new Error('Failed to fetch the latest referenciales. Original error: ' + error.message);
   }
 }
 
