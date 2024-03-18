@@ -1,5 +1,4 @@
 import { PrismaClient } from '@prisma/client';
-import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
 import { formatCurrency } from './utils';
 import { unstable_noStore as noStore } from 'next/cache';
 
@@ -37,12 +36,13 @@ export async function fetchLatestReferenciales() {
   } catch (error) {
     console.error('Database Error:', error);
 
-    if (error instanceof PrismaClientKnownRequestError) {
-      // Handle known Prisma errors here
-      console.error('Prisma Error Code:', error.code);
+    if (error instanceof Error) {
+      // Handle generic errors here
+      console.error('Error Message:', error.message);
+      throw new Error('Failed to fetch the latest referenciales. Original error: ' + error.message);
+    } else {
+      throw error;
     }
-
-    throw new Error('Failed to fetch the latest referenciales. Original error: ' + error.message);
   }
 }
 

@@ -1,3 +1,10 @@
+/*
+Este es el componente ReferencialStatus que se utilizaba para mostrar el estado de un referencial.
+Recibía un 'status' como prop y mostraba un elemento 'span' con un estilo y un contenido diferentes 
+dependiendo del valor de 'status'. Si 'status' era 'pending', se mostraba el texto "Pending" junto 
+con un icono de reloj. Si 'status' era 'paid', se mostraba el texto "Paid" junto con un icono de verificación. 
+Los estilos también cambiaban dependiendo del valor de 'status'.
+
 import { CheckIcon, ClockIcon } from '@heroicons/react/24/outline';
 import clsx from 'clsx';
 
@@ -27,3 +34,4 @@ export default function ReferencialStatus({ status }: { status: string }) {
     </span>
   );
 }
+*/

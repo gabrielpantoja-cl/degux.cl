@@ -14,9 +14,9 @@ const ReferencialSchema = z.object({
   amount: z.coerce
     .number()
     .gt(0, { message: 'Please enter an amount greater than $0.' }),
-  status: z.enum(['pending', 'paid'], {
-    invalid_type_error: 'Please select an referencial status.',
-  }),
+  // status: z.enum(['pending', 'paid'], {
+  //   invalid_type_error: 'Please select an referencial status.',
+  // }),
   date: z.string(),
 });
 
@@ -26,7 +26,7 @@ export type State = {
   errors?: {
     customerId?: string[];
     amount?: string[];
-    status?: string[];
+    // status?: string[];
   };
   message?: string | null;
 };
@@ -36,7 +36,7 @@ export async function createReferencial(formData: FormData) {
   const validatedFields = CreateReferencial.safeParse({
     customerId: formData.get('customerId'),
     amount: formData.get('amount'),
-    status: formData.get('status'),
+    // status: formData.get('status'),
   });
 
   // If form validation fails, return errors early. Otherwise, continue.
@@ -48,7 +48,7 @@ export async function createReferencial(formData: FormData) {
   }
 
   // Prepare data for insertion into the database
-  const { customerId, amount, status } = validatedFields.data;
+  const { customerId, amount } = validatedFields.data;
   const amountInCents = amount * 100;
   const date = new Date().toISOString().split('T')[0];
 
@@ -79,7 +79,7 @@ export async function updateReferencial(
   const validatedFields = UpdateReferencial.safeParse({
     customerId: formData.get('customerId'),
     amount: formData.get('amount'),
-    status: formData.get('status'),
+    // status: formData.get('status'),
   });
 
   // If form validation fails, return errors early. Otherwise, continue.
@@ -91,7 +91,7 @@ export async function updateReferencial(
   }
 
   // Prepare data for insertion into the database
-  const { customerId, amount, status } = validatedFields.data;
+  const { customerId, amount } = validatedFields.data;
   const amountInCents = amount * 100;
   // Insert data into the database
   try {
