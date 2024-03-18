@@ -7,7 +7,7 @@ const prisma = new PrismaClient();
 export async function fetchLatestReferenciales() {
   noStore();
   try {
-    const data = await prisma.referencialesTable.findMany({
+    const data = await prisma.referenciales.findMany({
       take: 5,
       orderBy: {
         fechaDeEscritura: 'desc',
@@ -31,7 +31,7 @@ export async function fetchLatestReferenciales() {
 export async function fetchCardData() {
   noStore();
   try {
-    const referencialCountPromise = prisma.referencialesTable.count();
+    const referencialCountPromise = prisma.referenciales.count();
     const colaboradorCountPromise = prisma.colaboradores.count();
 
     const data = await Promise.all([
@@ -62,7 +62,7 @@ export async function fetchFilteredReferenciales(query: string, currentPage: num
   const offset = (currentPage - 1) * ITEMS_PER_PAGE;
 
   try {
-    const referenciales = await prisma.referencialesTable.findMany({
+    const referenciales = await prisma.referenciales.findMany({
       where: {
         OR: [
           { colaborador: { name: { contains: query, mode: "insensitive" } } },
@@ -96,7 +96,7 @@ export async function fetchFilteredReferenciales(query: string, currentPage: num
 export async function fetchReferencialesPages(query: string) {
   noStore();
   try {
-    const count = await prisma.referencialesTable.count({
+    const count = await prisma.referenciales.count({
       where: {
         OR: [
           { colaborador: { name: { contains: query, mode: "insensitive" } } },
@@ -118,7 +118,7 @@ export async function fetchReferencialesPages(query: string) {
 export async function fetchReferencialById(id: string) {
   noStore();
   try {
-    const referencial = await prisma.referencialesTable.findUnique({
+    const referencial = await prisma.referenciales.findUnique({
       where: {
         id: id,
       },
@@ -201,7 +201,7 @@ export async function fetchFilteredColaboradores(query: string) {
 export async function getUser(email: string) {
   noStore();
   try {
-    const user = await prisma.user.findUnique({
+    const user = await prisma.users.findUnique({
       where: {
         email: email,
       },
