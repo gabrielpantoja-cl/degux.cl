@@ -13,7 +13,7 @@ const Mapa = () => {
     return (
         <ReactMapGL
             {...viewport}
-            mapboxAccessToken={process.env.MAPBOX_TOKEN}
+            mapboxApiAccessToken={process.env.MAPBOX_TOKEN}
             onViewportChange={(nextViewport: ViewState) => setViewport(nextViewport)}
         />
     );
