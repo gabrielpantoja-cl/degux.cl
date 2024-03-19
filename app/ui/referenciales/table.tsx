@@ -1,6 +1,5 @@
 import Image from 'next/image';
 import { UpdateReferencial } from '@/app/ui/referenciales/buttons';
-import ReferencialStatus from '@/app/ui/referenciales/status';
 import { formatDateToLocal } from '@/app/lib/utils';
 import { fetchFilteredReferenciales } from '@/app/lib/data';
 
@@ -38,7 +37,6 @@ export default async function ReferencialesTable({
                     </div>
                     <p className="text-sm text-gray-500">{referencial.numero}</p>
                   </div>
-                  <ReferencialStatus status={referencial.status} />
                 </div>
                 <div className="flex w-full items-center justify-between pt-4">
                   <div>
@@ -71,9 +69,6 @@ export default async function ReferencialesTable({
                 <th scope="col" className="px-3 py-5 font-medium">
                   Date
                 </th>
-                <th scope="col" className="px-3 py-5 font-medium">
-                  Status
-                </th>
                 <th scope="col" className="relative py-3 pl-6 pr-3">
                   <span className="sr-only">Edit</span>
                 </th>
@@ -105,9 +100,6 @@ export default async function ReferencialesTable({
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
                     {formatDateToLocal(referencial.date)}
-                  </td>
-                  <td className="whitespace-nowrap px-3 py-3">
-                    <ReferencialStatus status={referencial.status} />
                   </td>
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex justify-end gap-3">

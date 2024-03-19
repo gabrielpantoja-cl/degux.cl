@@ -9,8 +9,8 @@ type LatestReferencial = {
   colaborador_id: string;
   lat: number;
   lng: number;
-  fojas: string;
-  numero: string;
+  fojas: number;
+  numero: number;
   anio: number;
   cbr: string;
   monto: number;

@@ -16,8 +16,8 @@ model referenciales {
   colaborador      colaboradores @relation(fields: [colaborador_id], references: [id])
   lat              Float
   lng              Float
-  fojas            String
-  numero           String
+  fojas            Int
+  numero           Int
   anio             Int
   cbr              String
   comprador        String
