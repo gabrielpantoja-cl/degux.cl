@@ -1,12 +1,10 @@
 'use server';
 
-
 import { z } from 'zod';
 import { sql } from '@vercel/postgres';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { signIn } from '@/auth';
-
 import { PrismaClient } from '@prisma/client'
 
 const prisma = new PrismaClient()
@@ -49,26 +47,6 @@ export async function createReferencial(formData: FormData) {
     return {
       errors: validatedFields.error.flatten().fieldErrors,
       message: 'Missing Fields. Failed to Create Referencial.',
-    };
-  }
-
-  // Prepare data for insertion into the database
-  const { customerId, amount } = validatedFields.data;
-  const amountInCents = amount * 100;
-  const date = new Date().toISOString().split('T')[0];
-
-  // Insert data into the database
-  try {
-    await prisma.referenciales.create({
-      data: {
-        customer_id: customerId,
-        amount: amountInCents,
-        date: date,
-      },
-    });
-  } catch (error) {
-    return {
-      message: 'Database Error: Failed to Create Referencial.',
     };
   }
 
