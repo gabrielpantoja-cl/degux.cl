@@ -77,10 +77,13 @@ export async function fetchCardData() {
 const ITEMS_PER_PAGE = 6;
 
 export async function fetchFilteredReferenciales(query: string, currentPage: number) {
+  console.log('Iniciando fetchFilteredReferenciales con query:', query, 'y currentPage:', currentPage);
   noStore();
   const offset = (currentPage - 1) * ITEMS_PER_PAGE;
+  console.log('Offset calculado:', offset);
 
   try {
+    console.log('Iniciando consulta a la base de datos...');
     const referenciales = await prisma.referenciales.findMany({
       where: {
         OR: [
@@ -105,10 +108,11 @@ export async function fetchFilteredReferenciales(query: string, currentPage: num
       },
     });
 
+    console.log('Consulta a la base de datos completada. Referenciales obtenidos:', referenciales);
     return referenciales;
   } catch (error) {
-    console.error('Database Error:', error);
-    throw new Error('Failed to fetch referenciales.');
+    console.error('Error en la base de datos:', error);
+    throw new Error('Falló al obtener los referenciales.');
   }
 }
 
