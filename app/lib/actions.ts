@@ -1,10 +1,15 @@
 'use server';
 
+
 import { z } from 'zod';
 import { sql } from '@vercel/postgres';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { signIn } from '@/auth';
+
+import { PrismaClient } from '@prisma/client'
+
+const prisma = new PrismaClient()
 
 const ReferencialSchema = z.object({
   id: z.string(),
@@ -54,9 +59,13 @@ export async function createReferencial(formData: FormData) {
 
   // Insert data into the database
   try {
-    await sql`
-        INSERT INTO referenciales (customer_id, amount, status, date)
-        VALUES (${customerId}, ${amountInCents}, ${status}, ${date})`;
+    await prisma.referenciales.create({
+      data: {
+        customer_id: customerId,
+        amount: amountInCents,
+        date: date,
+      },
+    });
   } catch (error) {
     return {
       message: 'Database Error: Failed to Create Referencial.',
@@ -95,28 +104,41 @@ export async function updateReferencial(
   const amountInCents = amount * 100;
   // Insert data into the database
   try {
-    await sql`
-      UPDATE referenciales
-      SET customer_id = ${customerId}, amount = ${amountInCents}, status = ${status}
-      WHERE id = ${id}
-    `;
+    await prisma.referenciales.create({
+      data: {
+        colaborador_id: customerId,
+        monto: amountInCents,
+        fechaDeEscritura: new Date(),
+        lat: 0, // replace with actual value
+        lng: 0, // replace with actual value
+        fojas: '', // replace with actual value
+        numero: '', // replace with actual value
+        anio: 0, // replace with actual value
+        comuna: '', // replace with actual value
+        cbr: '', // replace with actual value
+        comprador: '', // replace with actual value
+        vendedor: '', // replace with actual value
+        predio: '', // replace with actual value
+        rol: '', // replace with actual value
+        superficie: 0, // replace with actual value
+        observaciones: '', // replace with actual value
+      },
+    });
   } catch (error) {
-    return { message: 'Database Error: Failed to Update Referencial.' };
+    return {
+      message: 'Database Error: Failed to Create Referencial.',
+    };
   }
-  // Revalidate the cache for the Referenciales page and redirect the user.
-  revalidatePath('/dashboard/referenciales');
-  redirect('/dashboard/referenciales');
-}
 
-export async function authenticate(
-  formData: FormData,
-) {
-  try {
-    await signIn('credentials', Object.fromEntries(formData));
-  } catch (error) {
-    if ((error as Error).message.includes('CredentialsSignin')) {
-      return 'CredentialSignin';
+  export async function authenticate(
+    formData: FormData,
+  ) {
+    try {
+      await signIn('credentials', Object.fromEntries(formData));
+    } catch (error) {
+      if ((error as Error).message.includes('CredentialsSignin')) {
+        return 'CredentialSignin';
+      }
+      throw error;
     }
-    throw error;
   }
-}

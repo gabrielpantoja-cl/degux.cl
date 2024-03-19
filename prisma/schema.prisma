@@ -28,7 +28,6 @@ model referenciales {
   fechaDeEscritura DateTime
   superficie       Float
   monto            Int
-  status           String
   observaciones    String?
 }
 
