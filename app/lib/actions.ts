@@ -1,7 +1,6 @@
 'use server';
 
 import { z } from 'zod';
-import { sql } from '@vercel/postgres';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { signIn } from '@/auth';
@@ -107,16 +106,17 @@ export async function updateReferencial(
       message: 'Database Error: Failed to Create Referencial.',
     };
   }
+}
 
-  export async function authenticate(
-    formData: FormData,
-  ) {
-    try {
-      await signIn('credentials', Object.fromEntries(formData));
-    } catch (error) {
-      if ((error as Error).message.includes('CredentialsSignin')) {
-        return 'CredentialSignin';
-      }
-      throw error;
+export async function authenticate(
+  formData: FormData,
+) {
+  try {
+    await signIn('credentials', Object.fromEntries(formData));
+  } catch (error) {
+    if ((error as Error).message.includes('CredentialsSignin')) {
+      return 'CredentialSignin';
     }
+    throw error;
   }
+}

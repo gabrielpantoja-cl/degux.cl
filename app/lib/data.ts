@@ -179,7 +179,7 @@ export async function fetchFilteredColaboradores(query: string) {
   noStore();
   try {
     const colaboradores = await prisma.colaboradores.groupBy({
-      by: ['id', 'name', 'email', 'imageUrl'],
+      by: ['id', 'name', 'email', 'image_url'],
       _count: {
         id: true,
       },
@@ -208,7 +208,7 @@ export async function fetchFilteredColaboradores(query: string) {
       id: colaborador.id,
       name: colaborador.name,
       email: colaborador.email,
-      imageUrl: colaborador.imageUrl,
+      image_url: colaborador.image_url,
     }));
   } catch (err) {
     console.error('Database Error:', err);
