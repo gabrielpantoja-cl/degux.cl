@@ -112,7 +112,8 @@ export async function fetchFilteredReferenciales(query: string, currentPage: num
     return referenciales;
   } catch (error) {
     console.error('Error en la base de datos:', error);
-    throw new Error('Falló al obtener los referenciales.');
+    // Throw the original error instead of a new one to preserve the stack trace
+    throw error;
   }
 }
 
