@@ -1,4 +1,14 @@
-# Aprenda Next.js
+# Aprendiendo Next.js version 14
+
+Este projecto lo inicié con el repositorio de Mario Gonzalez
+https://github.com/lllariogonzalez/nextjs-dashboard
+
+Sin embargo, he efectuado muchos cambios sustanciales que tienen que ver principalmente con dos cosas:
+1. migración de usar sql escrito a mano y remplazarlo por prisma ORM.
+2. cambio total en la estructura en la base de datos.
+
+Por ejemplo, la tabla "customers" ahora se llama "colaboradores",
+la tabla "invoices" ahora se llama "referenciales".
 
 ¡Bienvenido al curso Next.js App Router! En este curso interactivo gratuito, aprenderá las características principales de Next.js mediante la creación de una aplicación web completa.
 
@@ -661,7 +671,7 @@ Ejecutemos su primera consulta de base de datos. Pegue y ejecute el siguiente c�
 ```sql
 SELECT referenciales.amount, customers.name
 FROM referenciales
-JOIN customers ON referenciales.customer_id = customers.id
+JOIN colaboradores ON referenciales.colaborador_id = colaboradores.id
 WHERE referenciales.amount = 666;
 ```
 > La factura pertenece al cliente Evil Rabbit
@@ -747,9 +757,9 @@ export default async function Page() {
         {/* <Card title="Pending" value={totalPendingReferenciales} type="pending" /> */}
         {/* <Card title="Total Referenciales" value={numberOfReferenciales} type="referenciales" /> */}
         {/* <Card
-          title="Total Customers"
-          value={numberOfCustomers}
-          type="customers"
+          title="Total Colaboradores"
+          value={numberOfColaboradores}
+          type="colaboradores"
         /> */}
       </div>
       <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-4 lg:grid-cols-8">
@@ -796,7 +806,7 @@ En lugar de ordenar las últimas facturas en la memoria, puede utilizar una cons
 ```tsx
 // Fetch the last 5 referenciales, sorted by date
 const data = await sql<LatestReferencialRaw>`
-  SELECT referenciales.amount, customers.name, customers.image_url, customers.email
+  SELECT referenciales.amount, colaboradores.name, colaboradores.image_url, colaboradores.email
   FROM referenciales
   JOIN customers ON referenciales.customer_id = customers.id
   ORDER BY referenciales.date DESC
@@ -809,7 +819,7 @@ Luego, descomente el componente `<LatestReferenciales />`.
 
 Si visita su servidor local, debería ver que solo se devuelven los últimos 5 de la base de datos. ¡Con suerte, estás empezando a ver las ventajas de consultar tu base de datos directamente!
 
-![Gráfico de ingresos y últimas 5 facturas](https://nextjs.org/_next/image?url=%2Flearn%2Fdark%2Flatest-referenciales.png&w=1080&q=75&dpl=dpl_3KvQ7chUpCwD5geTFxau9SMj51uW)
+![Gráfico de ingresos (eliminado) y últimas 5 transacciones de suelo (refererenciales)](https://nextjs.org/_next/image?url=%2Flearn%2Fdark%2Flatest-referenciales.png&w=1080&q=75&dpl=dpl_3KvQ7chUpCwD5geTFxau9SMj51uW)
 
 ### Práctica: Obtener datos para los componentes `<Card>`
 
