@@ -1,6 +1,6 @@
 'use client';
 
-import { Customer, Referencial } from '@prisma/client';
+import { colaboradores, referenciales } from '@prisma/client';
 import {
   CheckIcon,
   ClockIcon,
@@ -15,7 +15,7 @@ import { useFormState } from 'react-dom';
 type FormState = {
   message: string | null;
   errors: {
-    customerId?: string[];
+    colaboradorId?: string[];
     amount?: string[];
     status?: string[];
   };
@@ -23,10 +23,10 @@ type FormState = {
 
 export default function EditReferencialForm({
   referencial,
-  customers,
+  colaborador,
 }: {
-  referencial: Referencial;
-  customers: Customer[];
+  referencial: referenciales;
+  colaborador: [];
 }) {
   const initialState = { message: null, errors: {} };
   const updateReferencialWithId = updateReferencial.bind(null, referencial.id);
@@ -35,37 +35,36 @@ export default function EditReferencialForm({
   return (
     <form action={dispatch}>
       <div className="rounded-md bg-gray-50 p-4 md:p-6">
-        {/* Customer Name */}
         <div className="mb-4">
-          <label htmlFor="customer" className="mb-2 block text-sm font-medium">
-            Choose customer
+          <label htmlFor="colaborador" className="mb-2 block text-sm font-medium">
+            Choose colaborador
           </label>
           <div className="relative">
             <select
-              id="customer"
-              name="customerId"
+              id="colaborador"
+              name="colaboradorId"
               className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
-              defaultValue={referencial.customer_id}
-              aria-describedby="customer-error"
+              defaultValue={referencial.colaborador_id}
+              aria-describedby="colaborador-error"
             >
               <option value="" disabled>
-                Select a customer
+                Select a colaborador
               </option>
-              {customers.map((customer) => (
-                <option key={customer.id} value={customer.id}>
-                  {customer.name}
+              {colaborador.map((colaborador) => (
+                <option key={colaboradores.id} value={colaboradores.id}>
+                  {colaborador.name}
                 </option>
               ))}
             </select>
             <UserCircleIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
           </div>
-          {state.errors?.customerId ? (
+          {state.errors?.colaboradorId ? (
             <div
-              id="customer-error"
+              id="colaborador-error"
               aria-live="polite"
               className="mt-2 text-sm text-red-500"
             >
-              {state.errors.customerId.map((error: string) => (
+              {state.errors.colaboradorId.map((error: string) => (
                 <p key={error}>{error}</p>
               ))}
             </div>
@@ -93,7 +92,7 @@ export default function EditReferencialForm({
           </div>
           {state.errors?.amount ? (
             <div
-              id="customer-error"
+              id="colaborador-error"
               aria-live="polite"
               className="mt-2 text-sm text-red-500"
             >
