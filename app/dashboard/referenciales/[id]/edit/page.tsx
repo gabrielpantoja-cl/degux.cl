@@ -1,3 +1,5 @@
+// app/dashboard/referenciales/%5Bid%5D/edit/page.tsx
+
 import Form from '@/app/ui/referenciales/edit-form';
 import Breadcrumbs from '@/app/ui/referenciales/breadcrumbs';
 import { fetchReferencialById } from '@/app/lib/referenciales';

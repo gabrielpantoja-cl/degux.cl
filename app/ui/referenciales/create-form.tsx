@@ -1,3 +1,5 @@
+// app/ui/referenciales/create-form.tsx
+
 'use client';
 
 import Link from 'next/link';
@@ -8,6 +10,7 @@ import { useFormState } from 'react-dom';
 
 interface FormState {
   errors: {
+    customerId?: string[];
     amount?: string[];
   };
   message: string | null;
@@ -16,10 +19,10 @@ interface FormState {
 export default function Form() {
 
   const initialState: FormState = { message: null, errors: {} };
-  const [state, dispatch] = useFormState<FormState>(createReferencial, initialState);
+  const [state, dispatch] = useFormState<FormState>((state: FormState) => createReferencial(new FormData()), initialState);
 
   return (
-    <form action={dispatch}>
+    <form onSubmit={(e) => { e.preventDefault(); dispatch(); }}>
       <div className="rounded-md bg-gray-50 p-4 md:p-6">
 
         {/* Referencial Monto */}
