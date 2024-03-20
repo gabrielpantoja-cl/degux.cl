@@ -1,7 +1,6 @@
 import Form from '@/app/ui/referenciales/edit-form';
 import Breadcrumbs from '@/app/ui/referenciales/breadcrumbs';
-import { fetchReferencialById } from '@/app/lib/data';
-import { ReferencialForm } from '@/app/lib/definitions';
+import { fetchReferencialById } from '@/app/lib/referenciales';
 import { notFound } from 'next/navigation';
 
 export default async function Page({ params }: { params: { id: string } }) {

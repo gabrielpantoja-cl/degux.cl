@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import { UpdateReferencial } from '@/app/ui/referenciales/buttons';
 import { formatDateToLocal } from '@/app/lib/utils';
-import { fetchFilteredReferenciales } from '@/app/lib/data';
+import { fetchFilteredReferenciales } from '@/app/lib/referenciales';
 
 export default async function ReferencialesTable({
   query,

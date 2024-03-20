@@ -5,7 +5,7 @@ import { CreateReferencial } from '@/app/ui/referenciales/buttons';
 import { lusitana } from '@/app/ui/fonts';
 import { ReferencialesTableSkeleton } from '@/app/ui/skeletons';
 import { Suspense } from 'react';
-import { fetchReferencialesPages } from '@/app/lib/data';
+import { fetchReferencialesPages } from '@/app/lib/referenciales';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {

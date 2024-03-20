@@ -3,13 +3,13 @@ import Credentials from 'next-auth/providers/credentials';
 import { authConfig } from './auth.config';
 import { z } from 'zod';
 import bcrypt from 'bcrypt';
-import { PrismaClient, User } from '@prisma/client';
+import { PrismaClient, users } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
-async function getUser(email: string): Promise<User | null> {
+async function getUser(email: string): Promise<users | null> {
   try {
-    const user = await prisma.user.findUnique({
+    const user = await prisma.users.findUnique({
       where: {
         email: email,
       },

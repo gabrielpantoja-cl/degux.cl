@@ -5,7 +5,6 @@ import {
   InboxIcon,
 } from '@heroicons/react/24/outline';
 import { lusitana } from '@/app/ui/fonts';
-import { fetchCardData } from '@/app/lib/data';
 
 const iconMap = {
   collected: BanknotesIcon,
@@ -14,22 +13,8 @@ const iconMap = {
   referenciales: InboxIcon,
 };
 
-export default async function CardWrapper() {
-  const {
-    numberOfReferenciales,
-    numberOfColaboradores
-  } = await fetchCardData();
-  return (
-    <>
-      <Card title="Total Referenciales" value={numberOfReferenciales} type="referenciales" />
-      <Card
-        title="Total Customers"
-        value={numberOfColaboradores}
-        type="colaboradores"
-      />
-    </>
-  );
-}
+// Card component eliminado
+
 
 export function Card({
   title,
