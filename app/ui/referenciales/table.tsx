@@ -43,8 +43,7 @@ export default async function ReferencialesTable({
                     <p className="text-xl font-medium">
                       {referencial.anio}
                     </p>
-                    <p>{formatDateToLocal(referencial.date)}</p>
-                  </div>
+                    <p>{referencial.date ? formatDateToLocal(referencial.date) : 'N/A'}</p>                  </div>
                   <div className="flex justify-end gap-2">
                     <UpdateReferencial id={referencial.id} />
                   </div>
@@ -99,8 +98,7 @@ export default async function ReferencialesTable({
                     {referencial.anio}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    {formatDateToLocal(referencial.date)}
-                  </td>
+                    <p>{referencial.date ? formatDateToLocal(referencial.date) : 'N/A'}</p>                  </td>
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex justify-end gap-3">
                       <UpdateReferencial id={referencial.id} />
