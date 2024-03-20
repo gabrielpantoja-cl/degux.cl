@@ -8,7 +8,7 @@ import { notFound } from 'next/navigation';
 export default async function Page({ params }: { params: { id: string } }) {
 
     const id = params.id;
-    const referencial: ReferencialForm | undefined = await fetchReferencialById(id);
+    const referencial: any = await fetchReferencialById(id);
 
     if (!referencial) {
         notFound();
@@ -26,7 +26,8 @@ export default async function Page({ params }: { params: { id: string } }) {
                     },
                 ]}
             />
-            <Form referencial={referencial!} />
+            {/* Pasamos los colaboradores al componente Form */}
+            <Form referencial={referencial} customers={colaboradores} />
         </main>
     );
 }

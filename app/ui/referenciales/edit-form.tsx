@@ -1,6 +1,6 @@
 'use client';
 
-import { CustomerField, ReferencialForm } from '@/app/lib/definitions';
+import { Customer, Referencial } from '@prisma/client';
 import {
   CheckIcon,
   ClockIcon,
@@ -12,17 +12,25 @@ import { Button } from '@/app/ui/button';
 import { updateReferencial } from '@/app/lib/actions';
 import { useFormState } from 'react-dom';
 
+type FormState = {
+  message: string | null;
+  errors: {
+    customerId?: string[];
+    amount?: string[];
+    status?: string[];
+  };
+};
+
 export default function EditReferencialForm({
   referencial,
   customers,
 }: {
-  referencial: ReferencialForm;
-  customers: CustomerField[];
+  referencial: Referencial;
+  customers: Customer[];
 }) {
-  // this not necessary, and referencial.id is the argument need
   const initialState = { message: null, errors: {} };
   const updateReferencialWithId = updateReferencial.bind(null, referencial.id);
-  const [state, dispatch] = useFormState(updateReferencialWithId, initialState)
+  const [state, dispatch] = useFormState<FormState>(updateReferencialWithId, initialState);
 
   return (
     <form action={dispatch}>
@@ -64,7 +72,7 @@ export default function EditReferencialForm({
           ) : null}
         </div>
 
-        {/* Referencial Amount */}
+        {/* Referencial Monto */}
         <div className="mb-4">
           <label htmlFor="amount" className="mb-2 block text-sm font-medium">
             Choose an amount

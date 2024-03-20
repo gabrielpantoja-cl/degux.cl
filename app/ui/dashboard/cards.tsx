@@ -13,9 +13,6 @@ const iconMap = {
   referenciales: InboxIcon,
 };
 
-// Card component eliminado
-
-
 export function Card({
   title,
   value,

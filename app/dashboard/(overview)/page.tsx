@@ -1,5 +1,4 @@
 // app/dashboard/(overview)/page.tsx
-import CardWrapper from '@/app/ui/dashboard/cards'; // Removed unused Card import
 import LatestReferenciales from '@/app/ui/dashboard/latest-referenciales';
 import { lusitana } from '@/app/ui/fonts';
 import { Suspense } from 'react';
@@ -18,7 +17,7 @@ export default async function Page() {
             </h1>
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
                 <Suspense fallback={<CardsSkeleton />}>
-                    <CardWrapper />
+                    {/* Aquí estaba el CardWrapper */}
                 </Suspense>
                 {/* <Card title="Collected" value={totalPaidReferenciales} type="collected" />
             <Card title="Pending" value={totalPendingReferenciales} type="pending" />
