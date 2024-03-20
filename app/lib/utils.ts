@@ -10,6 +10,12 @@ export const formatDateToLocal = (
   locale: string = 'es-CL',
 ) => {
   const date = new Date(dateStr);
+
+  // Check if date is valid
+  if (isNaN(date.getTime())) {
+    throw new Error(`Invalid date string: ${dateStr}`);
+  }
+
   const options: Intl.DateTimeFormatOptions = {
     day: 'numeric',
     month: 'short',
