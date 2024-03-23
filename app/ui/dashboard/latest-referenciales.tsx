@@ -1,3 +1,4 @@
+// app/ui/dashboard/latest-referenciales.tsx
 import { ArrowPathIcon } from '@heroicons/react/24/outline';
 import clsx from 'clsx';
 import { lusitana } from '@/app/ui/fonts';
@@ -26,7 +27,7 @@ export default async function LatestReferenciales() {
   return (
     <div className="flex w-full flex-col md:col-span-4 lg:col-span-4">
       <h2 className={`${lusitana.className} mb-4 text-xl md:text-2xl`}>
-        Latest Referenciales
+        Últimos Referenciales
       </h2>
       <div className="flex grow flex-col justify-between rounded-xl bg-gray-50 p-4">
 
