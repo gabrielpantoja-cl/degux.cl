@@ -1,4 +1,4 @@
-import Image from 'next/image';
+// app/ui/referenciales/table.tsx
 import { UpdateReferencial } from '@/app/ui/referenciales/buttons';
 import { formatDateToLocal } from '@/app/lib/utils';
 import { fetchFilteredReferenciales } from '@/app/lib/referenciales';
@@ -25,16 +25,7 @@ export default async function ReferencialesTable({
               >
                 <div className="flex items-center justify-between border-b pb-4">
                   <div>
-                    <div className="mb-2 flex items-center">
-                      <Image
-                        src={referencial.image_url}
-                        className="mr-2 rounded-full"
-                        width={28}
-                        height={28}
-                        alt={`${referencial.fojas}'s profile picture`}
-                      />
-                      <p>{referencial.fojas}</p>
-                    </div>
+                    <p>{referencial.fojas}</p>
                     <p className="text-sm text-gray-500">{referencial.numero}</p>
                   </div>
                 </div>
@@ -80,16 +71,7 @@ export default async function ReferencialesTable({
                   className="w-full border-b py-3 text-sm last-of-type:border-none [&:first-child>td:first-child]:rounded-tl-lg [&:first-child>td:last-child]:rounded-tr-lg [&:last-child>td:first-child]:rounded-bl-lg [&:last-child>td:last-child]:rounded-br-lg"
                 >
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
-                    <div className="flex items-center gap-3">
-                      <Image
-                        src={referencial.image_url}
-                        className="rounded-full"
-                        width={28}
-                        height={28}
-                        alt={`${referencial.fojas}'s profile picture`}
-                      />
-                      <p>{referencial.fojas}</p>
-                    </div>
+                    <p>{referencial.fojas}</p>
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
                     {referencial.numero}
