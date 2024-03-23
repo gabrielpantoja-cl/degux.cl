@@ -1,4 +1,6 @@
 // app/ui/mapa/mapa.tsx
+'use client';
+
 import { useEffect, useRef } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
