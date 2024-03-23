@@ -1,23 +1,14 @@
+// app/dashboard/mapa/page.tsx
 import React from 'react';
+import Mapa from '../ui/mapa/mapa';
 
-export interface Referencial {
-    id: number;
-    lat: number;
-    lng: number;
-    name: string;
-}
-
-export interface MapaProps {
-    referenciales: Referencial[];
-}
-
-const MapaPage: React.FC<MapaProps> = ({ referenciales }) => {
-    // Aquí va tu lógica de renderizado
+const MapPage = () => {
     return (
         <div>
-            {/* Renderiza tus referenciales aquí */}
+            <h1>Mapa</h1>
+            <Mapa />
         </div>
     );
-}
+};
 
-export default MapaPage;
+export default MapPage;

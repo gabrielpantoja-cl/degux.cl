@@ -1,3 +1,4 @@
+// app/dashboard/referenciales/page.tsx
 import Pagination from '@/app/ui/referenciales/pagination';
 import Search from '@/app/ui/search';
 import Table from '@/app/ui/referenciales/table';
