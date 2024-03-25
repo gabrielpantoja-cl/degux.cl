@@ -25,7 +25,7 @@ export default function EditReferencialForm({
 }) {
   const initialState = { message: null, errors: {} };
   const updateReferencialWithId = updateReferencial.bind(null, referencial.id);
-  const [state, dispatch] = useFormState<FormState>(updateReferencialWithId, initialState);
+  const [state, dispatch] = useFormState(updateReferencialWithId, initialState)
 
   return (
     <form action={dispatch}>
