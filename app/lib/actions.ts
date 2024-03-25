@@ -88,8 +88,8 @@ export async function updateReferencial(
         fechaDeEscritura: new Date(),
         lat: 0, // replace with actual value
         lng: 0, // replace with actual value
-        fojas: '', // replace with actual value
-        numero: '', // replace with actual value
+        fojas: 0, // replace with actual value
+        numero: 0, // replace with actual value
         anio: 0, // replace with actual value
         comuna: '', // replace with actual value
         cbr: '', // replace with actual value
