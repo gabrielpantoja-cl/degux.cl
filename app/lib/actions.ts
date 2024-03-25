@@ -110,6 +110,7 @@ export async function updateReferencial(
 }
 
 export async function authenticate(
+  prevState: string | undefined,
   formData: FormData,
 ) {
   try {
