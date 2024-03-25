@@ -54,7 +54,7 @@ export async function fetchFilteredColaboradores(query: string) {
       },
     });
 
-    return colaboradores.map((colaborador) => ({
+    return colaboradores.map((colaborador: { id: string, name: string, email: string, image_url: string }) => ({
       id: colaborador.id,
       name: colaborador.name,
       email: colaborador.email,
