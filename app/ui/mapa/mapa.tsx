@@ -3,12 +3,13 @@
 import React, { useEffect, useState } from 'react';
 import { MapContainer, TileLayer, CircleMarker } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
-import axios from 'axios';
+import { fetchReferencialesForMap } from '../../lib/mapData';
 
 // Define el tipo para los puntos
 type Point = {
     lat: number;
     lng: number;
+    latLng: [number, number];
 };
 
 const Mapa = () => {
@@ -16,10 +17,9 @@ const Mapa = () => {
     const [data, setData] = useState<Point[]>([]);
 
     useEffect(() => {
-        // Reemplaza la URL con la URL de tu base de datos
-        axios.get('https://api.vercel.com/postgres-database-url')
+        fetchReferencialesForMap()
             .then(response => {
-                setData(response.data);
+                setData(response);
             })
             .catch(error => {
                 console.error('Error fetching data: ', error);
@@ -35,7 +35,7 @@ const Mapa = () => {
             {data.map((point, index) => (
                 <CircleMarker
                     key={index}
-                    center={[point.lat, point.lng]}
+                    center={point.latLng}
                     radius={20}
                 />
             ))}
