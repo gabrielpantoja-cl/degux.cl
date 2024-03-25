@@ -10,8 +10,8 @@ const prisma = new PrismaClient()
 
 const ReferencialSchema = z.object({
   id: z.string(),
-  customerId: z.string({
-    invalid_type_error: 'Please select a customer.',
+  colaboradorId: z.string({
+    invalid_type_error: 'Please select a colaborador.',
   }),
   amount: z.coerce
     .number()
@@ -26,7 +26,7 @@ const CreateReferencial = ReferencialSchema.omit({ id: true, date: true });
 
 export type State = {
   errors?: {
-    customerId?: string[];
+    colaboradorId?: string[];
     amount?: string[];
     // status?: string[];
   };
@@ -36,7 +36,7 @@ export type State = {
 export async function createReferencial(formData: FormData) {
   // Validate form fields using Zod
   const validatedFields = CreateReferencial.safeParse({
-    customerId: formData.get('customerId'),
+    colaboradorId: formData.get('colaboradorId'),
     amount: formData.get('amount'),
     // status: formData.get('status'),
   });
@@ -63,7 +63,7 @@ export async function updateReferencial(
 ) {
   // Validate form fields using Zod
   const validatedFields = UpdateReferencial.safeParse({
-    customerId: formData.get('customerId'),
+    colaboradorId: formData.get('colaboradorId'),
     amount: formData.get('amount'),
     // status: formData.get('status'),
   });
@@ -77,13 +77,13 @@ export async function updateReferencial(
   }
 
   // Prepare data for insertion into the database
-  const { customerId, amount } = validatedFields.data;
+  const { colaboradorId, amount } = validatedFields.data;
   const amountInCents = amount * 100;
   // Insert data into the database
   try {
     await prisma.referenciales.create({
       data: {
-        colaborador_id: customerId,
+        colaborador_id: colaboradorId,
         monto: amountInCents,
         fechaDeEscritura: new Date(),
         lat: 0, // replace with actual value
