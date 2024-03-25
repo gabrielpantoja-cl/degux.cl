@@ -1,4 +1,6 @@
+// app/ui/referenciales/edit-form.tsx
 'use client';
+
 import { referenciales } from '@prisma/client';
 import Link from 'next/link';
 import { Button } from '@/app/ui/button';
