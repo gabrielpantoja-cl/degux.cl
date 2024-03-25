@@ -3,12 +3,14 @@
 import Form from '@/app/ui/referenciales/edit-form';
 import Breadcrumbs from '@/app/ui/referenciales/breadcrumbs';
 import { fetchReferencialById } from '@/app/lib/referenciales';
+import { fetchColaboradores } from '@/app/lib/colaboradores';
 import { notFound } from 'next/navigation';
 
 export default async function Page({ params }: { params: { id: string } }) {
 
     const id = params.id;
     const referencial: any = await fetchReferencialById(id);
+    const colaboradores: any = await fetchColaboradores();
 
     if (!referencial) {
         notFound();
@@ -26,8 +28,8 @@ export default async function Page({ params }: { params: { id: string } }) {
                     },
                 ]}
             />
-            {/* Pasamos los colaboradores al componente Form */}
-            <Form referencial={referencial} customers={colaboradores} />
+            {/* Pasamos el primer colaborador al componente Form */}
+            <Form referencial={referencial} colaborador={colaboradores[0]} />
         </main>
     );
 }
