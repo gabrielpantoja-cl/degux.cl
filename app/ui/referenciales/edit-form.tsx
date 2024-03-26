@@ -5,16 +5,32 @@ import { referenciales } from '@prisma/client';
 import Link from 'next/link';
 import { Button } from '@/app/ui/button';
 import { updateReferencial } from '@/app/lib/actions';
-import { useFormState } from 'react-dom';
 import { UserCircleIcon, CurrencyDollarIcon } from '@heroicons/react/24/outline';
+import { useState } from 'react';
 
 type FormState = {
   message: string | null;
   errors: {
     colaboradorId?: string[];
-    amount?: string[];
+    monto?: string[];
   };
 };
+
+function useCustomFormState(
+  action: (state: FormState) => Promise<FormState>,
+  initialState: FormState
+) {
+  const [state, setState] = useState<FormState>(initialState);
+
+  const dispatch = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+    const newState = await action(formData);
+    setState(newState);
+  };
+
+  return [state, dispatch] as const;
+}
 
 export default function EditReferencialForm({
   referencial,
@@ -25,10 +41,10 @@ export default function EditReferencialForm({
 }) {
   const initialState = { message: null, errors: {} };
   const updateReferencialWithId = updateReferencial.bind(null, referencial.id);
-  const [state, dispatch] = useFormState(updateReferencialWithId, initialState)
+  const [state, dispatch] = useCustomFormState(updateReferencialWithId, initialState)
 
   return (
-    <form action={dispatch}>
+    <form onSubmit={dispatch}>
       <div className="rounded-md bg-gray-50 p-4 md:p-6">
         <div className="mb-4">
           <label htmlFor="colaborador" className="mb-2 block text-sm font-medium">
@@ -68,30 +84,30 @@ export default function EditReferencialForm({
 
         {/* Referencial Monto */}
         <div className="mb-4">
-          <label htmlFor="amount" className="mb-2 block text-sm font-medium">
-            Choose an amount
+          <label htmlFor="monto" className="mb-2 block text-sm font-medium">
+            Elegir monto
           </label>
           <div className="relative mt-2 rounded-md">
             <div className="relative">
               <input
-                id="amount"
-                name="amount"
+                id="monto"
+                name="monto"
                 type="number"
                 defaultValue={referencial.monto}
-                placeholder="Enter USD amount"
+                placeholder="Enter CLP monto"
                 className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
-                aria-describedby="amount-error"
+                aria-describedby="monto-error"
               />
               <CurrencyDollarIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
             </div>
           </div>
-          {state.errors?.amount ? (
+          {state.errors?.monto ? (
             <div
               id="colaborador-error"
               aria-live="polite"
               className="mt-2 text-sm text-red-500"
             >
-              {state.errors.amount.map((error: string) => (
+              {state.errors.monto.map((error: string) => (
                 <p key={error}>{error}</p>
               ))}
             </div>
