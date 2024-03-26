@@ -122,7 +122,7 @@ export default function EditReferencialForm({
           >
             Cancel
           </Link>
-          <Button type="submit">Edit Referencial</Button>
+          <Button type="submit">Editar Referencial</Button>
         </div>
       </div>
     </form>
