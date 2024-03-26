@@ -25,7 +25,14 @@ function useCustomFormState(
   const dispatch = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
-    const newState = await action(formData);
+    const formState: FormState = {
+      message: formData.get('message') as string,
+      errors: {
+        colaboradorId: formData.getAll('colaboradorId') as string[],
+        monto: formData.getAll('monto') as string[],
+      },
+    };
+    const newState = await action(formState);
     setState(newState);
   };
 
