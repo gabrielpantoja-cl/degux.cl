@@ -29,7 +29,7 @@ export default async function Page({ params }: { params: { id: string } }) {
                 ]}
             />
             {/* Pasamos el primer colaborador al componente Form */}
-            <Form referencial={referencial} colaborador={colaboradores[0]} />
+            <Form referencial={referencial} colaboradores={colaboradores[0]} />
         </main>
     );
 }
