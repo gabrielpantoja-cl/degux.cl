@@ -1,7 +1,7 @@
 // app/ui/referenciales/edit-form.tsx
 'use client';
 
-import { ColaboradorField, ReferencialForm } from '@/app/lib/definitions';
+import { PrismaClient, Colaborador, Referencial } from '@prisma/client';
 import {
   CheckIcon,
   ClockIcon,
@@ -13,17 +13,24 @@ import { Button } from '@/app/ui/button';
 import { updateReferencial } from '@/app/lib/actions';
 import { useFormState } from 'react-dom';
 
-export default function EditReferencialForm({
-  referencial,
-  colaboradores,
-}: {
-  referencial: ReferencialForm;
-  colaboradores: ColaboradorField[];
-}) {
-  // this not necessary, and referencial.id is the argument need
-  const initialState = { message: null, errors: {} };
+interface FormState {
+  message: string | null;
+  errors: {
+    colaboradorId?: string[];
+    monto?: string[];
+    status?: string[];
+  };
+}
+
+interface Props {
+  referencial: Referencial;
+  colaboradores: Colaborador[];
+}
+
+export default function EditReferencialForm({ referencial, colaboradores }: Props) {
+  const initialState: FormState = { message: null, errors: {} };
   const updateReferencialWithId = updateReferencial.bind(null, referencial.id);
-  const [state, dispatch] = useFormState(updateReferencialWithId, initialState)
+  const [state, dispatch] = useFormState<FormState>(updateReferencialWithId, initialState);
 
   return (
     <form action={dispatch}>
