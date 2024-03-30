@@ -2,7 +2,7 @@
 "use client";
 import { useForm, FieldError } from "react-hook-form";
 import { signIn } from "next-auth/react";
-import { useRouter } from 'next/router'
+import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 
 function LoginPage() {
@@ -25,7 +25,7 @@ function LoginPage() {
       setError(res.error)
     } else if (res) {
       router.push('/dashboard')
-      router.reload()
+      window.location.reload() // refresh the page
     }
   });
 
