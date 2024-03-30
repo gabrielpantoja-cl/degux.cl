@@ -2,6 +2,7 @@
 import AcmeLogo from '@/app/ui/acme-logo';
 import LoginForm from '@/app/ui/login-form';
 import { Metadata } from 'next';
+import { signIn } from 'next-auth/client';
 
 export const metadata: Metadata = {
   title: 'Login',
@@ -16,6 +17,12 @@ export default function LoginPage() {
             <AcmeLogo />
           </div>
         </div>
+        <button
+          onClick={() => signIn('google')}
+          className="py-2 px-4 font-semibold rounded-lg shadow-md text-white bg-red-500 hover:bg-red-700"
+        >
+          Sign in with Google
+        </button>
         <LoginForm />
       </div>
     </main>

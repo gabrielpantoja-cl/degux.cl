@@ -34,7 +34,8 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     "app/lib/placeholder-data.js",
-    "app/ui/mapa/mapa.tsx"
+    "app/ui/mapa/mapa.tsx",
+    "app/register/page.tsxsx"
   ],
   "exclude": [
     "node_modules"

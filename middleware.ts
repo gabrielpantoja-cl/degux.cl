@@ -1,15 +1,20 @@
 import { NextApiResponse, NextApiRequest } from 'next';
 import NextAuth from 'next-auth';
-import { authConfig } from './auth.config';
+import GoogleProvider from 'next-auth/providers/google';
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  return NextAuth(authConfig);
-}
-
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-  // https://nextjs.org/docs/app/building-your-application/routing/middleware#matcher
-  matcher: ['/((?!api|_next/static|_next/image|customers|.png).*)'],
-};
+export default NextAuth({
+  providers: [
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      authorization: {
+        params: {
+          prompt: 'consent',
+          access_type: 'offline',
+          response_type: 'code',
+        },
+      },
+    }),
+  ],
+  // Otras opciones...
+});
