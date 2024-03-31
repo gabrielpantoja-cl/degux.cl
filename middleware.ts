@@ -1,5 +1,9 @@
-import { NextApiRequest, NextApiResponse } from 'next';
+import NextAuth from 'next-auth';
+import { authConfig } from './auth.config';
 
-export default function middleware(req: NextApiRequest, res: NextApiResponse) {
-  // Tu lógica de middleware va aquí
-}
+export default NextAuth(authConfig).auth;
+
+export const config = {
+  // https://nextjs.org/docs/app/building-your-application/routing/middleware#matcher
+  matcher: ['/((?!api|_next/static|_next/image|customers|.png).*)'],
+};
