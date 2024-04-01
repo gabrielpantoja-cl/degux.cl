@@ -13,7 +13,7 @@ type Point = {
 };
 
 const Mapa = () => {
-    // Usa la anotaciÃ³n de tipo con useState
+    // Usa la anotación de tipo con useState
     const [data, setData] = useState<Point[]>([]);
 
     useEffect(() => {
