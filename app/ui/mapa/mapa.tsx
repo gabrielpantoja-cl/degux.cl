@@ -1,4 +1,5 @@
 // app/ui/mapa/mapa.tsx
+'use client';
 import React, { useEffect, useState } from 'react';
 import { MapContainer, TileLayer, CircleMarker } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
