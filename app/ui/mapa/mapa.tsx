@@ -5,21 +5,23 @@ import { MapContainer, TileLayer, CircleMarker } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import { fetchReferencialesForMap } from '../../lib/mapData';
 
-// Define el tipo para los puntos
 type Point = {
-    lat: number;
-    lng: number;
-    latLng: [number, number];
+    geom: [number, number];
 };
 
 const Mapa = () => {
-    // Usa la anotación de tipo con useState
     const [data, setData] = useState<Point[]>([]);
 
     useEffect(() => {
         fetchReferencialesForMap()
             .then(response => {
-                setData(response);
+                const points = response.map(point => {
+                    return {
+                        ...point,
+                        geom: [point.geom[1], point.geom[0]] // Invertir las coordenadas
+                    };
+                });
+                setData(points);
             })
             .catch(error => {
                 console.error('Error fetching data: ', error);
@@ -35,7 +37,7 @@ const Mapa = () => {
             {data.map((point, index) => (
                 <CircleMarker
                     key={index}
-                    center={point.latLng}
+                    center={point.geom}
                     radius={20}
                 />
             ))}
