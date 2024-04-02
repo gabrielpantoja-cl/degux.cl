@@ -17,16 +17,7 @@ export default async function Page() {
             </h1>
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
                 <Suspense fallback={<CardsSkeleton />}>
-                    {/* Aquí estaba el CardWrapper */}
                 </Suspense>
-                {/* <Card title="Collected" value={totalPaidReferenciales} type="collected" />
-            <Card title="Pending" value={totalPendingReferenciales} type="pending" />
-            <Card title="Total Referenciales" value={numberOfReferenciales} type="Referenciales" />
-            <Card
-            title="Total Customers"
-            value={numberOfCustomers}
-            type="customers"
-            /> */}
             </div>
             <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-4 lg:grid-cols-8">
                 <Suspense fallback={<LatestReferencialesSkeleton />}>
