@@ -13,7 +13,7 @@ export default async function Page() {
         breadcrumbs={[
           { label: 'Referenciales', href: '/dashboard/referenciales' },
           {
-            label: 'Create Referencial',
+            label: 'Crear Referencial',
             href: '/dashboard/referenciales/create',
             active: true,
           },

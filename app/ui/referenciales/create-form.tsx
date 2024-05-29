@@ -82,7 +82,7 @@ const Form: React.FC<FormProps> = ({ colaboradores }) => {
         >
           Cancel
         </Link>
-        <Button type="submit">Create Referencial</Button>
+        <Button type="submit">Crear Referencial</Button>
       </div>
     </form>
   );
