@@ -98,10 +98,35 @@ npm run dev inicia su servidor de desarrollo Next.js en el puerto 3000. Comprobe
 
 ![Página de inicio del proyecto](https://nextjs.org/_next/image?url=%2Flearn%2Fdark%2Facme-unstyled.png&w=750&q=75&dpl=dpl_Ejtt9BCyCFNeRJdBoVsM9Es9x8xe)
 
----
-## Próximos pasos
+## Base de datos
 
-¡Felicidades! Ha completado el curso de Next.JS donde aprendió sobre las características principales de Next.js y las mejores prácticas para construir aplicaciones web.
+Este proyecto utiliza PostgreSQL como su base de datos. La configuración de la base de datos se encuentra en el archivo `prisma/schema.prisma`.
+
+Para configurar la conexión a la base de datos, debes establecer la variable de entorno `POSTGRES_PRISMA_URL` en tu archivo `.env`. Esta variable debe contener la cadena de conexión a tu base de datos PostgreSQL.
+
+Por ejemplo:
+
+```env
+POSTGRES_PRISMA_URL="postgresql://usuario:contraseña@localhost:5432/miBaseDeDatos"
+
+Asegúrate de reemplazar usuario, contraseña y miBaseDeDatos con tus propios valores.
+
+Estructura de la base de datos
+La base de datos está compuesta por varias tablas que almacenan la información necesaria para la aplicación. Las principales tablas son:
+
+colaboradores: Anteriormente conocida como "customers", esta tabla almacena la información de los colaboradores.
+referenciales: Anteriormente conocida como "invoices", esta tabla almacena la información de los referenciales.
+ORM Prisma
+Para interactuar con la base de datos, este proyecto utiliza Prisma como su ORM (Object-Relational Mapping). Prisma facilita la interacción con la base de datos al permitirnos trabajar con objetos y eventos en lugar de tablas y SQL. La configuración de Prisma se encuentra en el archivo prisma/schema.prisma.
+
+Inicialización de la base de datos
+Para inicializar la base de datos, puedes usar el script de inicialización proporcionado en el directorio /script/. Este script llenará la base de datos con algunos datos de marcador de posición para que puedas empezar a trabajar con la aplicación de inmediato.
+
+
+
+
+
+## Próximos pasos
 
 Pero este es solo el comienzo: Next.js tiene muchas otras características. Está diseñado para ayudarlo a construir proyectos, su próxima idea o incluso aplicaciones a gran escala con su equipo.
 
