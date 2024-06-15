@@ -16,6 +16,7 @@ model referenciales {
   colaborador      colaboradores @relation(fields: [colaborador_id], references: [id])
   lat              Float
   lng              Float
+  geom             String        // Columna geom agregada
   fojas            Int
   numero           Int
   anio             Int
