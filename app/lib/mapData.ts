@@ -16,9 +16,9 @@ export async function fetchReferencialesForMap() {
 
     const leafletData = data.map(item => {
       const coords = item.geom.replace('POINT(', '').replace(')', '').split(' ').map(Number);
-      // Verificar si alguna de las coordenadas no es un número
-      if (isNaN(coords[0]) || isNaN(coords[1])) {
-        console.error(`Invalid coordinates for item ${item.id}:`, coords);
+      // Verificar si alguna de las coordenadas no es un número o es NaN
+      if (coords.some((coord: number) => isNaN(coord))) {
+                console.error(`Invalid coordinates for item ${item.id}:`, coords);
         return null; // O manejar de otra manera
       }
       return {
