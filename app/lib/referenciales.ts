@@ -15,7 +15,7 @@ export async function fetchLatestReferenciales() {
     const data = await prisma.referenciales.findMany({
       take: 5,
       orderBy: {
-        fechaDeEscritura: 'desc',
+        fechaescritura: 'desc',
       },
       include: {
         colaborador: true,
@@ -67,7 +67,7 @@ export async function fetchFilteredReferenciales(query: string, currentPage: num
 
       },
       orderBy: {
-        fechaDeEscritura: 'desc',
+        fechaescritura: 'desc',
       },
       take: ITEMS_PER_PAGE,
       skip: offset,

@@ -86,7 +86,7 @@ export async function updateReferencial(
       data: {
         colaborador_id: colaboradorId,
         monto: amountInCents,
-        fechaDeEscritura: new Date(),
+        fechaescritura: new Date(),
         lat: 0, // replace with actual value
         lng: 0, // replace with actual value
         fojas: 0, // replace with actual value

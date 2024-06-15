@@ -8,7 +8,7 @@ const prisma = new PrismaClient();
 
 export async function fetchReferencialesForMap() {
   try {
-    const data = await prisma.$queryRaw`SELECT id, ST_AsText(geom::geometry) AS geom, fojas, numero, anio, cbr, comprador, vendedor, predio, comuna, rol, fechaescritura, superficie, monto, observaciones, colaborador FROM referenciales`;
+    const data = await prisma.$queryRaw`SELECT id, ST_AsText(geom::geometry) AS geom, fojas, numero, anio, cbr, comprador, vendedor, predio, comuna, rol, fechaescritura, superficie, monto, observaciones, colaborador_id FROM referenciales`;
 
     if (!Array.isArray(data)) {
       throw new Error('Unexpected response from the database.');

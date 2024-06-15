@@ -25,7 +25,7 @@ model referenciales {
   predio           String
   comuna           String
   rol              String
-  fechaDeEscritura DateTime
+  fechaescritura DateTime
   superficie       Float
   monto            Int
   observaciones    String?
