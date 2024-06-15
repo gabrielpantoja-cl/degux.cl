@@ -6,6 +6,7 @@ import 'leaflet/dist/leaflet.css';
 import { fetchReferencialesForMap } from '../../lib/mapData';
 
 type Point = {
+    id: string; // Asumiendo que cada punto tiene un identificador único
     geom: [number, number];
 };
 
@@ -15,9 +16,12 @@ const Mapa = () => {
     useEffect(() => {
         fetchReferencialesForMap()
             .then(response => {
-                const points = response.map(point => {
+                const points = response.map((point, index) => {
+                    // Asumiendo que el backend no proporciona un ID, usamos el índice como fallback
+                    const uniqueId = point.id || `point-${index}`;
                     return {
                         ...point,
+                        id: uniqueId,
                         geom: [point.geom[1], point.geom[0]] // Invertir las coordenadas
                     };
                 });
@@ -36,9 +40,9 @@ const Mapa = () => {
             />
             {data.map((point, index) => (
                 <CircleMarker
-                    key={index}
-                    center={point.geom}
-                    radius={20}
+                key={point.id} // Usar el ID único como clave
+                center={point.geom}
+                radius={20}
                 />
             ))}
         </MapContainer>
