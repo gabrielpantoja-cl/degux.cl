@@ -16,15 +16,20 @@ export async function fetchReferencialesForMap() {
 
     const leafletData = data.map(item => {
       const coords = item.geom.replace('POINT(', '').replace(')', '').split(' ').map(Number);
+      // Verificar si alguna de las coordenadas no es un número
+      if (isNaN(coords[0]) || isNaN(coords[1])) {
+        console.error(`Invalid coordinates for item ${item.id}:`, coords);
+        return null; // O manejar de otra manera
+      }
       return {
         ...item,
         latLng: [coords[1], coords[0]] as [number, number], // Invertir las coordenadas
       };
-    });
+    }).filter(item => item !== null); // Filtrar elementos nulos
 
     return leafletData;
   } catch (error) {
-    console.error('Database Error:', error);
+    console.error('Error fetching data for map:', error);
     throw error;
   }
 }
