@@ -18,7 +18,7 @@ const Mapa = () => {
             .then(response => {
                 const points = response.map((point, index) => {
                     // Asumiendo que el backend no proporciona un ID, usamos el índice como fallback
-                    const uniqueId = point.id || `point-${index}`;
+                    const uniqueId = point.id || `point-${point.geom.join('-')}`;
                     return {
                         ...point,
                         id: uniqueId,
