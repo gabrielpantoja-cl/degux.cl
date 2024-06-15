@@ -1,5 +1,7 @@
 // app/lib/referenciales.ts
 
+'use server';
+
 import { PrismaClient } from '@prisma/client';
 import { formatCurrency } from './utils';
 import { unstable_noStore as noStore } from 'next/cache';
