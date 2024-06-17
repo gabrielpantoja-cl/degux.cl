@@ -1,10 +1,11 @@
-# Proyecto personal de base de datos de referenciales para la tasación,
-# usando lo aprendido en el curso de Next.js version 14 App Router
-# para mayor información visite la página del curso en https://nextjs.org/learn
+# Proyecto personal de base de datos de referenciales para la tasación
+usando lo aprendido en el curso de Next.js version 14 App Router
+para mayor información visite la página del curso en
+https://nextjs.org/learn
 
 Este proyecto me inspiré con los repositorios:
-https://github.com/lllariogonzalez/nextjs-dashboard
-https://github.com/MiguelDominguezSanchez/tutorial-nextjs-14-midudev
+-   https://github.com/lllariogonzalez/nextjs-dashboard
+-   https://github.com/MiguelDominguezSanchez/tutorial-nextjs-14-midudev
 
 Crearemos una versión simplificada de un panel de transacciones de suelo que tiene:
 
@@ -46,7 +47,7 @@ Para iniciar nuestro proyecto, abriremos una terminal en la carpeta donde querem
 
 ```bash
 npx create-next-app@latest nombre-del-proyecto --use-npm --example "https://github.com/vercel/next-learn/tree/main/dashboard/starter-example"
-
+```
 Este comando utiliza create-next-app, una herramienta de interfaz de línea de comandos (CLI) que configura una aplicación Next.js. Note que puede nombrar el proyecto como prefiera en `nombre-del-proyecto` que está a modo de ejemplo y además estamos usando los siguientes indicadores:
 
 - `--use-npm` para indicar el administrador de paquetes queremos utilizar. 
