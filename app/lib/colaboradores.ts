@@ -56,11 +56,11 @@ export async function fetchFilteredColaboradores(query: string) {
       },
     });
 
-    return colaboradores.map(({ id, name, email, image_url }) => ({
-      id,
-      name,
-      email,
-      image_url,
+    return colaboradores.map((colaborador: { id: string, name: string, email: string, image_url: string }) => ({
+      id: colaborador.id,
+      name: colaborador.name,
+      email: colaborador.email,
+      image_url: colaborador.image_url,
     }));
   } catch (err) {
     console.error('Database Error:', err);

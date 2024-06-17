@@ -9,24 +9,6 @@ import { unstable_noStore as noStore } from 'next/cache';
 const prisma = new PrismaClient();
 const ITEMS_PER_PAGE = 10;
 
-// Función auxiliar para manejar errores de manera uniforme
-function handleDatabaseError(error: unknown) {
-  console.error('Error en la base de datos:', error);
-  if (error instanceof Error) {
-    throw new Error('Error al acceder a la base de datos. Detalle del error: ' + error.message);
-  } else {
-    throw new Error('Error desconocido al acceder a la base de datos.');
-  }
-}
-
-// Función auxiliar para validar y transformar la consulta de fecha
-function getDateQuery(query: string): Date | undefined {
-  if (Date.parse(query)) {
-    return new Date(query);
-  }
-  return undefined;
-}
-
 export async function fetchLatestReferenciales() {
   noStore();
   try {
@@ -41,12 +23,12 @@ export async function fetchLatestReferenciales() {
     });
 
     if (!Array.isArray(data)) {
-      throw new Error('Respuesta inesperada de la base de datos.');
+      throw new Error('Unexpected response from the database.');
     }
 
     const latestReferenciales = data.map((referencial) => {
       if (typeof referencial.monto !== 'number') {
-        throw new Error('Tipo de dato inesperado para "monto".');
+        throw new Error('Unexpected data type for "monto".');
       }
 
       return {
@@ -57,21 +39,14 @@ export async function fetchLatestReferenciales() {
 
     return latestReferenciales;
   } catch (error) {
-    handleDatabaseError(error);
-  }
-}
+    console.error('Database Error:', error);
 
-export async function fetchReferencialesPages() {
-  noStore();
-  try {
-    // Obtener el conteo total de referenciales
-    const totalReferenciales = await prisma.referenciales.count();
-    // Calcular el número total de páginas
-    const totalPages = Math.ceil(totalReferenciales / ITEMS_PER_PAGE);
-
-    return totalPages;
-  } catch (error) {
-    handleDatabaseError(error);
+    if (error instanceof Error) {
+      console.error('Error Message:', error.message);
+      throw new Error('Failed to fetch the latest referenciales. Original error: ' + error.message);
+    } else {
+      throw error;
+    }
   }
 }
 
@@ -80,20 +55,17 @@ export async function fetchFilteredReferenciales(query: string, currentPage: num
   noStore();
   const offset = (currentPage - 1) * ITEMS_PER_PAGE;
 
-  const dateQuery = getDateQuery(query);
-  let whereClause = {};
-  if (dateQuery) {
-    whereClause = {
-      fechaescritura: {
-        equals: dateQuery,
-      },
-    };
+  let dateQuery;
+  if (Date.parse(query)) {
+    dateQuery = new Date(query);
   }
 
   try {
     console.log('Iniciando consulta a la base de datos...');
     const referenciales = await prisma.referenciales.findMany({
-      where: whereClause,
+      where: {
+
+      },
       orderBy: {
         fechaescritura: 'desc',
       },
@@ -112,6 +84,52 @@ export async function fetchFilteredReferenciales(query: string, currentPage: num
     console.log('Consulta a la base de datos completada. Referenciales obtenidos:', referenciales);
     return referenciales;
   } catch (error) {
-    handleDatabaseError(error);
+    console.error('Error en la base de datos:', error);
+    throw error;
+  }
+}
+
+export async function fetchReferencialesPages(query: string) {
+  noStore();
+
+  let dateQuery;
+  if (Date.parse(query)) {
+    dateQuery = new Date(query);
+  }
+
+  try {
+    const count = await prisma.referenciales.count({
+      where: {
+
+      },
+    });
+
+    const totalPages = Math.ceil(count / ITEMS_PER_PAGE);
+    return totalPages;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch total number of referenciales.');
+  }
+}
+
+export async function fetchReferencialById(id: string) {
+  noStore();
+  try {
+    const referencial = await prisma.referenciales.findUnique({
+      where: {
+        id: id,
+      },
+    });
+
+    if (!referencial) {
+      throw new Error(`No referencial found with id: ${id}`);
+    }
+
+    return {
+      ...referencial,
+      amount: referencial.monto / 100,
+    };
+  } catch (error) {
+    console.error('Database Error:', error);
   }
 }
