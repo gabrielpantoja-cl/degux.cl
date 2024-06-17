@@ -9,6 +9,24 @@ import { unstable_noStore as noStore } from 'next/cache';
 const prisma = new PrismaClient();
 const ITEMS_PER_PAGE = 10;
 
+// Función auxiliar para manejar errores de manera uniforme
+function handleDatabaseError(error: unknown) {
+  console.error('Error en la base de datos:', error);
+  if (error instanceof Error) {
+    throw new Error('Error al acceder a la base de datos. Detalle del error: ' + error.message);
+  } else {
+    throw new Error('Error desconocido al acceder a la base de datos.');
+  }
+}
+
+// Función auxiliar para validar y transformar la consulta de fecha
+function getDateQuery(query: string): Date | undefined {
+  if (Date.parse(query)) {
+    return new Date(query);
+  }
+  return undefined;
+}
+
 export async function fetchLatestReferenciales() {
   noStore();
   try {
@@ -23,12 +41,12 @@ export async function fetchLatestReferenciales() {
     });
 
     if (!Array.isArray(data)) {
-      throw new Error('Unexpected response from the database.');
+      throw new Error('Respuesta inesperada de la base de datos.');
     }
 
     const latestReferenciales = data.map((referencial) => {
       if (typeof referencial.monto !== 'number') {
-        throw new Error('Unexpected data type for "monto".');
+        throw new Error('Tipo de dato inesperado para "monto".');
       }
 
       return {
@@ -39,14 +57,7 @@ export async function fetchLatestReferenciales() {
 
     return latestReferenciales;
   } catch (error) {
-    console.error('Database Error:', error);
-
-    if (error instanceof Error) {
-      console.error('Error Message:', error.message);
-      throw new Error('Failed to fetch the latest referenciales. Original error: ' + error.message);
-    } else {
-      throw error;
-    }
+    handleDatabaseError(error);
   }
 }
 
@@ -55,9 +66,9 @@ export async function fetchFilteredReferenciales(query: string, currentPage: num
   noStore();
   const offset = (currentPage - 1) * ITEMS_PER_PAGE;
 
+  const dateQuery = getDateQuery(query);
   let whereClause = {};
-  if (Date.parse(query)) {
-    const dateQuery = new Date(query);
+  if (dateQuery) {
     whereClause = {
       fechaescritura: {
         equals: dateQuery,
@@ -87,59 +98,6 @@ export async function fetchFilteredReferenciales(query: string, currentPage: num
     console.log('Consulta a la base de datos completada. Referenciales obtenidos:', referenciales);
     return referenciales;
   } catch (error) {
-    console.error('Error en la base de datos:', error);
-    if (error instanceof Error) {
-      throw new Error('Error al buscar referenciales filtrados. Detalle del error: ' + error.message);
-    } else {
-      throw new Error('Error al buscar referenciales filtrados. Detalle del error desconocido.');
-    }
-  }
-} // Este cierre faltaba para la función fetchFilteredReferenciales
-
-// Funciones actualmente no utilizadas, se mantienen para uso futuro
-/*
-export async function fetchReferencialesPages(query: string) {
-  noStore();
-
-  let dateQuery;
-  if (Date.parse(query)) {
-    dateQuery = new Date(query);
-  }
-
-  try {
-    const count = await prisma.referenciales.count({
-      where: {
-
-      },
-    });
-
-    const totalPages = Math.ceil(count / ITEMS_PER_PAGE);
-    return totalPages;
-  } catch (error) {
-    console.error('Database Error:', error);
-    throw new Error('Failed to fetch total number of referenciales.');
+    handleDatabaseError(error);
   }
 }
-
-export async function fetchReferencialById(id: string) {
-  noStore();
-  try {
-    const referencial = await prisma.referenciales.findUnique({
-      where: {
-        id: id,
-      },
-    });
-
-    if (!referencial) {
-      throw new Error(`No referencial found with id: ${id}`);
-    }
-
-    return {
-      ...referencial,
-      amount: referencial.monto / 100,
-    };
-  } catch (error) {
-    console.error('Database Error:', error);
-  }
-}
-*/
