@@ -114,7 +114,9 @@ npx prisma generate
 Este comando genera o actualiza el cliente Prisma basado en tu esquema actual, permitiéndote interactuar con tu base de datos mediante Prisma.
 
 Inicialización de la base de datos
-Para inicializar la base de datos, puedes usar el script de inicialización proporcionado en el directorio /script/. Este script llenará la base de datos con algunos datos de marcador de posición para que puedas empezar a trabajar con la aplicación de inmediato.
+Para inicializar la base de datos, te recomendamos buscar scripts de inicialización específicos en GitHub que se ajusten a tus necesidades. Estos scripts pueden ayudarte a configurar y llenar tu base de datos con datos de prueba o estructuras iniciales.
+
+Para la administración de la base de datos, puedes utilizar herramientas como pgAdmin si estás en Windows, o DBeaver si estás utilizando Linux. Ambas herramientas ofrecen interfaces gráficas intuitivas para la gestión de bases de datos PostgreSQL, facilitando la visualización, edición y gestión de tus datos.
 
 
 ## Próximos pasos
