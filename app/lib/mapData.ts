@@ -1,40 +1,20 @@
 // app/lib/mapData.ts
 
 'use server';
+// app/lib/mapData.ts
 
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, Prisma } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
 export async function fetchReferencialesForMap() {
   try {
-    const referenciales = await prisma.referenciales.findMany({
-      select: {
-        id: true,
-        geom: true, // Asegúrate de que 'geom' sea el campo correcto en tu modelo Prisma
-        fojas: true,
-        numero: true,
-        anio: true,
-        cbr: true,
-        comprador: true,
-        vendedor: true,
-        predio: true,
-        comuna: true,
-        rol: true,
-        fechaescritura: true,
-        superficie: true,
-        monto: true,
-        observaciones: true,
-        colaborador_id: true,
-      },
-      // Añadir una transformación para obtener 'geom' como texto (WKT)
-      // Esto es necesario solo si 'geom' es un tipo geográfico en PostGIS
-      // Ejemplo: .raw('SELECT *, ST_AsText(geom) as geom_text FROM Referenciales')
-    });
+const referenciales = await prisma.$queryRaw<Prisma.referencialesUncheckedCreateInput[]>(Prisma.sql`      SELECT id, ST_AsText(geom) as geom, fojas, numero, anio, cbr, comprador, vendedor, predio, comuna, rol, fechaescritura, superficie, monto, observaciones, colaborador_id
+      FROM "Referenciales"
+    `);
 
     const leafletData = referenciales.map(referencial => {
-      // Asegúrate de ajustar 'geomText' para usar el campo correcto si aplicaste una transformación en la consulta
-      const geomText = referencial.geom; // Asumiendo que 'geom' es un string con el formato 'POINT(LNG LAT)'
+      const geomText = referencial.geom; // 'geom' ahora es un string WKT gracias a ST_AsText
       const coords = geomText.replace('POINT(', '').replace(')', '').split(' ').map(Number);
       if (coords.some(coord => isNaN(coord)) || coords[0] < -180 || coords[0] > 180 || coords[1] < -90 || coords[1] > 90) {
         console.error(`Invalid coordinates for item ${referencial.id}:`, coords);
@@ -48,7 +28,6 @@ export async function fetchReferencialesForMap() {
 
     return leafletData;
   } catch (error) {
-    // Mejora del manejo de errores para 'error' de tipo 'unknown'
     if (error instanceof Error) {
       console.error('Error fetching data for map:', error.message);
       throw new Error(`Error fetching data for map: ${error.message}`);
