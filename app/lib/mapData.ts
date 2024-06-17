@@ -8,23 +8,16 @@ const prisma = new PrismaClient();
 
 export async function fetchReferencialesForMap() {
   try {
-    // Utilizar ST_AsText para convertir geom a texto y luego extraer las coordenadas con una expresión regular o una función de PostgreSQL.
-    const data = await prisma.$queryRaw`SELECT id, ST_AsText(geom) AS geom_text, fojas, numero, anio, cbr, comprador, vendedor, predio, comuna, rol, fechaescritura, superficie, monto, observaciones, colaborador_id FROM referenciales`;
+    // Seleccionar directamente las columnas lat y lng, que ya están en el formato correcto
+    const data = await prisma.$queryRaw`SELECT id, lat, lng, fojas, numero, anio, cbr, comprador, vendedor, predio, comuna, rol, fechaescritura, superficie, monto, observaciones, colaborador_id FROM referenciales`;
 
     if (!Array.isArray(data)) {
       throw new Error('La respuesta de la base de datos no es un arreglo.');
     }
 
     const leafletData = data.map(item => {
-      // Extraer latitud y longitud del texto geom_text
-      const match = item.geom_text.match(/POINT\((\d+\.\d+) (\d+\.\d+)\)/);
-      if (!match) {
-        console.error(`No se pueden extraer las coordenadas para el item ${item.id}: geom_text=${item.geom_text}`);
-        return null;
-      }
-      const lat = parseFloat(match[2]);
-      const lng = parseFloat(match[1]);
-
+      // Dividir el valor de las coordenadas y convertir a números
+      const [lat, lng] = item.lat.split(';').map((coord: string) => parseFloat(coord.trim()));
       // Verificar si alguna de las coordenadas no es un número o es NaN
       if (isNaN(lat) || isNaN(lng)) {
         console.error(`Coordenadas inválidas para el item ${item.id}: lat=${lat}, lng=${lng}`);
