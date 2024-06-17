@@ -116,7 +116,7 @@ Este comando genera o actualiza el cliente Prisma basado en tu esquema actual, p
 Inicialización de la base de datos
 Para inicializar la base de datos, te recomendamos buscar scripts de inicialización específicos en GitHub que se ajusten a tus necesidades. Estos scripts pueden ayudarte a configurar y llenar tu base de datos con datos de prueba o estructuras iniciales.
 
-Para la administración de la base de datos, puedes utilizar herramientas como pgAdmin si estás en Windows, o DBeaver si estás utilizando Linux. Ambas herramientas ofrecen interfaces gráficas intuitivas para la gestión de bases de datos PostgreSQL, facilitando la visualización, edición y gestión de tus datos.
+Para la administración de la base de datos, puedes utilizar herramientas como pgAdmin si estás en Windows, o DBeaver si estás utilizando Linux. Ambas herramientas ofrecen interfaces gráficas intuitivas para la gestión de bases de datos PostgreSQL, facilitando la visualización, edición y gestión de tus datos.   
 
 
 ## Próximos pasos
