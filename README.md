@@ -2,23 +2,11 @@
 # usando lo aprendido en el curso de Next.js version 14 App Router
 # para mayor información visite la página del curso en https://nextjs.org/learn
 
-Este proyecto lo inicié con el repositorio:
+Este proyecto me inspiré con los repositorios:
 https://github.com/lllariogonzalez/nextjs-dashboard
-
-y tambien me inspiré en el repositorio de:
 https://github.com/MiguelDominguezSanchez/tutorial-nextjs-14-midudev
 
-Desde el repositorio Starter he efectuado muchos cambios sustanciales que tienen que ver principalmente con dos cosas:
-1. migración de usar sql escrito a mano y remplazarlo por prisma ORM.
-2. cambio total en la estructura de la base de datos.
-3. Implementación de un mapa con leaflet
-
-Por ejemplo, la tabla "customers" ahora se llama "colaboradores",
-la tabla "invoices" ahora se llama "referenciales".
-
-![Vista princiapal de la Aplicación Acme en múltiples dispositivos](https://nextjs.org/_next/image?url=%2Flearn%2Fcourse-explainer.png&w=750&q=75&dpl=dpl_Ejtt9BCyCFNeRJdBoVsM9Es9x8xe)
-
-Para este curso, crearemos una versión simplificada de un panel de transacciones de suelo que tiene:
+Crearemos una versión simplificada de un panel de transacciones de suelo que tiene:
 
 - Una página de inicio pública.
 - Una página de inicio de sesión.
@@ -27,7 +15,7 @@ Para este curso, crearemos una versión simplificada de un panel de transaccione
 
 ## Descripción general
 
-A continuación se ofrece una descripción general de las funciones que aprenderemos en este curso:
+A continuación se ofrece una descripción general de las funciones:
 
 - [**Estilo:**](#estilo-css) las diferentes formas de diseñar su aplicación en Next.js.
 - [**Optimizaciones:**](#optimización-de-fuentes-e-imágenes) cómo optimizar imágenes, enlaces y fuentes.
@@ -57,9 +45,7 @@ A continuación se ofrece una descripción general de las funciones que aprender
 Para iniciar nuestro proyecto, abriremos una terminal en la carpeta donde queremos guardarlo y a continuación usaremos el siguiente comando:
 
 ```bash
-npx create-next-app@latest nombre-del-proyecto --use-npm --example "https://
-github.com/vercel/next-learn/tree/main/dashboard/starter-example"
-```
+npx create-next-app@latest nombre-del-proyecto --use-npm --example "https://github.com/vercel/next-learn/tree/main/dashboard/starter-example"
 
 Este comando utiliza create-next-app, una herramienta de interfaz de línea de comandos (CLI) que configura una aplicación Next.js. Note que puede nombrar el proyecto como prefiera en `nombre-del-proyecto` que está a modo de ejemplo y además estamos usando los siguientes indicadores:
 
@@ -104,14 +90,14 @@ Este proyecto utiliza PostgreSQL como su base de datos. La configuración de la 
 
 Para configurar la conexión a la base de datos, debes establecer la variable de entorno `POSTGRES_PRISMA_URL` en tu archivo `.env`. Esta variable debe contener la cadena de conexión a tu base de datos PostgreSQL.
 
-Por ejemplo:
+## Por ejemplo:
 
 ```env
 POSTGRES_PRISMA_URL="postgresql://usuario:contraseña@localhost:5432/miBaseDeDatos"
 
 Asegúrate de reemplazar usuario, contraseña y miBaseDeDatos con tus propios valores.
 
-Estructura de la base de datos
+## Estructura de la base de datos:
 La base de datos está compuesta por varias tablas que almacenan la información necesaria para la aplicación. Las principales tablas son:
 
 colaboradores: Anteriormente conocida como "customers", esta tabla almacena la información de los colaboradores.
@@ -119,11 +105,16 @@ referenciales: Anteriormente conocida como "invoices", esta tabla almacena la in
 ORM Prisma
 Para interactuar con la base de datos, este proyecto utiliza Prisma como su ORM (Object-Relational Mapping). Prisma facilita la interacción con la base de datos al permitirnos trabajar con objetos y eventos en lugar de tablas y SQL. La configuración de Prisma se encuentra en el archivo prisma/schema.prisma.
 
+Generación del cliente Prisma
+Después de definir o actualizar tu esquema en prisma/schema.prisma, debes generar el cliente Prisma para aplicar los cambios. Esto se hace ejecutando el siguiente comando en tu terminal:
+
+```bash
+npx prisma generate
+```
+Este comando genera o actualiza el cliente Prisma basado en tu esquema actual, permitiéndote interactuar con tu base de datos mediante Prisma.
+
 Inicialización de la base de datos
 Para inicializar la base de datos, puedes usar el script de inicialización proporcionado en el directorio /script/. Este script llenará la base de datos con algunos datos de marcador de posición para que puedas empezar a trabajar con la aplicación de inmediato.
-
-
-
 
 
 ## Próximos pasos
