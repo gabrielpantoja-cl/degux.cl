@@ -27,9 +27,13 @@ export async function fetchReferencialesForMap() {
         observaciones: true,
         colaborador_id: true,
       },
+      // Añadir una transformación para obtener 'geom' como texto (WKT)
+      // Esto es necesario solo si 'geom' es un tipo geográfico en PostGIS
+      // Ejemplo: .raw('SELECT *, ST_AsText(geom) as geom_text FROM Referenciales')
     });
 
     const leafletData = referenciales.map(referencial => {
+      // Asegúrate de ajustar 'geomText' para usar el campo correcto si aplicaste una transformación en la consulta
       const geomText = referencial.geom; // Asumiendo que 'geom' es un string con el formato 'POINT(LNG LAT)'
       const coords = geomText.replace('POINT(', '').replace(')', '').split(' ').map(Number);
       if (coords.some(coord => isNaN(coord)) || coords[0] < -180 || coords[0] > 180 || coords[1] < -90 || coords[1] > 90) {
@@ -44,7 +48,13 @@ export async function fetchReferencialesForMap() {
 
     return leafletData;
   } catch (error) {
-    console.error('Error fetching data for map:', error);
-    throw new Error(`Error fetching data for map: ${error.message}`);
+    // Mejora del manejo de errores para 'error' de tipo 'unknown'
+    if (error instanceof Error) {
+      console.error('Error fetching data for map:', error.message);
+      throw new Error(`Error fetching data for map: ${error.message}`);
+    } else {
+      console.error('Error fetching data for map:', error);
+      throw new Error('Error fetching data for map');
+    }
   }
 }
