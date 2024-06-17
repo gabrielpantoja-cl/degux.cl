@@ -61,6 +61,20 @@ export async function fetchLatestReferenciales() {
   }
 }
 
+export async function fetchReferencialesPages() {
+  noStore();
+  try {
+    // Obtener el conteo total de referenciales
+    const totalReferenciales = await prisma.referenciales.count();
+    // Calcular el número total de páginas
+    const totalPages = Math.ceil(totalReferenciales / ITEMS_PER_PAGE);
+
+    return totalPages;
+  } catch (error) {
+    handleDatabaseError(error);
+  }
+}
+
 export async function fetchFilteredReferenciales(query: string, currentPage: number) {
   console.log('Iniciando fetchFilteredReferenciales con query:', query, 'y currentPage:', currentPage);
   noStore();
