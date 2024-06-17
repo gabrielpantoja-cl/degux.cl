@@ -55,17 +55,20 @@ export async function fetchFilteredReferenciales(query: string, currentPage: num
   noStore();
   const offset = (currentPage - 1) * ITEMS_PER_PAGE;
 
-  let dateQuery;
+  let whereClause = {};
   if (Date.parse(query)) {
-    dateQuery = new Date(query);
+    const dateQuery = new Date(query);
+    whereClause = {
+      fechaescritura: {
+        equals: dateQuery,
+      },
+    };
   }
 
   try {
     console.log('Iniciando consulta a la base de datos...');
     const referenciales = await prisma.referenciales.findMany({
-      where: {
-
-      },
+      where: whereClause,
       orderBy: {
         fechaescritura: 'desc',
       },
@@ -85,10 +88,16 @@ export async function fetchFilteredReferenciales(query: string, currentPage: num
     return referenciales;
   } catch (error) {
     console.error('Error en la base de datos:', error);
-    throw error;
+    if (error instanceof Error) {
+      throw new Error('Error al buscar referenciales filtrados. Detalle del error: ' + error.message);
+    } else {
+      throw new Error('Error al buscar referenciales filtrados. Detalle del error desconocido.');
+    }
   }
-}
+} // Este cierre faltaba para la función fetchFilteredReferenciales
 
+// Funciones actualmente no utilizadas, se mantienen para uso futuro
+/*
 export async function fetchReferencialesPages(query: string) {
   noStore();
 
@@ -133,3 +142,4 @@ export async function fetchReferencialById(id: string) {
     console.error('Database Error:', error);
   }
 }
+*/
