@@ -55,11 +55,6 @@ export async function fetchFilteredReferenciales(query: string, currentPage: num
   noStore();
   const offset = (currentPage - 1) * ITEMS_PER_PAGE;
 
-  let dateQuery;
-  if (Date.parse(query)) {
-    dateQuery = new Date(query);
-  }
-
   try {
     console.log('Iniciando consulta a la base de datos...');
     const referenciales = await prisma.referenciales.findMany({
@@ -91,11 +86,6 @@ export async function fetchFilteredReferenciales(query: string, currentPage: num
 
 export async function fetchReferencialesPages(query: string) {
   noStore();
-
-  let dateQuery;
-  if (Date.parse(query)) {
-    dateQuery = new Date(query);
-  }
 
   try {
     const count = await prisma.referenciales.count({
