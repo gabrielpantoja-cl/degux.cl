@@ -41,6 +41,7 @@ export async function fetchReferencialesForMap() {
       return {
         ...item,
         latLng: [lat, lng] as [number, number],
+        geom: [lng, lat], // Añadir la propiedad geom
         geojson: undefined,
       };
     });
