@@ -16,7 +16,11 @@ const Mapa = () => {
     useEffect(() => {
         fetchReferencialesForMap()
             .then(response => {
-                const points = response.map((point, index) => {
+                const points = response.map(point => {
+                    if (!point.geom) {
+                        console.error('Error: point.geom is undefined for point', point);
+                        return null; // O manejar el error de otra manera
+                    }
                     // Asumiendo que el backend no proporciona un ID, usamos el índice como fallback
                     const uniqueId = point.id || `point-${point.geom.join('-')}`;
                     return {
@@ -24,7 +28,7 @@ const Mapa = () => {
                         id: uniqueId,
                         geom: [point.geom[1], point.geom[0]] // Invertir las coordenadas
                     };
-                });
+                }).filter(point => point !== null); // Filtrar puntos nulos
                 setData(points);
             })
             .catch(error => {
@@ -38,11 +42,11 @@ const Mapa = () => {
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             />
-            {data.map((point, index) => (
+            {data.map(point => (
                 <CircleMarker
-                key={point.id} // Usar el ID único como clave
-                center={point.geom}
-                radius={20}
+                    key={point.id} // Usar el ID único como clave
+                    center={point.geom}
+                    radius={20}
                 />
             ))}
         </MapContainer>
