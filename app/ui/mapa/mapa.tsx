@@ -7,7 +7,7 @@ import { fetchReferencialesForMap } from '../../lib/mapData';
 
 type Point = {
     id: string; // Asumiendo que cada punto tiene un identificador único
-    geom?: [number, number]; // Hacer que geom sea opcional
+    geom: [number, number]; // geom no es opcional
 };
 
 const Mapa = () => {
@@ -16,6 +16,7 @@ const Mapa = () => {
     useEffect(() => {
         fetchReferencialesForMap()
             .then(response => {
+                console.log('Datos recibidos del backend:', response); // Verificar la respuesta del backend
                 const points = response.map(point => {
                     if (!point.geom) {
                         console.error('Error: point.geom is undefined for point', point);
