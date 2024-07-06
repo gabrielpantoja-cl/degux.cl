@@ -1,13 +1,16 @@
 // app/ui/mapa/mapa.tsx
 'use client';
 import React, { useEffect, useState } from 'react';
-import { MapContainer, TileLayer, CircleMarker } from 'react-leaflet';
+import { MapContainer, TileLayer, CircleMarker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import { fetchReferencialesForMap } from '../../lib/mapData';
 
 type Point = {
-    id: string; // Asumiendo que cada punto tiene un identificador único
-    latLng: [number, number]; // latLng no es opcional
+    id: string;
+    latLng: [number, number];
+    fojas?: string;
+    numero?: string;
+    anio: string;
 };
 
 const Mapa = () => {
@@ -48,7 +51,15 @@ const Mapa = () => {
                     key={point.id} // Usar el ID único como clave
                     center={point.latLng} // Usar latLng en lugar de geom
                     radius={20}
-                />
+                >
+                    <Popup>
+                        <div>
+                            <p><strong>Fojas:</strong> {point.fojas}</p>
+                            <p><strong>Número:</strong> {point.numero}</p>
+                            <p><strong>Año:</strong> {point.anio}</p>
+                        </div>
+                    </Popup>
+                </CircleMarker>
             ))}
         </MapContainer>
     );
