@@ -7,7 +7,7 @@ import { fetchReferencialesForMap } from '../../lib/mapData';
 
 type Point = {
     id: string; // Asumiendo que cada punto tiene un identificador único
-    geom: [number, number];
+    geom?: [number, number]; // Hacer que geom sea opcional
 };
 
 const Mapa = () => {
@@ -45,7 +45,7 @@ const Mapa = () => {
             {data.map(point => (
                 <CircleMarker
                     key={point.id} // Usar el ID único como clave
-                    center={point.geom}
+                    center={point.geom as [number, number]} // Asegurarse de que geom esté definido
                     radius={20}
                 />
             ))}
