@@ -5,23 +5,23 @@ import { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: {
-    template: '%s | Acme Dashboard | @fitogabo',
-    default: 'Acme Dashboard by @fitogabo',
+    template: '%s | GAP Dashboard | @fitogabo',
+    default: 'GAP Dashboard by @fitogabo',
   },
   description: 'The official Next.js Course Dashboard, built with App Router.',
-  metadataBase: new URL('https://nextjs-dashboard-acme.vercel.app'),
+  metadataBase: new URL('https://next14-postgres.vercel.app/'),
   authors: [{ name: 'Gabriel Pantoja', url: 'https://www.linkedin.com/in/gapantoj/' }],
-  keywords: ['Next.js 14', 'Acme', 'Dashboard', 'nextjs.org/learn', 'Server Actions'],
+  keywords: ['Next.js 14', 'GAP', 'Dashboard', 'nextjs.org/learn', 'Server Actions'],
   openGraph: {
-    title: 'Acme Dashboard',
+    title: 'GAP Dashboard',
     description: 'The official Next.js Learn Dashboard built with App Router.',
-    url: 'https://nextjs-dashboard-acme.vercel.app',
+    url: 'https://next14-postgres.vercel.app/',
     type: 'website',
   },
   twitter: {
-    site: '@acme',
-    description: 'The official Next.js Learn Dashboard built with App Router.',
-    title: 'Acme Dashboard by @fitogabo',
+    site: '@GAP',
+    description: 'Base de datos colaborativa.',
+    title: 'GAP Dashboard by @fitogabo',
     creator: '@fitogabo',
   },
 };
