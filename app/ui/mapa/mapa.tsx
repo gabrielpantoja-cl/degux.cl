@@ -46,7 +46,7 @@ const Mapa = () => {
             {data.map(point => (
                 <CircleMarker
                     key={point.id} // Usar el ID único como clave
-                    center={point.geom as [number, number]} // Asegurarse de que geom esté definido
+                    center={point.geom} // Asegurarse de que geom esté definido
                     radius={20}
                 />
             ))}
