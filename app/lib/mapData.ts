@@ -9,7 +9,27 @@ const prisma = new PrismaClient();
 export async function fetchReferencialesForMap() {
   try {
     // Utilizar ST_AsGeoJSON para convertir la geometría a un formato compatible con Leaflet
-    const data = await prisma.$queryRaw`SELECT id, ST_AsGeoJSON(geom) as geojson, fojas, numero, anio, cbr, comprador, vendedor, predio, comuna, rol, fechaescritura, superficie, monto, observaciones, colaborador_id FROM referenciales WHERE geom IS NOT NULL`;
+    const data = await prisma.$queryRaw`
+      SELECT 
+        id, 
+        ST_AsGeoJSON(geom) as geojson, 
+        fojas, 
+        numero, 
+        anio, 
+        cbr, 
+        comprador, 
+        vendedor, 
+        predio, 
+        comuna, 
+        rol, 
+        fechaescritura, 
+        superficie, 
+        monto, 
+        observaciones, 
+        colaborador_id 
+      FROM referenciales 
+      WHERE geom IS NOT NULL
+    `;
 
     if (!Array.isArray(data)) {
       throw new Error('La respuesta de la base de datos no es un arreglo.');
@@ -32,5 +52,7 @@ export async function fetchReferencialesForMap() {
   } catch (error) {
     console.error('Error al obtener datos para el mapa:', error);
     throw error;
+  } finally {
+    await prisma.$disconnect();
   }
 }
