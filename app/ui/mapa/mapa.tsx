@@ -53,11 +53,13 @@ const Mapa = () => {
                     center={point.latLng} // Usar latLng en lugar de geom
                     radius={20}
                 >
-                    <Popup>
+                   <Popup>
                         <div>
-                            <p><strong>Fojas:</strong> {point.fojas}</p>
-                            <p><strong>Número:</strong> {point.numero}</p>
-                            <p><strong>Año:</strong> {point.anio}</p>
+                            {Object.entries(point).map(([key, value]) => (
+                                key !== 'id' && key !== 'latLng' && (
+                                    <p key={key}><strong>{key}:</strong> {value}</p>
+                                )
+                            ))}
                         </div>
                     </Popup>
                 </CircleMarker>
