@@ -1,3 +1,4 @@
+// auth.config.ts 
 import type { NextAuthConfig } from 'next-auth';
 import { NextResponse } from 'next/server';
 import GoogleProvider from 'next-auth/providers/google';
