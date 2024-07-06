@@ -1,6 +1,6 @@
 // Path: auth.config.ts
 import type { NextAuthConfig } from 'next-auth';
-import { NextResponse } from 'next/server'; // Asegúrate de añadir esta línea
+import { NextResponse } from 'next/server';
 
 export const authConfig = {
   providers: [],
