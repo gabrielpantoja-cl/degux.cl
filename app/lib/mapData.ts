@@ -1,5 +1,4 @@
 // app/lib/mapData.ts
-
 'use server';
 
 import { PrismaClient } from '@prisma/client';
@@ -41,7 +40,8 @@ export async function fetchReferencialesForMap() {
       return {
         ...item,
         latLng: [lat, lng] as [number, number],
-        geom: [lng, lat], // Añadir la propiedad geom
+        geom: [lng, lat], 
+        fechaescritura: item.fechaescritura ? new Date(item.fechaescritura).toISOString() : null, // Convertir fechaescritura a cadena de texto
         geojson: undefined,
       };
     });
