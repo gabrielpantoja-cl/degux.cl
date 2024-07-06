@@ -8,7 +8,6 @@ const prisma = new PrismaClient();
 
 export async function fetchReferencialesForMap() {
   try {
-    // Utilizar ST_AsGeoJSON para convertir la geometría a un formato compatible con Leaflet
     const data = await prisma.$queryRaw`
       SELECT 
         id, 
@@ -36,15 +35,13 @@ export async function fetchReferencialesForMap() {
     }
 
     const leafletData = data.map(item => {
-      // Parsear el GeoJSON para obtener las coordenadas
       const geojson = JSON.parse(item.geojson);
       const [lng, lat] = geojson.coordinates;
 
-      // No es necesario verificar NaN o límites ya que PostGIS asegura la validez de los datos
       return {
         ...item,
         latLng: [lat, lng] as [number, number],
-        geojson: undefined, // Remover el campo geojson para no duplicar datos
+        geojson: undefined,
       };
     });
 

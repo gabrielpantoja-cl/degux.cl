@@ -7,7 +7,7 @@ import { fetchReferencialesForMap } from '../../lib/mapData';
 
 type Point = {
     id: string; // Asumiendo que cada punto tiene un identificador único
-    geom: [number, number]; // geom no es opcional
+    latLng: [number, number]; // latLng no es opcional
 };
 
 const Mapa = () => {
@@ -27,7 +27,7 @@ const Mapa = () => {
                     return {
                         ...point,
                         id: uniqueId,
-                        geom: [point.geom[1], point.geom[0]] // Invertir las coordenadas
+                        latLng: [point.geom[1], point.geom[0]] // Invertir las coordenadas y asignar a latLng
                     };
                 }).filter(point => point !== null); // Filtrar puntos nulos
                 setData(points);
@@ -46,7 +46,7 @@ const Mapa = () => {
             {data.map(point => (
                 <CircleMarker
                     key={point.id} // Usar el ID único como clave
-                    center={point.geom} // Asegurarse de que geom esté definido
+                    center={point.latLng} // Usar latLng en lugar de geom
                     radius={20}
                 />
             ))}
