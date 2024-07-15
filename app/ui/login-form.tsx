@@ -26,7 +26,7 @@ export default function LoginForm() {
 
 function LoginButton() {
   return (
-    <Button className="mt-4 w-full" onClick={() => signIn("google", { callbackUrl: "http://localhost:3000/dashboard" })}>
+    <Button className="mt-4 w-full" onClick={() => signIn("google", { callbackUrl: process.env.NEXT_PUBLIC_CALLBACK_URL })}>
       Log in with Google <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
     </Button>
   );
