@@ -1,6 +1,20 @@
-export { auth as middleware } from '@/app/lib/auth';
+import { NextRequest, NextResponse } from 'next/server';
 
-// Don't invoke Middleware on some paths
+export const middleware = (request: NextRequest) => {
+    const path = request?.nextUrl?.pathname;
+    const isPublicPath = path === '/login';
+    const token = request.cookies.get('token')?.value || request.cookies.get('next-auth.session-token')?.value || '';
+
+    if(isPublicPath && token)
+        return NextResponse.redirect(new URL('/', request.nextUrl));
+
+    if(!isPublicPath && !token)
+        return NextResponse.redirect(new URL('/login', request.nextUrl));
+}
+
 export const config = {
-  matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)']
-};
+    matcher: [
+        '/',
+        '/login',
+    ]
+}
