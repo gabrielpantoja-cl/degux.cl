@@ -12,11 +12,8 @@ export default function Page() {
         <div className="flex flex-col justify-center gap-6 rounded-lg bg-gray-50 px-6 py-10 md:w-2/5 md:px-20">
           <div className="h-0 w-0 border-b-[30px] border-l-[20px] border-r-[20px] border-b-black border-l-transparent border-r-transparent" />
           <p className={`${lusitana.className} text-xl text-gray-800 md:text-3xl md:leading-normal`}>
-            <strong>Bienvenido a GAP.</strong> Una base de datos colaborativa desarrollada por{' '}
-            <a href="https://gabrielpantoja.cl/" className="text-blue-500">
-              Gabriel Pantoja
-            </a>
-            .
+          Bienvenido a <strong>referenciales.cl</strong><br />
+          Una base de datos colaborativa para la tasación inmobiliaria en Chile.
           </p>
           <Link
             href="/login"
