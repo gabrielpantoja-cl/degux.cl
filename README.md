@@ -1,7 +1,7 @@
 # Proyecto personal de base de datos de referenciales para la tasación
 usando Next.js App Router
 
-Este proyecto me inspiré con los repositorios:
+Este proyecto fue inspirado en codigo abierto, varios repositorios como:
 -   https://github.com/lllariogonzalez/nextjs-dashboard
 -   https://github.com/MiguelDominguezSanchez/tutorial-nextjs-14-midudev
 
