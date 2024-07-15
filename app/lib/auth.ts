@@ -16,6 +16,7 @@ const options = {
   callbacks: {
     async signIn({ user }: { user: any }) {
       // Custom sign-in logic
+      console.log(`User signed in: ${user.name}`);
       return true;
     },
     async redirect({ baseUrl }: { baseUrl: string }) {
