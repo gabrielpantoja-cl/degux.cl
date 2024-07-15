@@ -1,5 +1,18 @@
-// next.config.js is a file that allows you to customize the behavior of Next.js.
 /** @type {import('next').NextConfig} */
-const nextConfig = {};
+const nextConfig = {
+  output: "standalone",
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'lh3.googleusercontent.com'
+      },
+      {
+        protocol: 'https',
+        hostname: '*.googleusercontent.com'
+      }
+    ]
+  }
+};
 
 export default nextConfig;

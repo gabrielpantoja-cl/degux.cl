@@ -1,7 +1,5 @@
 # Proyecto personal de base de datos de referenciales para la tasación
-usando lo aprendido en el curso de Next.js version 14 App Router
-para mayor información visite la página del curso en
-https://nextjs.org/learn
+usando Next.js App Router
 
 Este proyecto me inspiré con los repositorios:
 -   https://github.com/lllariogonzalez/nextjs-dashboard
@@ -10,7 +8,7 @@ Este proyecto me inspiré con los repositorios:
 Crearemos una versión simplificada de un panel de transacciones de suelo que tiene:
 
 - Una página de inicio pública.
-- Una página de inicio de sesión.
+- Una página de inicio de sesión.   
 - Páginas del panel que están protegidas mediante autenticación.
 - La capacidad de los usuarios para agregar y editar referenciales. La operacipon de eliminar no la he usado ya que uno de los objetivos del proyecto es nutrir la base de datos. 
 

@@ -4,7 +4,7 @@
 import { z } from 'zod';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
-import { signIn } from '@/auth';
+import { signIn } from 'next-auth/react';
 import { PrismaClient } from '@prisma/client'
 
 const prisma = new PrismaClient()
@@ -109,16 +109,11 @@ export async function updateReferencial(
   }
 }
 
-export async function authenticate(
-  prevState: string | undefined,
-  formData: FormData,
-) {
+export async function authenticate() {
   try {
-    await signIn('credentials', Object.fromEntries(formData));
+    await signIn('google');
   } catch (error) {
-    if ((error as Error).message.includes('CredentialsSignin')) {
-      return 'CredentialSignin';
-    }
-    throw error;
+    console.error('Error during sign-in:', error);
+    return 'SignInError';
   }
 }

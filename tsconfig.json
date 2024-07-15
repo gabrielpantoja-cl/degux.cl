@@ -12,7 +12,7 @@
     "noEmit": true,
     "esModuleInterop": true,
     "module": "esnext",
-    "moduleResolution": "bundler",
+    "moduleResolution": "node", // Cambiado de "bundler" a "node"
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
@@ -26,7 +26,11 @@
       "@/*": [
         "./*"
       ]
-    }
+    },
+    "typeRoots": [
+      "./node_modules/@types",
+      "./types" // Añadido para incluir la carpeta types
+    ]
   },
   "include": [
     "next-env.d.ts",
@@ -34,7 +38,8 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     "app/lib/placeholder-data.js",
-    "app/ui/mapa/mapa.tsx"
+    "app/ui/mapa/mapa.tsx",
+    "types" // Añadido para incluir la carpeta types
   ],
   "exclude": [
     "node_modules"
