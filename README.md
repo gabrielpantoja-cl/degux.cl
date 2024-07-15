@@ -9,7 +9,7 @@ Crearemos una versión simplificada de un panel de transacciones de suelo que ti
 
 - Una página de inicio pública.
 - Una página de inicio de sesión.   
-- Páginas del panel que están protegidas mediante autenticación.
+- Páginas del panel que están protegidas mediante autenticación con google.
 - La capacidad de los usuarios para agregar y editar referenciales. La operacipon de eliminar no la he usado ya que uno de los objetivos del proyecto es nutrir la base de datos. 
 
 ## Descripción general
