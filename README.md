@@ -94,11 +94,4 @@ Para la administración de la base de datos, puedes utilizar herramientas como p
 
 ## Próximos pasos
 
-Pero este es solo el comienzo: Next.js tiene muchas otras características. Está diseñado para ayudarlo a construir proyectos, su próxima idea o incluso aplicaciones a gran escala con su equipo.
-
-Aquí hay algunos recursos para continuar explorando Next.js:
-
-- [Next.js Documentation](https://nextjs.org/docs)
-- [Next.js Templates](https://vercel.com/templates?framework=next.js)
-- [Next.js Repository](https://github.com/vercel/next.js)
-- [Vercel YouTube](https://www.youtube.com/@VercelHQ/videos)
+Autenticación con Google
