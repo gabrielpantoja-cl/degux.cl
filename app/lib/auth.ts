@@ -1,4 +1,3 @@
-//app/lib/auth.ts
 import NextAuth from 'next-auth';
 import GoogleProvider from 'next-auth/providers/google';
 import { PrismaClient } from '@prisma/client';
@@ -18,20 +17,18 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   ],
   callbacks: {
     async signIn({ user, account }) {
-      if (account && account.provider === 'google' && user.email && user.name) {
+      if (account?.provider === 'google' && user.email && user.name) {
         try {
-          // Verifica si el usuario ya existe en la base de datos
           const existingUser = await prisma.users.findUnique({
             where: { email: user.email },
           });
 
           if (!existingUser) {
-            // Si el usuario no existe, agrégalo a la base de datos
             await prisma.users.create({
               data: {
-                name: user.name ?? '', // Asegura que name no sea null o undefined
-                email: user.email ?? '', // Asegura que email no sea null o undefined
-                password: 'temporaryPassword', // Proporciona una contraseña temporal
+                name: user.name,
+                email: user.email,
+                password: 'temporaryPassword', // Considera usar un hash o un valor más seguro
               },
             });
           }
@@ -39,23 +36,25 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         } catch (error) {
           console.error('Error al agregar usuario a la base de datos:', error);
           return false;
+        } finally {
+          await prisma.$disconnect(); // Cierra la conexión de Prisma
         }
       }
       console.error('Error en signIn: Proveedor no es Google o falta email/name');
-      return false; // Devuelve false si account no es de Google o user.email/user.name es null/undefined
+      return false;
     },
   },
   pages: {
-    error: '/api/auth/error', // Ruta personalizada para manejar errores
+    error: '/api/auth/error',
   },
   cookies: {
     sessionToken: {
       name: `__Secure-next-auth.session-token`,
       options: {
         httpOnly: true,
-        sameSite: 'lax', // Puedes cambiar a 'strict' o 'none' según tus necesidades
+        sameSite: 'lax',
         path: '/',
-        secure: process.env.NODE_ENV === 'production', // Solo en producción
+        secure: process.env.NODE_ENV === 'production',
       },
     },
   },
