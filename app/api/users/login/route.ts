@@ -31,7 +31,13 @@ export const POST = async (request: NextRequest) => {
             success: true,
         });
 
-        response.cookies.set("token", token, { httpOnly: true });
+        // Configuración adecuada de la cookie
+        response.cookies.set("token", token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'none', 
+            path: '/',
+        });
 
         return response;
     } catch (err: any) {
