@@ -5,6 +5,10 @@ import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
+if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET) {
+  throw new Error('Missing Google client ID or secret');
+}
+
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
     GoogleProvider({
@@ -37,7 +41,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           return false;
         }
       }
+      console.error('Error en signIn: Proveedor no es Google o falta email/name');
       return false; // Devuelve false si account no es de Google o user.email/user.name es null/undefined
     },
+  },
+  pages: {
+    error: '/api/auth/error', // Ruta personalizada para manejar errores
   },
 });
