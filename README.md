@@ -12,32 +12,7 @@ Crearemos una versión simplificada de un panel de transacciones de suelo que ti
 - Páginas del panel que están protegidas mediante autenticación con google.
 - La capacidad de los usuarios para agregar y editar referenciales. La operacipon de eliminar no la he usado ya que uno de los objetivos del proyecto es nutrir la base de datos. 
 
-## Descripción general
-
-A continuación se ofrece una descripción general de las funciones:
-
-- [**Estilo:**](#estilo-css) las diferentes formas de diseñar su aplicación en Next.js.
-- [**Optimizaciones:**](#optimización-de-fuentes-e-imágenes) cómo optimizar imágenes, enlaces y fuentes.
-- [**Enrutamiento:**](#crear-diseños-y-páginas) cómo crear diseños y páginas anidados utilizando el enrutamiento del sistema de archivos.
-- [**Obtención de datos:**](#configurando-su-base-de-datos) cómo configurar una base de datos en Vercel y mejores prácticas para la obtención y transmisión por secuencias.
-- [**Renderizado estatico y dinámico:**](#representación-estática-y-dinámica) qué es el renderizado estático y cómo puede mejorar el rendimiento de su aplicación y qué es el renderizado dinámico y como usarlo.
-- [**Streaming**](#streaming) qué es el streaming y cuándo puedes utilizarlo con loading, Suspense y esqueletos de carga.
-- [**Búsqueda y paginación:**](#agregar-búsqueda-y-paginación) cómo implementar la búsqueda y paginación utilizando parámetros de búsqueda de URL.
-- [**Mutación de datos:**](#mutación-de-datos) cómo mutar datos usando React Server Actions y revalidar el caché de Next.js.
-- [**Manejo de errores:**](#manejo-de-errores) cómo manejar errores generales y 404 no encontrados.
-- [**Validación y accesibilidad de formularios:**](#mejora-de-la-accesibilidad) cómo realizar la validación de formularios del lado del servidor y consejos para mejorar la accesibilidad.
 - [**Autenticación:**](#agregar-autenticación) cómo agregar autenticación a su aplicación usando NextAuth.js y Middleware.
-- [**Metadatos:**](#agregar-metadatos) cómo agregar metadatos y preparar su aplicación para compartir en redes sociales.
-
-> ⚠️ Nota ⚠️
->
-> Este proyecto supone que tienes conocimientos básicos de React y JavaScript/TypeScript.
->
-> Requisitos del Sistema:
->
-> - Node.js 18 o posterior instalado.
-> - Sistemas operativos: macOS, Windows (incluido WSL) o Linux.
-> - Además, también necesitarás una cuenta de GitHub y una cuenta de Vercel.
 
 ## Inicio del Proyecto
 
