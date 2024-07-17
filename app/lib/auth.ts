@@ -48,4 +48,15 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   pages: {
     error: '/api/auth/error', // Ruta personalizada para manejar errores
   },
+  cookies: {
+    sessionToken: {
+      name: `__Secure-next-auth.session-token`,
+      options: {
+        httpOnly: true,
+        sameSite: 'lax', // Puedes cambiar a 'strict' o 'none' según tus necesidades
+        path: '/',
+        secure: process.env.NODE_ENV === 'production', // Solo en producción
+      },
+    },
+  },
 });
