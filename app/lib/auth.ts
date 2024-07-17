@@ -28,7 +28,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
               data: {
                 name: user.name,
                 email: user.email,
-                password: 'temporaryPassword', // Considera usar un hash o un valor más seguro
+                password: 'temporaryPassword', 
               },
             });
           }
@@ -37,11 +37,18 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           console.error('Error al agregar usuario a la base de datos:', error);
           return false;
         } finally {
-          await prisma.$disconnect(); // Cierra la conexión de Prisma
+          await prisma.$disconnect(); 
         }
       }
       console.error('Error en signIn: Proveedor no es Google o falta email/name');
       return false;
+    },
+    async redirect({ url, baseUrl }) {
+      // Evitar bucles de redirección
+      if (url.startsWith(baseUrl)) {
+        return url;
+      }
+      return baseUrl;
     },
   },
   pages: {
