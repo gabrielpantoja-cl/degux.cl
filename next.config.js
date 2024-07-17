@@ -16,8 +16,8 @@ const nextConfig = {
     ]
   },
   i18n: {
-    locales: ['en', 'es'], // Agrega los idiomas que soporta tu aplicación
-    defaultLocale: 'en', // Establece el idioma predeterminado
+    locales: ['en', 'es'], 
+    defaultLocale: 'en', 
   },
   webpack(config, { isServer }) {
     if (!isServer) {
