@@ -1,21 +1,25 @@
-import NextAuth from "next-auth";
-import { NextResponse, type NextRequest } from "next/server"; // Importar NextRequest
-import authConfig from "./auth.config";
+import { NextResponse, type NextRequest } from "next/server";
 
 // Extender el tipo NextRequest para incluir la propiedad auth
 interface AuthenticatedNextRequest extends NextRequest {
   auth?: any;
 }
 
-const { auth } = NextAuth(authConfig);
-
 const publicRoutes = ["/", "/prices"];
 const authRoutes = ["/login", "/register"];
 const apiAuthPrefix = "/api/auth";
 
-export default auth((req: AuthenticatedNextRequest) => { // Usar el tipo extendido
+// Función para verificar la autenticación (ejemplo básico)
+const isAuthenticated = (req: AuthenticatedNextRequest): boolean => {
+  // Aquí deberías implementar tu lógica de autenticación
+  // Por ejemplo, verificar un token en las cookies o en los encabezados
+  const token = req.cookies.get("auth-token");
+  return !!token;
+};
+
+export default function middleware(req: AuthenticatedNextRequest) {
   const { nextUrl } = req;
-  const isLoggedIn = !!req.auth;
+  const isLoggedIn = isAuthenticated(req);
 
   console.log({ isLoggedIn, path: nextUrl.pathname });
 
@@ -44,7 +48,7 @@ export default auth((req: AuthenticatedNextRequest) => { // Usar el tipo extendi
   }
 
   return NextResponse.next();
-});
+}
 
 export const config = {
   matcher: ["/((?!.*\\..*|_next).*)", "/", "/(api|trpc)(.*)"],
