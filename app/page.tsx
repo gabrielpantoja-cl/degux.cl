@@ -1,3 +1,4 @@
+// app/page.tsx
 import AcmeLogo from '@/app/ui/acme-logo';
 import { lusitana } from '@/app/ui/fonts';
 import Image from 'next/image';

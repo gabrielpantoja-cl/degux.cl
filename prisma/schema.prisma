@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 datasource db {
   provider = "postgresql"
   url      = env("POSTGRES_PRISMA_URL")
@@ -8,6 +5,11 @@ datasource db {
 
 generator client {
   provider = "prisma-client-js"
+}
+
+enum Role {
+  user
+  admin
 }
 
 model referenciales {
@@ -32,13 +34,39 @@ model referenciales {
 }
 
 model users {
-  id       String @id @default(dbgenerated("concat('user-', replace(cast(gen_random_uuid() as text), '-', ''))"))
-  name     String?
-  email    String @unique
-  password String?
-  avatar String?
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  password      String?
+  emailVerified DateTime?
+  image         String?
+  role          Role      @default(user)
+
+  accounts      Account[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model Account {
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user users @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([provider, providerAccountId])
 }
 
 model colaboradores {
@@ -47,4 +75,12 @@ model colaboradores {
   email         String          @unique
   image_url     String
   referenciales referenciales[]
+}
+
+model VerificationToken {
+  identifier String   @unique
+  token      String
+  expires    DateTime
+
+  @@id([identifier])
 }
