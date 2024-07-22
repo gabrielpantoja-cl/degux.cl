@@ -12,13 +12,11 @@ if (!googleClientId || !googleClientSecret) {
   throw new Error("Missing Google client ID or secret in environment variables");
 }
 
-const authConfig = {
-  providers: [
+const providers = [
     GoogleProvider({
       clientId: googleClientId,
       clientSecret: googleClientSecret,
     }),
-  ],
-};
-
-export default authConfig;
+  ];
+  
+  export default providers;

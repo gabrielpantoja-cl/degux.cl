@@ -31,14 +31,14 @@
       "./node_modules/@types",
       "./types"
     ],
-    "baseUrl": ".", // Añadido para mejorar la resolución de módulos
-    "rootDir": ".", // Añadido para definir el directorio raíz
-    "strictNullChecks": true, // Añadido para mejorar la detección de errores
-    "strictFunctionTypes": true, // Añadido para mejorar la detección de errores
-    "strictPropertyInitialization": true, // Añadido para mejorar la detección de errores
-    "noImplicitAny": true, // Añadido para mejorar la detección de errores
-    "noImplicitThis": true, // Añadido para mejorar la detección de errores
-    "alwaysStrict": true // Añadido para mejorar la detección de errores
+    "baseUrl": ".", 
+    "rootDir": ".", 
+    "strictNullChecks": true, 
+    "strictFunctionTypes": true, 
+    "strictPropertyInitialization": true, 
+    "noImplicitAny": true, 
+    "noImplicitThis": true, 
+    "alwaysStrict": true 
   },
   "include": [
     "next-env.d.ts",
