@@ -48,8 +48,20 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       }
       return baseUrl;
     },
+    async session({ session, user }) {
+      // Agregar información adicional a la sesión si es necesario
+      session.user.id = user.id;
+      return session;
+    },
+    async jwt({ token, user }) {
+      // Agregar información adicional al token JWT si es necesario
+      if (user) {
+        token.id = user.id;
+      }
+      return token;
+    },
   },
-    cookies: {
+  cookies: {
     sessionToken: {
       name: `__Secure-next-auth.session-token`,
       options: {
@@ -60,6 +72,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       },
     },
   },
+  debug: process.env.NEXTAUTH_DEBUG === 'true',
 });
 
 // Desconectar Prisma al finalizar
