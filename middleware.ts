@@ -3,6 +3,8 @@ import { NextRequest, NextResponse } from 'next/server';
 export const middleware = (request: NextRequest) => {
     const path = request.nextUrl.pathname;
     const isPublicPath = path === '/login';
+    
+    // Obtener el token de las cookies
     const token = request.cookies.get('token')?.value || request.cookies.get('next-auth.session-token')?.value || '';
 
     // Si el usuario está autenticado y trata de acceder a /login, redirigir a la página de inicio
