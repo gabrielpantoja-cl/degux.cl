@@ -36,8 +36,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         } catch (error) {
           console.error('Error al agregar usuario a la base de datos:', error);
           return false;
-        } finally {
-          await prisma.$disconnect(); 
         }
       }
       console.error('Error en signIn: Proveedor no es Google o falta email/name');
@@ -52,7 +50,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     },
   },
   pages: {
-    error: '/api/auth/error',
+    error: '/auth/error', // Asegúrate de que esta ruta exista
   },
   cookies: {
     sessionToken: {
@@ -65,4 +63,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       },
     },
   },
+});
+
+// Desconectar Prisma al finalizar
+process.on('exit', async () => {
+  await prisma.$disconnect();
 });
