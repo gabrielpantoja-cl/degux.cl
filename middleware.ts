@@ -1,29 +1,51 @@
-import { NextRequest, NextResponse } from 'next/server';
+import NextAuth from "next-auth";
+import { NextResponse, type NextRequest } from "next/server"; // Importar NextRequest
+import authConfig from "./auth.config";
 
-export const middleware = (request: NextRequest) => {
-    const path = request.nextUrl.pathname;
-    const isPublicPath = path === '/login';
-    
-    // Obtener el token de las cookies
-    const token = request.cookies.get('token')?.value || request.cookies.get('next-auth.session-token')?.value || '';
-
-    // Si el usuario está autenticado y trata de acceder a /login, redirigir a la página de inicio
-    if (isPublicPath && token) {
-        return NextResponse.redirect(new URL('/', request.url));
-    }
-
-    // Si el usuario no está autenticado y trata de acceder a una página protegida, redirigir a /login
-    if (!isPublicPath && !token) {
-        return NextResponse.redirect(new URL('/login', request.url));
-    }
-
-    // Permitir el acceso a la página solicitada
-    return NextResponse.next();
+// Extender el tipo NextRequest para incluir la propiedad auth
+interface AuthenticatedNextRequest extends NextRequest {
+  auth?: any;
 }
+
+const { auth } = NextAuth(authConfig);
+
+const publicRoutes = ["/", "/prices"];
+const authRoutes = ["/login", "/register"];
+const apiAuthPrefix = "/api/auth";
+
+export default auth((req: AuthenticatedNextRequest) => { // Usar el tipo extendido
+  const { nextUrl } = req;
+  const isLoggedIn = !!req.auth;
+
+  console.log({ isLoggedIn, path: nextUrl.pathname });
+
+  // Permitir todas las rutas de API de autenticación
+  if (nextUrl.pathname.startsWith(apiAuthPrefix)) {
+    return NextResponse.next();
+  }
+
+  // Permitir acceso a rutas públicas sin importar el estado de autenticación
+  if (publicRoutes.includes(nextUrl.pathname)) {
+    return NextResponse.next();
+  }
+
+  // Redirigir a /dashboard si el usuario está logueado y trata de acceder a rutas de autenticación
+  if (isLoggedIn && authRoutes.includes(nextUrl.pathname)) {
+    return NextResponse.redirect(new URL("/dashboard", nextUrl));
+  }
+
+  // Redirigir a /login si el usuario no está logueado y trata de acceder a una ruta protegida
+  if (
+    !isLoggedIn &&
+    !authRoutes.includes(nextUrl.pathname) &&
+    !publicRoutes.includes(nextUrl.pathname)
+  ) {
+    return NextResponse.redirect(new URL("/login", nextUrl));
+  }
+
+  return NextResponse.next();
+});
 
 export const config = {
-    matcher: [
-        '/',
-        '/login',
-    ]
-}
+  matcher: ["/((?!.*\\..*|_next).*)", "/", "/(api|trpc)(.*)"],
+};
