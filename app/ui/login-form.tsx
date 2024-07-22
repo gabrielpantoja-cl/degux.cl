@@ -3,7 +3,7 @@
 
 import { ArrowRightIcon } from '@heroicons/react/20/solid';
 import { Button } from './button';
-import { signIn } from 'next-auth/react'; // Importar signIn de next-auth/react
+import { signIn } from 'next-auth/react'; 
 
 export default function LoginForm() {
   return (
@@ -19,8 +19,20 @@ export default function LoginForm() {
 }
 
 function LoginButton() {
+  const handleSignIn = async () => {
+    try {
+      await signIn("google", { callbackUrl: process.env.NEXT_PUBLIC_CALLBACK_URL });
+    } catch (error) {
+      console.error('Error al iniciar sesión:', error);
+    }
+  };
+
   return (
-    <Button className="mt-4 w-full" onClick={() => signIn("google", { callbackUrl: process.env.NEXT_PUBLIC_CALLBACK_URL })}>
+    <Button 
+      className="mt-4 w-full" 
+      onClick={handleSignIn}
+      aria-label="Log in with Google"
+    >
       Log in with Google <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
     </Button>
   );
