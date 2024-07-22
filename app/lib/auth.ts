@@ -4,15 +4,17 @@ import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
-if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET) {
+const { GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, NODE_ENV, NEXTAUTH_DEBUG } = process.env;
+
+if (!GOOGLE_CLIENT_ID || !GOOGLE_CLIENT_SECRET) {
   throw new Error('Missing Google client ID or secret');
 }
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
     GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      clientId: GOOGLE_CLIENT_ID,
+      clientSecret: GOOGLE_CLIENT_SECRET,
     }),
   ],
   callbacks: {
@@ -32,29 +34,27 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
               },
             });
           }
+          console.log('User authenticated successfully:', user.email);
           return true;
         } catch (error) {
-          console.error('Error al agregar usuario a la base de datos:', error);
+          console.error('Error adding user to the database:', error);
           return false;
         }
       }
-      console.error('Error en signIn: Proveedor no es Google o falta email/name');
+      console.error('SignIn error: Provider is not Google or missing email/name');
       return false;
     },
     async redirect({ url, baseUrl }) {
-      // Evitar bucles de redirección
-      if (url.startsWith(baseUrl)) {
-        return url;
-      }
-      return baseUrl;
+      // Avoid redirect loops
+      return url.startsWith(baseUrl) ? url : baseUrl;
     },
     async session({ session, user }) {
-      // Agregar información adicional a la sesión si es necesario
+      // Add additional information to the session if necessary
       session.user.id = user.id;
       return session;
     },
     async jwt({ token, user }) {
-      // Agregar información adicional al token JWT si es necesario
+      // Add additional information to the JWT if necessary
       if (user) {
         token.id = user.id;
       }
@@ -68,14 +68,18 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         httpOnly: true,
         sameSite: 'none',
         path: '/',
-        secure: process.env.NODE_ENV === 'production',
+        secure: NODE_ENV === 'production',
       },
     },
   },
-  debug: process.env.NEXTAUTH_DEBUG === 'true',
+  debug: NEXTAUTH_DEBUG === 'true',
 });
 
-// Desconectar Prisma al finalizar
+// Disconnect Prisma on process exit
 process.on('exit', async () => {
-  await prisma.$disconnect();
+  try {
+    await prisma.$disconnect();
+  } catch (error) {
+    console.error('Error disconnecting Prisma:', error);
+  }
 });
