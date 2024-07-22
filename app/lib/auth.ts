@@ -49,10 +49,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       return baseUrl;
     },
   },
-  pages: {
-    error: '/auth/error', // Asegúrate de que esta ruta exista
-  },
-  cookies: {
+    cookies: {
     sessionToken: {
       name: `__Secure-next-auth.session-token`,
       options: {
