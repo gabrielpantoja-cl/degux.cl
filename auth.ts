@@ -11,7 +11,7 @@ interface CustomUser {
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   adapter: PrismaAdapter(db),
-  providers, // Utiliza la configuración de proveedores desde authConfig
+  providers, 
   session: { strategy: "jwt" },
   callbacks: {
     jwt({ token, user }) {
