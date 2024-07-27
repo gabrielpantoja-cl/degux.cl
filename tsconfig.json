@@ -25,7 +25,16 @@
     "baseUrl": "./",
     "paths": {
       "@/*": [
-        "app/*"
+        "./*"
+      ],
+      "@/auth": [
+        "./auth"
+      ],
+      "@/auth.config": [
+        "./auth.config"
+      ],
+      "@/app/lib/zod": [
+        "./app/lib/zod"
       ]
     }
   },
