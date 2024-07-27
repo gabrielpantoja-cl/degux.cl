@@ -6,24 +6,24 @@ import { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: {
-    template: '%s | GAP Dashboard | @fitogabo',
-    default: 'GAP Dashboard by @fitogabo',
+    template: '%s | Dashboard | @referenciales.cl',
+    default: 'referenciales.cl Dashboard',
   },
   description: 'Base de datos colaborativa.',
   metadataBase: new URL('https://next14-postgres.vercel.app/'),
-  authors: [{ name: 'Gabriel Pantoja', url: 'https://www.linkedin.com/in/gapantoj/' }],
-  keywords: ['Next.js 14', 'GAP', 'Dashboard', 'nextjs.org/learn', 'Server Actions'],
+  authors: [{ name: 'referenciales.cl', url: 'https://www.referenciales.cl/' }],
+  keywords: ['Next.js 14', 'referenciales.cl', 'Dashboard', 'nextjs.org/learn', 'Server Actions'],
   openGraph: {
-    title: 'GAP Dashboard',
+    title: 'referenciales.cl Dashboard',
     description: 'Base de datos colaborativa.',
     url: 'https://next14-postgres.vercel.app/',
     type: 'website',
   },
   twitter: {
-    site: '@GAP',
+    site: '@referenciales.cl',
     description: 'Base de datos colaborativa.',
-    title: 'GAP Dashboard by @fitogabo',
-    creator: '@fitogabo',
+    title: 'referenciales.cl Dashboard',
+    creator: '@referenciales.cl',
   },
 };
 
