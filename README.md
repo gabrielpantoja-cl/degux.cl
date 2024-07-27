@@ -5,7 +5,6 @@ Este proyecto fue inspirado en codigo abierto, varios repositorios y desarrollad
 
 -   https://github.com/bluuweb/example-next-auth-v5
 -   https://github.com/vercel/nextjs-postgres-auth-starter
--   https://github.com/bluuweb/example-next-auth-v5
 
 Crearemos una versión simplificada de un panel de transacciones de suelo que tiene:
 
