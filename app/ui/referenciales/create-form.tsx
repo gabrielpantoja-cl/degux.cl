@@ -19,10 +19,10 @@ interface FormState {
 
 // Define las propiedades del componente Form
 interface FormProps {
-  colaboradores: { id: string; name: string; }[];
+  // Elimina colaboradores si no es necesario
 }
 
-const Form: React.FC<FormProps> = ({ colaboradores }) => {
+const Form: React.FC<FormProps> = () => {
 
   const initialState: FormState = { message: null, errors: {} };
   const [state, dispatch] = useFormState<FormState>(() => createReferencial(new FormData()), initialState);
