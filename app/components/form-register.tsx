@@ -5,7 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-import { registerAction } from "@/actions/auth-action";
+import { registerAction } from "@/app/actions/auth-action";
 import { Button } from "@/app/ui/button";
 import {
   Form,
@@ -15,7 +15,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/app/ui/form";
-import { Input } from "@/components/ui/input";
+import { Input } from "@/app/ui/input";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 
