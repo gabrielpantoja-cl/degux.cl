@@ -1,4 +1,5 @@
-import NextAuth from "next-auth";
+import NextAuth, { NextAuthOptions, Session, User } from "next-auth";
+import { JWT } from "next-auth/jwt";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import authConfig from "@/auth.config";
 import { db } from "@/app/lib/db";
@@ -7,29 +8,24 @@ import GoogleProvider from "next-auth/providers/google";
 const googleClientId = process.env.GOOGLE_CLIENT_ID ?? (() => { throw new Error("Missing GOOGLE_CLIENT_ID") })();
 const googleClientSecret = process.env.GOOGLE_CLIENT_SECRET ?? (() => { throw new Error("Missing GOOGLE_CLIENT_SECRET") })();
 
-export const { handlers, signIn, signOut, auth } = NextAuth({
+const options: NextAuthOptions = {
   adapter: PrismaAdapter(db),
   providers: [
     GoogleProvider({
       clientId: googleClientId,
       clientSecret: googleClientSecret,
     }),
-
   ],
   ...authConfig,
   session: { strategy: "jwt" },
   callbacks: {
-    // jwt() se ejecuta cada vez que se crea o actualiza un token JWT.
-    // Aquí es donde puedes agregar información adicional al token.
-    jwt({ token, user }) {
+    jwt({ token, user }: { token: JWT, user?: User }) {
       if (user) {
         token.role = user.role;
       }
       return token;
     },
-    // session() se utiliza para agregar la información del token a la sesión del usuario,
-    // lo que hace que esté disponible en el cliente.
-    session({ session, token }) {
+    session({ session, token }: { session: Session, token: JWT }) {
       if (session.user) {
         session.user.role = token.role;
       }
@@ -37,8 +33,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     },
   },
   events: {
-    // El evento linkAccount se dispara cuando una cuenta (proveedor OAuth: GitHub, Google, Facebook, etc.)  se vincula a un usuario existente en tu base de datos.
-    async linkAccount({ user }) {
+    async linkAccount({ user }: { user: User }) {
       await db.users.update({
         where: { id: user.id },
         data: {
@@ -50,4 +45,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   pages: {
     signIn: "/login",
   },
-});
+};
+
+const handlers = NextAuth(options);
+
+export { handlers };
