@@ -1,6 +1,6 @@
 import NextAuth, { NextAuthOptions, User, Account, Profile } from "next-auth";
 import { JWT } from "next-auth/jwt";
-import { PrismaAdapter } from "@next-auth/prisma-adapter"; 
+import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import providers from "@/auth.config";
 import { db } from "app/lib/db";
 
@@ -16,7 +16,7 @@ interface CustomToken extends JWT {
 
 const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(db),
-  providers, 
+  providers,
   session: { strategy: "jwt" },
   callbacks: {
     jwt({ token, user, account, profile, trigger, isNewUser, session }: { token: CustomToken, user?: User, account?: Account | null, profile?: Profile, trigger?: "signIn" | "signUp" | "update", isNewUser?: boolean, session?: any }) {
@@ -48,6 +48,10 @@ const authOptions: NextAuthOptions = {
 };
 
 const { handlers, signIn, signOut, auth } = NextAuth(authOptions);
+
+if (!handlers) {
+  throw new Error("handlers is undefined");
+}
 
 export { handlers, signIn, signOut, auth };
 export default authOptions;
