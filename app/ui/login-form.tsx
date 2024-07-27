@@ -1,68 +1,130 @@
-// app/ui/login-form.tsx
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { ArrowRightIcon } from '@heroicons/react/20/solid';
-import ButtonSocial from '../components/button-social';
-import { signIn } from 'next-auth/react';
+import { loginSchema } from "@/app/lib/zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 
-interface LoginFormProps {
+import { loginAction } from "@/actions/auth-action";
+import { Button } from "@/app/ui/button";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/app/ui/form";
+import { Input } from "@/app/ui/input";
+import { useRouter } from "next/navigation";
+import { useState, useTransition } from "react";
+
+import { FaGithub, FaGoogle } from "react-icons/fa6";
+import ButtonSocial from "@/app/components/button-social";
+
+interface FormLoginProps {
   isVerified: boolean;
   OAuthAccountNotLinked: boolean;
 }
 
-export default function LoginForm({ isVerified, OAuthAccountNotLinked }: LoginFormProps) {
-  return (
-    <div className="space-y-3">
-      <div className="flex-1 rounded-lg bg-gray-50 px-6 pb-4 pt-8">
-        <h1 className="mb-3 text-2xl">
-          Ingresa con Google para continuar.
-        </h1>
-        {OAuthAccountNotLinked && (
-          <p className="text-red-500">Tu cuenta de Google no está vinculada.</p>
-        )}
-      </div>
-      <LoginButton isVerified={isVerified} />
-    </div>
-  );
-}
-
-interface LoginButtonProps {
-  isVerified: boolean;
-}
-
-function LoginButton({ isVerified }: LoginButtonProps) {
-  const [loading, setLoading] = useState(false);
+const FormLogin = ({ isVerified, OAuthAccountNotLinked }: FormLoginProps) => {
   const [error, setError] = useState<string | null>(null);
+  const [isPending, startTransition] = useTransition();
+  const router = useRouter();
 
-  const handleSignIn = async () => {
-    console.log('Iniciando sesión...');
-    setLoading(true);
+  const form = useForm<z.infer<typeof loginSchema>>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+  });
+
+  async function onSubmit(values: z.infer<typeof loginSchema>) {
     setError(null);
-    try {
-      await signIn("google", { callbackUrl: process.env.NEXT_PUBLIC_CALLBACK_URL });
-      console.log('Inicio de sesión exitoso');
-    } catch (error) {
-      console.error('Error al iniciar sesión:', error);
-      setError('Error al iniciar sesión. Por favor, inténtalo de nuevo.');
-    } finally {
-      setLoading(false);
-    }
-  };
+    startTransition(async () => {
+      const response = await loginAction(values);
+      if (response.error) {
+        setError(response.error);
+      } else {
+        router.push("/dashboard");
+      }
+    });
+  }
 
   return (
-    <div>
-      <ButtonSocial
-        provider="google"
-        className="mt-4 w-full"
-        onClick={handleSignIn}
-        aria-label="Log in with Google"
-        disabled={!isVerified || loading}
-      >
-        {loading ? 'Cargando...' : 'Log in with Google'}
-        {!loading && <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />}
-      </ButtonSocial>
-      {error && <p className="mt-2 text-red-500">{error}</p>}
+    <div className="max-w-52">
+      <h1 className="mb-5 text-center text-2xl">Login</h1>
+      {isVerified && (
+        <p className="text-center text-green-500 mb-5 text-sm">
+          Email verified, you can now login
+        </p>
+      )}
+      {OAuthAccountNotLinked && (
+        <p className="text-center text-red-500 mb-5 text-sm">
+          To confirm your identity, sign in with the same account you used
+          originally.
+        </p>
+      )}
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="space-y-8"
+        >
+          <FormField
+            control={form.control}
+            name="email"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Email</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="email"
+                    type="email"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="password"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Password</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="password"
+                    type="password"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          {error && <FormMessage>{error}</FormMessage>}
+          <Button
+            type="submit"
+            disabled={isPending}
+          >
+            Submit
+          </Button>
+        </form>
+      </Form>
+      <div className="mt-5 space-y-4">
+        <ButtonSocial provider="github">
+          <FaGithub className="mr-2 h-4 w-4" />
+          <span>Sign in with Github</span>
+        </ButtonSocial>
+        <ButtonSocial provider="google">
+          <FaGoogle className="mr-2 h-4 w-4" />
+          <span>Sign in with Google</span>
+        </ButtonSocial>
+      </div>
     </div>
   );
-}
+};
+export default FormLogin;
