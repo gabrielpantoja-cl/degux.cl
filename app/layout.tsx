@@ -1,6 +1,6 @@
 // app/layout.tsx
 import React, { ReactNode } from 'react';
-import '@/app/ui/global.css';
+import '@/app/global.css';
 import { inter } from '@/app/ui/fonts';
 import { Metadata } from 'next';
 
