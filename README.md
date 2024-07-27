@@ -2,6 +2,8 @@
 Usando Next.js App Router
 
 Este proyecto fue inspirado en codigo abierto, varios repositorios y desarrolladores a los cuales agradezco como:
+
+-   https://github.com/bluuweb/example-next-auth-v5.git
 -   https://github.com/lllariogonzalez/nextjs-dashboard
 -   https://github.com/MiguelDominguezSanchez/tutorial-nextjs-14-midudev
 -   https://github.com/vercel/nextjs-postgres-auth-starter.git
