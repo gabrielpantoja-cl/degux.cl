@@ -1,49 +1,55 @@
 {
   "compilerOptions": {
-    "target": "es6", // Mantener el target ES6
-    "lib": ["dom", "dom.iterable", "esnext"], // Mantener las bibliotecas
-    "allowJs": true, // Permitir archivos JS
-    "skipLibCheck": true, // Omitir la verificación de bibliotecas
-    "strict": true, // Habilitar todas las verificaciones estrictas
-    "noEmit": true, // No emitir archivos
-    "esModuleInterop": true, // Habilitar la interoperabilidad de módulos ES
-    "module": "esnext", // Usar el módulo ESNext
-    "moduleResolution": "bundler", // Cambiar la resolución de módulos a 'bundler'
-    "resolveJsonModule": true, // Permitir la importación de módulos JSON
-    "isolatedModules": true, // Aislar módulos
-    "jsx": "preserve", // Preservar JSX
-    "incremental": true, // Habilitar compilación incremental
+    "target": "es6",
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "incremental": true,
     "plugins": [
       {
-        "name": "next" // Plugin de Next.js
+        "name": "next"
       }
     ],
     "paths": {
-      "@/*": ["./*"] // Alias para rutas
+      "@/*": [
+        "./*"
+      ]
     },
     "typeRoots": [
-      "./node_modules/@types", // Raíces de tipos
+      "./node_modules/@types",
       "./types"
     ],
-    "baseUrl": ".", // Base URL
-    "rootDir": ".", // Directorio raíz
-    "strictNullChecks": true, // Verificación estricta de null
-    "strictFunctionTypes": true, // Verificación estricta de tipos de funciones
-    "strictPropertyInitialization": true, // Inicialización estricta de propiedades
-    "noImplicitAny": true, // No permitir 'any' implícito
-    "noImplicitThis": true, // No permitir 'this' implícito
-    "alwaysStrict": true // Siempre usar modo estricto
+    "baseUrl": ".",
+    "rootDir": ".",
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "strictPropertyInitialization": true,
+    "noImplicitAny": true,
+    "noImplicitThis": true,
+    "alwaysStrict": true
   },
   "include": [
-    "next-env.d.ts", // Incluir definiciones de Next.js
-    "**/*.ts", // Incluir todos los archivos TS
-    "**/*.tsx", // Incluir todos los archivos TSX
-    ".next/types/**/*.ts", // Incluir tipos generados por Next.js
-    "app/lib/placeholder-data.js", // Incluir archivo específico
-    "app/ui/mapa/mapa.tsx", // Incluir archivo específico
-    "types" // Incluir directorio de tipos
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "app/lib/placeholder-data.js",
+    "app/ui/mapa/mapa.tsx",
+    "types"
   ],
   "exclude": [
-    "node_modules" // Excluir node_modules
+    "node_modules"
   ]
 }
