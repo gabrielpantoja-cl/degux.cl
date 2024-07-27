@@ -2,8 +2,14 @@
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 
-export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs));
+/**
+ * Combina clases utilizando `clsx` y las fusiona con `tailwind-merge`.
+ * 
+ * @param inputs - Lista de valores de clase que pueden ser cadenas, objetos o arreglos.
+ * @returns Una cadena de clases fusionadas.
+ */
+export function cn(...inputs: ClassValue[]): string {
+  return twMerge(clsx(...inputs));
 }
 
 export const formatCurrency = (amount: number) => {
