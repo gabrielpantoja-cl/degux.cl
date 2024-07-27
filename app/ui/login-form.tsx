@@ -3,8 +3,8 @@
 
 import { useState } from 'react';
 import { ArrowRightIcon } from '@heroicons/react/20/solid';
-import { Button } from './button';
-import { signIn } from 'next-auth/react'; 
+import ButtonSocial from '../components/button-social';
+import { signIn } from 'next-auth/react';
 
 interface LoginFormProps {
   isVerified: boolean;
@@ -52,15 +52,16 @@ function LoginButton({ isVerified }: LoginButtonProps) {
 
   return (
     <div>
-      <Button 
-        className="mt-4 w-full" 
+      <ButtonSocial
+        provider="google"
+        className="mt-4 w-full"
         onClick={handleSignIn}
         aria-label="Log in with Google"
         disabled={!isVerified || loading}
       >
-        {loading ? 'Cargando...' : 'Log in with Google'} 
+        {loading ? 'Cargando...' : 'Log in with Google'}
         {!loading && <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />}
-      </Button>
+      </ButtonSocial>
       {error && <p className="mt-2 text-red-500">{error}</p>}
     </div>
   );
