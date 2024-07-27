@@ -12,42 +12,16 @@
     "noEmit": true,
     "esModuleInterop": true,
     "module": "esnext",
-    "moduleResolution": "bundler",
+    "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
-    "incremental": true,
-    "plugins": [
-      {
-        "name": "next"
-      }
-    ],
-    "paths": {
-      "@/*": [
-        "./*"
-      ]
-    },
-    "typeRoots": [
-      "./node_modules/@types",
-      "./types"
-    ],
-    "baseUrl": ".",
-    "rootDir": ".",
-    "strictNullChecks": true,
-    "strictFunctionTypes": true,
-    "strictPropertyInitialization": true,
-    "noImplicitAny": true,
-    "noImplicitThis": true,
-    "alwaysStrict": true
+    "incremental": true
   },
   "include": [
     "next-env.d.ts",
     "**/*.ts",
-    "**/*.tsx",
-    ".next/types/**/*.ts",
-    "app/lib/placeholder-data.js",
-    "app/ui/mapa/mapa.tsx",
-    "types"
+    "**/*.tsx"
   ],
   "exclude": [
     "node_modules"
