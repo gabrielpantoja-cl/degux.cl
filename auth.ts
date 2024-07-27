@@ -47,7 +47,13 @@ const authOptions: NextAuthOptions = {
   },
 };
 
-const { handlers, signIn, signOut, auth } = NextAuth(authOptions);
+const authHandler = NextAuth(authOptions);
+
+if (!authHandler) {
+  throw new Error("authHandler is undefined");
+}
+
+const { handlers, signIn, signOut, auth } = authHandler;
 
 if (!handlers) {
   throw new Error("handlers is undefined");
