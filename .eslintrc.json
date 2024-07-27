@@ -1,3 +1,25 @@
 {
-  "extends": "next/core-web-vitals"
+  "extends": [
+    "eslint:recommended",
+    "plugin:react/recommended",
+    "plugin:jsx-a11y/recommended",
+    "plugin:import/errors",
+    "plugin:import/warnings",
+    "plugin:react-hooks/recommended",
+    "next/core-web-vitals"
+  ],
+  "plugins": [
+    "react",
+    "jsx-a11y",
+    "import",
+    "react-hooks"
+  ],
+  "rules": {
+    // Añade tus reglas personalizadas aquí
+  },
+  "settings": {
+    "react": {
+      "version": "detect"
+    }
+  }
 }
