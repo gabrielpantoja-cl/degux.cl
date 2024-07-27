@@ -84,7 +84,7 @@ export async function fetchFilteredReferenciales(query: string, currentPage: num
   }
 }
 
-export async function fetchReferencialesPages(query: string) {
+export async function fetchReferencialesPages() {
   noStore();
 
   try {
