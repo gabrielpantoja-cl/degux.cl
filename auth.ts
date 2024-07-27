@@ -1,27 +1,31 @@
-import NextAuth from "next-auth";
+import NextAuth, { NextAuthOptions, User, Account, Profile } from "next-auth";
+import { JWT } from "next-auth/jwt";
 import { PrismaAdapter } from "@next-auth/prisma-adapter"; 
 import providers from "@/auth.config";
 import { db } from "app/lib/db";
 
 // Definir la interfaz CustomUser
-interface CustomUser {
+interface CustomUser extends User {
   id: string;
   role: string;
 }
 
-export const { handlers, signIn, signOut, auth } = NextAuth({
+interface CustomToken extends JWT {
+  role?: string;
+}
+
+const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(db),
   providers, 
   session: { strategy: "jwt" },
   callbacks: {
-    jwt({ token, user }) {
+    jwt({ token, user, account, profile, trigger, isNewUser, session }: { token: CustomToken, user?: User, account?: Account | null, profile?: Profile, trigger?: "signIn" | "signUp" | "update", isNewUser?: boolean, session?: any }) {
       if (user) {
-        const customUser = user as CustomUser;
-        token.role = customUser.role;
+        token.role = (user as CustomUser).role;
       }
       return token;
     },
-    session({ session, token }) {
+    session({ session, token }: { session: any, token: CustomToken }) {
       if (session.user) {
         session.user.role = token.role as string;
       }
@@ -29,9 +33,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     },
   },
   events: {
-    async linkAccount({ user }) {
+    async linkAccount({ user }: { user: User }) {
       await db.users.update({
-        where: { id: user.id },
+        where: { id: (user as CustomUser).id },
         data: {
           emailVerified: new Date(),
         },
@@ -41,4 +45,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   pages: {
     signIn: "/login",
   },
-});
+};
+
+const { handlers, signIn, signOut, auth } = NextAuth(authOptions);
+
+export { handlers, signIn, signOut, auth };
+export default authOptions;
