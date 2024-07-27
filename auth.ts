@@ -1,41 +1,46 @@
-import NextAuth, { NextAuthOptions, User, Account, Profile } from "next-auth";
-import { JWT } from "next-auth/jwt";
+import NextAuth from "next-auth";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
-import providers from "@/auth.config";
-import { db } from "app/lib/db";
+import authConfig from "@/auth.config";
+import { db } from "@/app/lib/db";
+import GoogleProvider from "next-auth/providers/google";
 
-// Definir la interfaz CustomUser
-interface CustomUser extends User {
-  id: string;
-  role: string;
-}
+const googleClientId = process.env.GOOGLE_CLIENT_ID ?? (() => { throw new Error("Missing GOOGLE_CLIENT_ID") })();
+const googleClientSecret = process.env.GOOGLE_CLIENT_SECRET ?? (() => { throw new Error("Missing GOOGLE_CLIENT_SECRET") })();
 
-interface CustomToken extends JWT {
-  role?: string;
-}
-
-const authOptions: NextAuthOptions = {
+export const { handlers, signIn, signOut, auth } = NextAuth({
   adapter: PrismaAdapter(db),
-  providers,
+  providers: [
+    GoogleProvider({
+      clientId: googleClientId,
+      clientSecret: googleClientSecret,
+    }),
+
+  ],
+  ...authConfig,
   session: { strategy: "jwt" },
   callbacks: {
-    jwt({ token, user, account, profile, trigger, isNewUser, session }: { token: CustomToken, user?: User, account?: Account | null, profile?: Profile, trigger?: "signIn" | "signUp" | "update", isNewUser?: boolean, session?: any }) {
+    // jwt() se ejecuta cada vez que se crea o actualiza un token JWT.
+    // Aquí es donde puedes agregar información adicional al token.
+    jwt({ token, user }) {
       if (user) {
-        token.role = (user as CustomUser).role;
+        token.role = user.role;
       }
       return token;
     },
-    session({ session, token }: { session: any, token: CustomToken }) {
+    // session() se utiliza para agregar la información del token a la sesión del usuario,
+    // lo que hace que esté disponible en el cliente.
+    session({ session, token }) {
       if (session.user) {
-        session.user.role = token.role as string;
+        session.user.role = token.role;
       }
       return session;
     },
   },
   events: {
-    async linkAccount({ user }: { user: User }) {
+    // El evento linkAccount se dispara cuando una cuenta (proveedor OAuth: GitHub, Google, Facebook, etc.)  se vincula a un usuario existente en tu base de datos.
+    async linkAccount({ user }) {
       await db.users.update({
-        where: { id: (user as CustomUser).id },
+        where: { id: user.id },
         data: {
           emailVerified: new Date(),
         },
@@ -45,19 +50,4 @@ const authOptions: NextAuthOptions = {
   pages: {
     signIn: "/login",
   },
-};
-
-const authHandler = NextAuth(authOptions);
-
-if (!authHandler) {
-  throw new Error("authHandler is undefined");
-}
-
-const { handlers, signIn, signOut, auth } = authHandler;
-
-if (!handlers) {
-  throw new Error("handlers is undefined");
-}
-
-export { handlers, signIn, signOut, auth };
-export default authOptions;
+});
