@@ -1,5 +1,5 @@
 // app/(auth)/login/page.tsx
-import FormLogin from "@/ui/login-form";
+import FormLogin from "@/app/ui/login-form";
 
 const LoginPage = ({
   searchParams,
