@@ -1,7 +1,7 @@
 // app/ui/referenciales/create-form.tsx
 
 'use client';
-
+import React from "react";
 import Link from 'next/link';
 import { CurrencyDollarIcon } from '@heroicons/react/24/outline';
 import { Button } from '@/app/ui/button';
@@ -65,8 +65,8 @@ const Form: React.FC<FormProps> = ({ colaboradores }) => {
           ) : null}
         </div>
 
-         {/* Referencial Fojas */}
-         <div className="mb-4">
+        {/* Referencial Fojas */}
+        <div className="mb-4">
           <label htmlFor="amount" className="mb-2 block text-sm font-medium">
             Fojas
           </label>
@@ -97,8 +97,8 @@ const Form: React.FC<FormProps> = ({ colaboradores }) => {
           ) : null}
         </div>
 
-         {/* Referencial Numero */}
-         <div className="mb-4">
+        {/* Referencial Numero */}
+        <div className="mb-4">
           <label htmlFor="amount" className="mb-2 block text-sm font-medium">
             Número
           </label>
@@ -129,8 +129,8 @@ const Form: React.FC<FormProps> = ({ colaboradores }) => {
           ) : null}
         </div>
 
-         {/* Referencial Año */}
-         <div className="mb-4">
+        {/* Referencial Año */}
+        <div className="mb-4">
           <label htmlFor="amount" className="mb-2 block text-sm font-medium">
             Año
           </label>
@@ -161,8 +161,8 @@ const Form: React.FC<FormProps> = ({ colaboradores }) => {
           ) : null}
         </div>
 
-         {/* Referencial CBR */}
-         <div className="mb-4">
+        {/* Referencial CBR */}
+        <div className="mb-4">
           <label htmlFor="amount" className="mb-2 block text-sm font-medium">
             CBR
           </label>
@@ -193,8 +193,8 @@ const Form: React.FC<FormProps> = ({ colaboradores }) => {
           ) : null}
         </div>
 
-         {/* Referencial Comuna */}
-         <div className="mb-4">
+        {/* Referencial Comuna */}
+        <div className="mb-4">
           <label htmlFor="amount" className="mb-2 block text-sm font-medium">
             Comuna
           </label>
@@ -225,8 +225,8 @@ const Form: React.FC<FormProps> = ({ colaboradores }) => {
           ) : null}
         </div>
 
-         {/* Referencial Rol */}
-         <div className="mb-4">
+        {/* Referencial Rol */}
+        <div className="mb-4">
           <label htmlFor="amount" className="mb-2 block text-sm font-medium">
             Rol de Avalúo
           </label>
@@ -257,8 +257,8 @@ const Form: React.FC<FormProps> = ({ colaboradores }) => {
           ) : null}
         </div>
 
-         {/* Referencial Predio */}
-         <div className="mb-4">
+        {/* Referencial Predio */}
+        <div className="mb-4">
           <label htmlFor="amount" className="mb-2 block text-sm font-medium">
             Predio
           </label>
@@ -289,8 +289,8 @@ const Form: React.FC<FormProps> = ({ colaboradores }) => {
           ) : null}
         </div>
 
-         {/* Referencial Vendedor */}
-         <div className="mb-4">
+        {/* Referencial Vendedor */}
+        <div className="mb-4">
           <label htmlFor="amount" className="mb-2 block text-sm font-medium">
             Vendedor
           </label>
@@ -321,8 +321,8 @@ const Form: React.FC<FormProps> = ({ colaboradores }) => {
           ) : null}
         </div>
 
-         {/* Referencial Comprador */}
-         <div className="mb-4">
+        {/* Referencial Comprador */}
+        <div className="mb-4">
           <label htmlFor="amount" className="mb-2 block text-sm font-medium">
             Comprador
           </label>
@@ -353,8 +353,8 @@ const Form: React.FC<FormProps> = ({ colaboradores }) => {
           ) : null}
         </div>
 
-         {/* Referencial Superficie */}
-         <div className="mb-4">
+        {/* Referencial Superficie */}
+        <div className="mb-4">
           <label htmlFor="amount" className="mb-2 block text-sm font-medium">
             Superficie
           </label>
@@ -385,8 +385,8 @@ const Form: React.FC<FormProps> = ({ colaboradores }) => {
           ) : null}
         </div>
 
-         {/* Referencial Monto */}
-         <div className="mb-4">
+        {/* Referencial Monto */}
+        <div className="mb-4">
           <label htmlFor="amount" className="mb-2 block text-sm font-medium">
             Monto
           </label>
@@ -417,8 +417,8 @@ const Form: React.FC<FormProps> = ({ colaboradores }) => {
           ) : null}
         </div>
 
-         {/* Referencial Fecha de Escritura */}
-         <div className="mb-4">
+        {/* Referencial Fecha de Escritura */}
+        <div className="mb-4">
           <label htmlFor="amount" className="mb-2 block text-sm font-medium">
             Fecha de escritura
           </label>
@@ -449,8 +449,8 @@ const Form: React.FC<FormProps> = ({ colaboradores }) => {
           ) : null}
         </div>
 
-         {/* Referencial Latitud */}
-         <div className="mb-4">
+        {/* Referencial Latitud */}
+        <div className="mb-4">
           <label htmlFor="amount" className="mb-2 block text-sm font-medium">
             Latitud
           </label>
@@ -481,8 +481,8 @@ const Form: React.FC<FormProps> = ({ colaboradores }) => {
           ) : null}
         </div>
 
-         {/* Referencial Longitud */}
-         <div className="mb-4">
+        {/* Referencial Longitud */}
+        <div className="mb-4">
           <label htmlFor="amount" className="mb-2 block text-sm font-medium">
             Longitud
           </label>
@@ -513,8 +513,8 @@ const Form: React.FC<FormProps> = ({ colaboradores }) => {
           ) : null}
         </div>
 
-         {/* Referencial Observaciones */}
-         <div className="mb-4">
+        {/* Referencial Observaciones */}
+        <div className="mb-4">
           <label htmlFor="amount" className="mb-2 block text-sm font-medium">
             Observaciones
           </label>
