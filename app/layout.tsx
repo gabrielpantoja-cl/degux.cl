@@ -1,7 +1,7 @@
 // app/layout.tsx
-import React, { ReactNode } from 'react';
+import React from 'react';
 import '@/app/global.css';
-import { inter } from '@/app/ui/fonts';
+import { inter } from '@/ui/fonts';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
