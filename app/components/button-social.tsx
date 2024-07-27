@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react"; // Agrega esta línea
 import { Button } from "@/app/ui/button";
 import { signIn } from "next-auth/react";
 
@@ -15,4 +16,5 @@ const ButtonSocial = ({ children, provider }: ButtonSocialProps) => {
 
   return <Button onClick={handleClick}>{children}</Button>;
 };
+
 export default ButtonSocial;
