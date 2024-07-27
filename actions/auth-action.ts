@@ -4,21 +4,20 @@ import { signIn } from "@/auth";
 import { db } from "@/app/lib/db";
 import { loginSchema, registerSchema } from "@/app/lib/zod";
 import bcrypt from "bcryptjs";
-import { AuthError } from "next-auth";
 import { z } from "zod";
 
 export const loginAction = async (values: z.infer<typeof loginSchema>) => {
   try {
-    await signIn("credentials", {
+    const result = await signIn("credentials", {
       email: values.email,
       password: values.password,
       redirect: false,
     });
+    if (result?.error) {
+      return { error: result.error };
+    }
     return { success: true };
   } catch (error) {
-    if (error instanceof AuthError) {
-      return { error: error.cause?.err?.message };
-    }
     return { error: "error 500" };
   }
 };
@@ -35,7 +34,7 @@ export const registerAction = async (
     }
 
     // verificar si el usuario ya existe
-    const user = await db.user.findUnique({
+    const user = await db.users.findUnique({
       where: {
         email: data.email,
       },
@@ -64,7 +63,7 @@ export const registerAction = async (
     const passwordHash = await bcrypt.hash(data.password, 10);
 
     // crear el usuario
-    await db.user.create({
+    await db.users.create({
       data: {
         email: data.email,
         name: data.name,
@@ -72,17 +71,18 @@ export const registerAction = async (
       },
     });
 
-    await signIn("credentials", {
+    const result = await signIn("credentials", {
       email: data.email,
       password: data.password,
       redirect: false,
     });
 
+    if (result?.error) {
+      return { error: result.error };
+    }
+
     return { success: true };
   } catch (error) {
-    if (error instanceof AuthError) {
-      return { error: error.cause?.err?.message };
-    }
     return { error: "error 500" };
   }
 };
