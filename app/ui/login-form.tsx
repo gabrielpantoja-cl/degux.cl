@@ -36,10 +36,12 @@ function LoginButton({ isVerified }: LoginButtonProps) {
   const [error, setError] = useState<string | null>(null);
 
   const handleSignIn = async () => {
+    console.log('Iniciando sesión...');
     setLoading(true);
     setError(null);
     try {
       await signIn("google", { callbackUrl: process.env.NEXT_PUBLIC_CALLBACK_URL });
+      console.log('Inicio de sesión exitoso');
     } catch (error) {
       console.error('Error al iniciar sesión:', error);
       setError('Error al iniciar sesión. Por favor, inténtalo de nuevo.');

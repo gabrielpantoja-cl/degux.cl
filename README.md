@@ -99,3 +99,4 @@ Para la administración de la base de datos, puedes utilizar herramientas como p
 ## Próximos pasos
 
 Autenticación con Google
+Carga masiva de datos desde xlsx
