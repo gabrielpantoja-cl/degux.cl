@@ -2,11 +2,9 @@
 
 import Form from '@/app/ui/referenciales/create-form';
 import Breadcrumbs from '@/app/ui/referenciales/breadcrumbs';
-import { fetchColaboradores } from '@/app/lib/colaboradores';
+// import { fetchColaboradores } from '@/app/lib/colaboradores';
 
-export default async function Page() {
-  const colaboradores = await fetchColaboradores();
-
+export default function Page() {
   return (
     <main>
       <Breadcrumbs
@@ -19,7 +17,7 @@ export default async function Page() {
           },
         ]}
       />
-      <Form colaboradores={colaboradores} />
+      <Form />
     </main>
   );
 }
