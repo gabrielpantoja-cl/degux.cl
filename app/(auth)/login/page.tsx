@@ -1,4 +1,4 @@
-// page.tsx
+// app/(auth)/login/page.tsx
 import FormLogin from "@/app/ui/login-form";
 
 const LoginPage = ({
