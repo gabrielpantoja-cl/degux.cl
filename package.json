@@ -9,8 +9,6 @@
     "postinstall": "prisma generate"
   },
   "dependencies": {
-    "@eslint/config-array": "^0.17.0",
-    "@eslint/object-schema": "^2.1.4",
     "@heroicons/react": "^2.0.18",
     "@next-auth/prisma-adapter": "^1.0.7",
     "@next/bundle-analyzer": "^14.2.5",
