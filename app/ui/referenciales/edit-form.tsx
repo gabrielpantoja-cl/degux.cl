@@ -3,7 +3,7 @@
 
 import { Prisma } from '@prisma/client';
 import {
-  CurrencyDollarIcon,
+  //CurrencyDollarIcon,
   UserCircleIcon,
 } from '@heroicons/react/24/outline';
 import Link from 'next/link';
@@ -54,15 +54,15 @@ export default function EditReferencialForm({
           </label>
           <div className="relative mt-2 rounded-md">
             <div className="relative">
-            <input
-              id="fojas"
-              name="fojas"
-              type="number"
-              defaultValue={referencial.fojas} // Asumiendo que 'referencial' es el objeto que contiene los datos actuales
-              className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-              placeholder="Ingrese el número de fojas"
-  />
-        </div>
+              <input
+                id="fojas"
+                name="fojas"
+                type="number"
+                defaultValue={referencial.fojas} // Asumiendo que 'referencial' es el objeto que contiene los datos actuales
+                className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                placeholder="Ingrese el número de fojas"
+              />
+            </div>
           </div>
         </div>
       </div>
