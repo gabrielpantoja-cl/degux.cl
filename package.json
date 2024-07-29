@@ -1,6 +1,7 @@
 {
   "private": true,
   "scripts": {
+    "seed": "node prisma/seed.mjs",
     "build": "next build",
     "dev": "next dev",
     "start": "next start",
@@ -25,6 +26,7 @@
     "axios": "^1.6.8",
     "bcrypt": "^5.1.1",
     "bcryptjs": "^2.4.3",
+    "child_process": "^1.0.2",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "eslint-plugin-import": "^2.29.1",
@@ -59,7 +61,8 @@
     "@types/react": "^18.2.21",
     "@types/react-dom": "^18.2.14",
     "@types/tailwindcss": "^3.1.0",
-    "dotenv": "^16.3.1",
+    "@types/uuid": "^10.0.0",
+    "dotenv": "^16.4.5",
     "eslint": "^8",
     "eslint-config-next": "^14.2.5",
     "husky": "^8.0.1",
