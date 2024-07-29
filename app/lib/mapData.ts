@@ -40,8 +40,8 @@ export async function fetchReferencialesForMap() {
       return {
         ...item,
         latLng: [lat, lng] as [number, number],
-        geom: [lng, lat], 
-        fechaescritura: item.fechaescritura ? new Date(item.fechaescritura).toISOString() : null, // Convertir fechaescritura a cadena de texto
+        geom: [lng, lat],
+        fechaescritura: item.fechaescritura ? new Date(item.fechaescritura).toISOString() : null,
         geojson: undefined,
       };
     });

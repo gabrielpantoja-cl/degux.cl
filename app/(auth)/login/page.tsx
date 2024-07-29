@@ -12,7 +12,7 @@ const LoginPage = ({
   return (
     <FormLogin
       isVerified={isVerified}
-      OAuthAccountNotLinked={OAuthAccountNotLinked} // Ahora esta propiedad es válida
+      OAuthAccountNotLinked={OAuthAccountNotLinked}
     />
   );
 };
