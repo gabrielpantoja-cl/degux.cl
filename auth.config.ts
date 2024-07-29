@@ -20,43 +20,4 @@ const providers = [
   }),
 ];
 
-const options: NextAuthOptions = {
-  providers,
-  callbacks: {
-    async signIn({ account, profile }) {
-      if (account && account.provider === "google" && profile) {
-        // Guardar el usuario en la base de datos si no existe
-        const existingUser = await db.users.findUnique({ where: { email: profile.email } });
-        if (!existingUser) {
-          await db.users.create({
-            data: {
-              email: profile.email || '',
-              name: profile.name || '',
-              image: (profile as any).picture || '', // Usar 'as any' para evitar el error de tipo
-            },
-          });
-        }
-        return true;
-      }
-      return false;
-    },
-  },
-  events: {
-    async createUser({ user }) {
-      // Generar un token de verificación
-      const verificationToken = nanoid();
-      // Guardar el token en la base de datos
-      await db.verificationToken.create({
-        data: {
-          identifier: user.email || '',
-          token: verificationToken,
-          expires: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24 horas
-        },
-      });
-      // Enviar el correo de verificación
-      await sendEmailVerification(user.email || '', verificationToken);
-    },
-  },
-};
-
-export default options;
+export default providers satisfies NextAuthOptions['providers'];
