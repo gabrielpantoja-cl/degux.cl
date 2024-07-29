@@ -1,18 +1,21 @@
 import { PrismaClient } from '@prisma/client';
 import { v4 as uuidv4 } from 'uuid';
 import dotenv from 'dotenv';
+import bcrypt from 'bcrypt'; // Importar bcrypt
 
 dotenv.config(); // Cargar las variables de entorno
 
 const prisma = new PrismaClient();
 
 async function main() {
-  const colaborador = await prisma.colaboradores.create({
+  // Crear usuario básico
+  const hashedPassword = await bcrypt.hash('123456', 10);
+  const user = await prisma.users.create({
     data: {
       id: uuidv4(),
-      name: 'Juan Perez',
-      email: 'juan.perez@example.com',
-      image_url: 'https://example.com/image.jpg'
+      email: 'user@nextmail.com',
+      password: hashedPassword,
+      name: 'Next.js 14 Dashboard User'
     },
   });
 
@@ -24,13 +27,15 @@ async function main() {
     { lat: -39.8178, lng: -73.2425 }
   ];
 
+  // Crear referenciales
   for (const coord of valdiviaCoordinates) {
     await prisma.referenciales.create({
       data: {
         id: uuidv4(),
-        colaborador_id: colaborador.id,
+        colaborador_id: user.id,
         lat: coord.lat,
         lng: coord.lng,
+        location: { lat: coord.lat, lng: coord.lng },
         fojas: 123,
         numero: 1,
         anio: 2023,
