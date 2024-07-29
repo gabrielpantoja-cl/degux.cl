@@ -48,6 +48,6 @@ const options: NextAuthOptions = {
 };
 
 const handlers = NextAuth(options);
-const { signIn } = handlers;
+const { auth, signIn, signOut } = handlers;
 
-export { handlers, signIn };
+export { handlers, auth, signIn, signOut };

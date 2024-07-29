@@ -1,10 +1,10 @@
-import { db } from "app/lib/db"; 
+import { db } from "app/lib/db";
 import { loginSchema } from "@/app/lib/zod";
-import bcrypt from "bcryptjs"; 
-import { nanoid } from "nanoid"; 
-import { sendEmailVerification } from "app/lib/mail"; 
+import bcrypt from "bcryptjs";
+import { nanoid } from "nanoid";
+import { sendEmailVerification } from "app/lib/mail";
 import type { NextAuthOptions } from "next-auth"; // Cambiado a NextAuthOptions
-import GoogleProvider from "next-auth/providers/google"; 
+import GoogleProvider from "next-auth/providers/google";
 
 const googleClientId = process.env.GOOGLE_CLIENT_ID;
 const googleClientSecret = process.env.GOOGLE_CLIENT_SECRET;
