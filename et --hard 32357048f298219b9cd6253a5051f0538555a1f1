@@ -1,0 +1,32 @@
+[33mc6d1c96[m[33m ([m[1;36mHEAD -> [m[1;32mmaster[m[33m, [m[1;31morigin/master[m[33m)[m chore: Remove unused signOut function in auth.ts
+[33mc7e50af[m chore: Remove health route
+[33m64d83ea[m chore: Update auth.config.ts and auth.ts files
+[33m3235704[m chore: Update login-form.tsx to use react-hook-form and zod for form validation
+[33md3cde4a[m feat: Agregar funcionalidad de inicio de sesión con Google
+[33m8ea8332[m feat: Actualizar mensaje de bienvenida en la página de inicio
+[33mdb8e3eb[m chore: Export signIn function in auth.ts
+[33m7e2c380[m Refactor auth.ts to use authHandler variable
+[33m0cbaf6a[m chore: Refactor auth.ts to use authHandler variable
+[33m973597e[m chore: Refactor auth.ts to use authHandler variable
+[33me598df3[m chore: Update import statement in auth.ts file
+[33m25fdcc9[m Actualizar función fetchReferencialesPages para eliminar el parámetro de consulta
+[33m5a2131d[m Actualizar importación de módulo en form-register.tsx
+[33ma5263be[m Actualizar campo de fojas en el formulario de edición de referenciales
+[33m07efdde[m Eliminar colaboradores innecesarios en el componente Form
+[33mbdbf431[m Actualizar importación de módulo en form-register.tsx
+[33m929206c[m Actualizar función fetchReferencialesPages para eliminar el parámetro de consulta
+[33m63afea3[m Actualizar estilos globales para agregar bordes a todos los elementos y establecer el color de fondo y texto del cuerpo
+[33m51e6cd7[m Actualizar estilos globales para agregar bordes a todos los elementos y establecer el color de fondo y texto del cuerpo
+[33me4cb9ba[m Actualizar estilos globales para agregar bordes a todos los elementos y establecer el color de fondo y texto del cuerpo
+[33m3afb9bc[m Actualizar importación de módulo en form-register.tsx
+[33mf7a4f80[m Actualizar importación de módulo en form-register.tsx
+[33m000aae5[m Actualizar importación de módulo en form-register.tsx
+[33md14d6b3[m Eliminar componente de registro y su importación en form-register.tsx
+[33md168620[m Actualizar importación de módulo en form-register.tsx
+[33m0629b96[m Actualizar importación de módulo en form-register.tsx
+[33mba9ee48[m Actualizar importación de módulo en form-register.tsx
+[33m9be0e6f[m Actualizar dependencia ajv a la versión 8.17.1
+[33m378db15[m Actualizar dependencia ajv a la versión 8.17.1
+[33m2c5384b[m feat: Actualizar importación de módulo en form-register.tsx
+[33m64201e5[m Actualizar título y metadatos del Dashboard
+[33me617e46[m Actualizar título y metadatos del Dashboard
