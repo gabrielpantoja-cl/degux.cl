@@ -1,14 +1,17 @@
-import NextAuth, { NextAuthOptions, Session, User } from "next-auth";
-import { JWT } from "next-auth/jwt";
+import NextAuth from "next-auth";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import authConfig from "@/auth.config";
 import { db } from "@/app/lib/db";
 import GoogleProvider from "next-auth/providers/google";
 
-const googleClientId = process.env.GOOGLE_CLIENT_ID ?? (() => { throw new Error("Missing GOOGLE_CLIENT_ID") })();
-const googleClientSecret = process.env.GOOGLE_CLIENT_SECRET ?? (() => { throw new Error("Missing GOOGLE_CLIENT_SECRET") })();
+const googleClientId = process.env.GOOGLE_CLIENT_ID as string;
+const googleClientSecret = process.env.GOOGLE_CLIENT_SECRET as string;
 
-const options: NextAuthOptions = {
+if (!googleClientId || !googleClientSecret) {
+  throw new Error("Missing Google client ID or secret in environment variables");
+}
+
+export const { handlers, signIn, signOut, auth } = NextAuth({
   adapter: PrismaAdapter(db),
   providers: [
     GoogleProvider({
@@ -19,13 +22,13 @@ const options: NextAuthOptions = {
   ...authConfig,
   session: { strategy: "jwt" },
   callbacks: {
-    jwt({ token, user }: { token: JWT, user?: User }) {
+    jwt({ token, user }) {
       if (user) {
         token.role = user.role;
       }
       return token;
     },
-    session({ session, token }: { session: Session, token: JWT }) {
+    session({ session, token }) {
       if (session.user) {
         session.user.role = token.role;
       }
@@ -33,7 +36,7 @@ const options: NextAuthOptions = {
     },
   },
   events: {
-    async linkAccount({ user }: { user: User }) {
+    async linkAccount({ user }) {
       await db.users.update({
         where: { id: user.id },
         data: {
@@ -45,9 +48,4 @@ const options: NextAuthOptions = {
   pages: {
     signIn: "/login",
   },
-};
-
-const handlers = NextAuth(options);
-const { signIn } = handlers;
-
-export { handlers, signIn };
+});

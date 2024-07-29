@@ -3,7 +3,7 @@ import { loginSchema } from "@/app/lib/zod";
 import bcrypt from "bcryptjs";
 import { nanoid } from "nanoid";
 import { sendEmailVerification } from "app/lib/mail";
-import type { NextAuthOptions } from "next-auth"; // Cambiado a NextAuthOptions
+import type { NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 
 const googleClientId = process.env.GOOGLE_CLIENT_ID;
