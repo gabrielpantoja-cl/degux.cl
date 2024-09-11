@@ -1,7 +1,7 @@
 // app/layout.tsx
 
 import React from 'react';
-import '@/app/global.css';
+import '@/app/globals.css';
 import SessionProviderClient from '@/app/components/SessionProviderClient';
 import { inter } from '@/app/ui/fonts';
 import { Metadata } from 'next';
