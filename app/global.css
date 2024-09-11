@@ -1,32 +1,39 @@
 @tailwind base;
-
 @tailwind components;
-
 @tailwind utilities;
 
+/* Root adjustments for better text rendering */
+:root {
+  text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+  -moz-text-size-adjust: 100%;
+  font-smoothing: antialiased;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
 
+/* Universal selector for box-sizing and resetting padding/margin */
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+/* Prevent horizontal overflow */
+html,
+body {
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
+/* Custom styles for number input fields */
 input[type='number'] {
-
   -moz-appearance: textfield;
-
   appearance: textfield;
-
 }
 
-
-input[type='number']::-webkit-inner-spin-button {
-
-  -webkit-appearance: none;
-
-  margin: 0;
-
-}
-
-
+input[type='number']::-webkit-inner-spin-button,
 input[type='number']::-webkit-outer-spin-button {
-
   -webkit-appearance: none;
-
   margin: 0;
-
 }

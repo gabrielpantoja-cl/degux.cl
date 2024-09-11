@@ -6,7 +6,7 @@ import { db } from "@/app/lib/db";
 
 const options: NextAuthOptions = {
   adapter: PrismaAdapter(db),
-  providers: authConfig,
+  providers: authConfig.providers, // Usar authConfig.providers en lugar de authConfig
   session: { strategy: "jwt" },
   callbacks: {
     jwt({ token, user }: { token: JWT, user?: User }) {
@@ -21,6 +21,13 @@ const options: NextAuthOptions = {
       }
       return session;
     },
+    async redirect({ url, baseUrl }) {
+      console.log("Redirect attempt:", { url, baseUrl });
+      // Asegúrate de que la redirección sea a una URL segura
+      if (url.startsWith(baseUrl)) return url;
+      // Si no, redirige a la página de inicio
+      return baseUrl;
+    },
   },
   events: {
     async linkAccount({ user }: { user: User }) {
@@ -34,6 +41,16 @@ const options: NextAuthOptions = {
   },
   pages: {
     signIn: "/login",
+  },
+  secret: process.env.NEXTAUTH_SECRET, // Asegúrate de tener esto en tus variables de entorno
+  debug: process.env.NODE_ENV === 'development',
+  logger: {
+    error: (code, metadata) => {
+      console.error("Auth error:", code, metadata);
+    },
+    warn: (code) => {
+      console.warn("Auth warning:", code);
+    },
   },
 };
 
