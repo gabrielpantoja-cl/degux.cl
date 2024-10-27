@@ -32,6 +32,13 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+
+// Leer el contenido del archivo critical.css
+const criticalCSS = fs.readFileSync(
+  path.resolve(__dirname, '../public/critical.css'),
+  'utf8'
+);
+
   return (
     <html lang="en">
       <head>

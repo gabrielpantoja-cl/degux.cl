@@ -1,0 +1,49 @@
+/* Tailwind CSS base, components, and utilities */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Root adjustments for better text rendering */
+:root {
+  text-size-adjust: 100%;
+  /* Propiedad estándar */
+  -webkit-text-size-adjust: 100%;
+  /* Para navegadores WebKit */
+  -moz-text-size-adjust: 100%;
+  /* Para Firefox */
+  -ms-text-size-adjust: 100%;
+  /* Para Internet Explorer */
+  -webkit-font-smoothing: antialiased;
+  /* Para navegadores WebKit */
+  -moz-osx-font-smoothing: grayscale;
+  /* Para Firefox en macOS */
+}
+
+/* Universal selector for box-sizing and resetting padding/margin */
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+/* Prevent horizontal overflow */
+html,
+body {
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
+/* Custom styles for number input fields */
+input[type='number'] {
+  -moz-appearance: textfield;
+  -webkit-appearance: none;
+  appearance: textfield;
+}
+
+input[type='number']::-webkit-inner-spin-button,
+input[type='number']::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Otros estilos CSS... */
