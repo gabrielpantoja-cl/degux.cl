@@ -1,5 +1,5 @@
 // app/ui/referenciales/table.tsx
-import { UpdateReferencial } from '@/app/ui/referenciales/buttons';
+import { UpdateReferencial } from '@/components/ui/referenciales/buttons';
 import { formatDateToLocal } from '@/lib/utils';
 import { fetchFilteredReferenciales } from '@/lib/referenciales';
 

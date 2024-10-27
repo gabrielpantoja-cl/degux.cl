@@ -2,7 +2,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Button } from "@/app/ui/button";
+import { Button } from "@/components/ui/button";
 import { signIn } from "next-auth/react";
 
 interface ButtonSocialProps {
