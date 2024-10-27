@@ -5,9 +5,7 @@ import { z } from 'zod';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { signIn } from 'next-auth/react';
-import { PrismaClient } from '@prisma/client'
-
-const prisma = new PrismaClient()
+import { prisma } from '@/lib/prisma'; // Importa la instancia única de PrismaClient
 
 const ReferencialSchema = z.object({
   id: z.string(),
@@ -58,10 +56,7 @@ export async function createReferencial(formData: FormData) {
 // Use Zod to update the expected types
 const UpdateReferencial = ReferencialSchema.omit({ id: true, date: true });
 
-export async function updateReferencial(
-  id: string,
-  formData: FormData
-) {
+export async function updateReferencial(formData: FormData) {
   // Validate form fields using Zod
   const validatedFields = UpdateReferencial.safeParse({
     colaboradorId: formData.get('colaboradorId'),
