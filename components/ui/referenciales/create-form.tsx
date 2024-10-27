@@ -5,7 +5,7 @@ import React from "react";
 import Link from 'next/link';
 import { CurrencyDollarIcon } from '@heroicons/react/24/outline';
 import { Button } from '@/app/ui/button';
-import { createReferencial } from '@/app/lib/actions';
+import { createReferencial } from '@/lib/actions';
 import { useFormState } from 'react-dom';
 
 interface FormState {

@@ -2,8 +2,6 @@
 
 import React from 'react';
 import '@/app/globals.css';
-import SessionProviderClient from '@/app/components/SessionProviderClient';
-import { inter } from '@/app/ui/fonts';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -59,8 +57,8 @@ export default function RootLayout({
           crossOrigin="anonymous"
         />
       </head>
-      <body className={`${inter.className} antialiased`}>
-        <SessionProviderClient>{children}</SessionProviderClient>
+      <body className="antialiased">
+        {children}
       </body>
     </html>
   );

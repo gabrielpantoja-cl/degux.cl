@@ -1,4 +1,4 @@
-import { db } from "@/app/lib/db";
+import { db } from "@/lib/db";
 import { redirect } from "next/navigation";
 import { type NextRequest } from "next/server";
 

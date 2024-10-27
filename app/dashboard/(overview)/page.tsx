@@ -1,8 +1,8 @@
 // app/dashboard/(overview)/page.tsx
-import LatestReferenciales from '@/app/ui/dashboard/latest-referenciales';
-import { lusitana } from '@/app/ui/fonts';
+import LatestReferenciales from '@/components/ui/dashboard/latest-referenciales';
+import { lusitana } from '@/components/ui/fonts';
 import { Suspense } from 'react';
-import { CardsSkeleton, LatestReferencialesSkeleton } from '@/app/ui/skeletons';
+import { CardsSkeleton, LatestReferencialesSkeleton } from '@/components/ui/skeletons';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {

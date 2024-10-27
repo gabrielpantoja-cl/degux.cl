@@ -2,7 +2,7 @@
 import { ArrowPathIcon } from '@heroicons/react/24/outline';
 import clsx from 'clsx';
 import { lusitana } from '@/app/ui/fonts';
-import { fetchLatestReferenciales } from '@/app/lib/referenciales';
+import { fetchLatestReferenciales } from '@/lib/referenciales';
 
 type LatestReferencial = {
   id: string;

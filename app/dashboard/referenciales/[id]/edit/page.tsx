@@ -2,8 +2,8 @@
 
 import Form from '@/app/ui/referenciales/edit-form';
 import Breadcrumbs from '@/app/ui/referenciales/breadcrumbs';
-import { fetchReferencialById } from '@/app/lib/referenciales';
-import { fetchColaboradores } from '@/app/lib/colaboradores';
+import { fetchReferencialById } from '@/lib/referenciales';
+import { fetchColaboradores } from '@/lib/colaboradores';
 import { notFound } from 'next/navigation';
 
 export default async function Page({ params }: { params: { id: string } }) {

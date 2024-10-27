@@ -25,19 +25,22 @@
     "baseUrl": "./",
     "paths": {
       "@/*": [
-        "./*"
+        "*"
       ],
       "@/auth": [
-        "./auth"
-      ],
-      "@/auth.config": [
-        "./auth.config"
+        "lib/auth"
       ],
       "@/app/lib/zod": [
-        "./app/lib/zod"
+        "lib/zod"
       ],
-      "@/ui/*": [
-        "./ui/*"
+      "@/components/*": [
+        "components/*"
+      ],
+      "@/lib/*": [
+        "lib/*"
+      ],
+      "@/utils/*": [
+        "utils/*"
       ]
     }
   },

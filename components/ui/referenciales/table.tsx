@@ -1,7 +1,7 @@
 // app/ui/referenciales/table.tsx
 import { UpdateReferencial } from '@/app/ui/referenciales/buttons';
-import { formatDateToLocal } from '@/app/lib/utils';
-import { fetchFilteredReferenciales } from '@/app/lib/referenciales';
+import { formatDateToLocal } from '@/lib/utils';
+import { fetchFilteredReferenciales } from '@/lib/referenciales';
 
 export default async function ReferencialesTable({
   query,

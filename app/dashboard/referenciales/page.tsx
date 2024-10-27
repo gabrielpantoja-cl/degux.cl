@@ -1,12 +1,12 @@
 // app/dashboard/referenciales/page.tsx
-import Pagination from '@/app/ui/referenciales/pagination';
-import Search from '@/app/ui/search';
-import Table from '@/app/ui/referenciales/table';
-import { CreateReferencial } from '@/app/ui/referenciales/buttons';
-import { lusitana } from '@/app/ui/fonts';
-import { ReferencialesTableSkeleton } from '@/app/ui/skeletons';
+import Pagination from '@/components/ui/referenciales/pagination';
+import Search from '@/components/ui/search';
+import Table from '@/components/ui/referenciales/table';
+import { CreateReferencial } from '@/components/ui/referenciales/buttons';
+import { lusitana } from '@/components/ui/fonts';
+import { ReferencialesTableSkeleton } from '@/components/ui/skeletons';
 import { Suspense } from 'react';
-import { fetchReferencialesPages } from '@/app/lib/referenciales';
+import { fetchReferencialesPages } from '@/lib/referenciales';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {

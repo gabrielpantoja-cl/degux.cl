@@ -1,6 +1,6 @@
 // app/page.tsx
-import AcmeLogo from '@/app/ui/acme-logo';
-import { lusitana } from '@/app/ui/fonts';
+import AcmeLogo from '@/components/ui/acme-logo';
+import { lusitana } from '@/components/ui/fonts';
 import Image from 'next/image';
 import Link from 'next/link';
 
