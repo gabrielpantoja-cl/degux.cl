@@ -7,7 +7,7 @@ import {
   UserCircleIcon,
 } from '@heroicons/react/24/outline';
 import Link from 'next/link';
-import { Button } from '@/app/ui/button';
+import { Button } from '@/components/ui/button';
 
 type ReferencialForm = Prisma.referencialesUncheckedCreateInput;
 type ColaboradorField = Prisma.colaboradoresUncheckedCreateInput;
