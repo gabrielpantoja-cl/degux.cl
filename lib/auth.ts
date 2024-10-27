@@ -33,8 +33,20 @@ const authOptions: AuthOptions = {
       return session;
     },
     async redirect({ url, baseUrl }) {
-      console.log('Redirecting to:', url.startsWith(baseUrl) ? url : `${baseUrl}/dashboard`);
+      // Redirigir al dashboard después de la autenticación
       return url.startsWith(baseUrl) ? url : `${baseUrl}/dashboard`;
+    },
+    async signIn({ user, account, profile, email, credentials }) {
+      // Aquí puedes agregar lógica adicional para manejar el inicio de sesión
+      return true;
+    },
+    async jwt({ token, user, account, profile, isNewUser }) {
+      // Agregar información adicional al token JWT
+      if (user) {
+        token.id = user.id;
+        token.role = user.role;
+      }
+      return token;
     },
   },
   pages: {
