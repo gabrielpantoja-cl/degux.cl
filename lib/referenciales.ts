@@ -2,11 +2,10 @@
 
 'use server';
 
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '@/lib/prisma'; // Importa la instancia única de PrismaClient
 import { formatCurrency } from './utils';
 import { unstable_noStore as noStore } from 'next/cache';
 
-const prisma = new PrismaClient();
 const ITEMS_PER_PAGE = 10;
 
 export async function fetchLatestReferenciales() {
@@ -59,7 +58,7 @@ export async function fetchFilteredReferenciales(query: string, currentPage: num
     console.log('Iniciando consulta a la base de datos...');
     const referenciales = await prisma.referenciales.findMany({
       where: {
-
+        // Agrega tus condiciones de filtro aquí
       },
       orderBy: {
         fechaescritura: 'desc',
@@ -90,7 +89,7 @@ export async function fetchReferencialesPages() {
   try {
     const count = await prisma.referenciales.count({
       where: {
-
+        // Agrega tus condiciones de filtro aquí
       },
     });
 
@@ -121,5 +120,6 @@ export async function fetchReferencialById(id: string) {
     };
   } catch (error) {
     console.error('Database Error:', error);
+    throw error;
   }
 }
