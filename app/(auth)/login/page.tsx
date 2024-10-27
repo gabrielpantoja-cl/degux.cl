@@ -45,7 +45,7 @@ const LoginPage = () => {
       const responseBody = await response.json();
 
       if (response.status === 201) {
-        router.push("/dashboard/(overview)");
+        router.push("/dashboard");
         setEmail("");
         setPassword("");
         return;
@@ -80,14 +80,14 @@ const LoginPage = () => {
   async function handleGoogleLogin() {
     setIsLoading(true);
     await signIn("google", {
-      callbackUrl: "/dashboard/(overview)", // Redirige al overview del dashboard después del inicio de sesión
+      callbackUrl: "/dashboard", // Redirige al dashboard después del inicio de sesión
     });
   }
 
   async function handleGithubLogin() {
     setIsLoading(true);
     await signIn("github", {
-      callbackUrl: "/dashboard/(overview)",
+      callbackUrl: "/dashboard",
     });
   }
 
