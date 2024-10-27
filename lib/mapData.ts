@@ -1,9 +1,7 @@
 // app/lib/mapData.ts
 'use server';
 
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import { prisma } from '@/lib/prisma'; // Importa la instancia única de PrismaClient
 
 export async function fetchReferencialesForMap() {
   try {
@@ -50,7 +48,5 @@ export async function fetchReferencialesForMap() {
   } catch (error) {
     console.error('Error al obtener datos para el mapa:', error);
     throw error;
-  } finally {
-    await prisma.$disconnect();
   }
 }
