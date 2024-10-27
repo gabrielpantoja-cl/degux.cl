@@ -1,7 +1,7 @@
 // app/layout.tsx
 
 import React from 'react';
-import '@/app/globals.css';
+import '@/app/globals.css'; // Importa globals.css directamente
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -55,11 +55,6 @@ export default function RootLayout({
           as="font"
           type="font/woff2"
           crossOrigin="anonymous"
-        />
-        <link
-          rel="stylesheet"
-          href="/app/globals.css"
-          as="style"
         />
       </head>
       <body className="antialiased">
