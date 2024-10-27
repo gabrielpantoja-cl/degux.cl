@@ -56,6 +56,11 @@ export default function RootLayout({
           type="font/woff2"
           crossOrigin="anonymous"
         />
+        <link
+          rel="stylesheet"
+          href="@/app/globals.css"
+          as="style"
+        />
       </head>
       <body className="antialiased">
         {children}
