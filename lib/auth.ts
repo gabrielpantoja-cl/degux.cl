@@ -4,6 +4,16 @@ import { PrismaAdapter } from '@next-auth/prisma-adapter';
 import { prisma } from '@/lib/prisma';
 import { JWT } from 'next-auth/jwt';
 
+// Extender el tipo Session para incluir la propiedad id
+declare module 'next-auth' {
+  interface Session {
+    user: {
+      id: string;
+      role: string;
+    } & DefaultSession['user'];
+  }
+}
+
 const googleClientId = process.env.GOOGLE_CLIENT_ID;
 const googleClientSecret = process.env.GOOGLE_CLIENT_SECRET;
 const googleRedirectUri = process.env.GOOGLE_REDIRECT_URI;
@@ -29,8 +39,8 @@ const authOptions: AuthOptions = {
   callbacks: {
     async session({ session, token }: { session: Session; token: JWT }) {
       if (session.user) {
-        session.user.id = token.id;
-        session.user.role = token.role;
+        session.user.id = token.id as string;
+        session.user.role = token.role as string;
       }
       return session;
     },
