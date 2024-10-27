@@ -1,7 +1,7 @@
 // app/layout.tsx
 
 import React from 'react';
-import '@/app/globals.css'; // Importa globals.css directamente
+import '@/app/globals.css'; 
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
