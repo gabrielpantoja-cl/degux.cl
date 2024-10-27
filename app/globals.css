@@ -5,17 +5,11 @@
 /* Root adjustments for better text rendering */
 :root {
   text-size-adjust: 100%;
-  /* Propiedad estándar */
   -webkit-text-size-adjust: 100%;
-  /* Para navegadores WebKit */
   -moz-text-size-adjust: 100%;
-  /* Para Firefox */
   -ms-text-size-adjust: 100%;
-  /* Para Internet Explorer */
   -webkit-font-smoothing: antialiased;
-  /* Para navegadores WebKit */
   -moz-osx-font-smoothing: grayscale;
-  /* Para Firefox en macOS */
 }
 
 /* Universal selector for box-sizing and resetting padding/margin */
