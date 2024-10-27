@@ -5,9 +5,9 @@ import {
   Controller,
   useFormContext,
   FormProvider,
-  UseFormReturn,
-  Path,
+  UseControllerProps,
   FieldValues,
+  Path,
 } from "react-hook-form";
 
 import { cn } from "@/lib/utils";
@@ -35,11 +35,7 @@ const FormField = <
   defaultValue,
   rules,
   render,
-}: {
-  name: TName;
-  control: UseFormReturn<TFieldValues>["control"];
-  defaultValue?: any;
-  rules?: any;
+}: UseControllerProps<TFieldValues, TName> & {
   render: ({
     field,
     fieldState,
