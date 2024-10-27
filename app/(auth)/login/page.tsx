@@ -87,7 +87,7 @@ const LoginPage = () => {
   async function handleGithubLogin() {
     setIsLoading(true);
     await signIn("github", {
-      callbackUrl: "/dashboard", // Redirige al dashboard después del inicio de sesión
+      callbackUrl: "/dashboard",
     });
   }
 
