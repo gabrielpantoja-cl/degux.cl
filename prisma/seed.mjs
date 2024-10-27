@@ -1,11 +1,9 @@
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '@/lib/prisma'; // Importa la instancia única de PrismaClient
 import { v4 as uuidv4 } from 'uuid';
 import dotenv from 'dotenv';
 import bcrypt from 'bcrypt'; // Importar bcrypt
 
 dotenv.config(); // Cargar las variables de entorno
-
-const prisma = new PrismaClient();
 
 async function main() {
   // Crear usuario básico
