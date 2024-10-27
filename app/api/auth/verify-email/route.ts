@@ -27,7 +27,7 @@ export async function GET(request: NextRequest) {
   }
 
   // verificar si el email ya esta verificado
-  const user = await db.users.findUnique({
+  const user = await db.user.findUnique({
     where: {
       email: verifyToken.identifier,
     },
@@ -38,7 +38,7 @@ export async function GET(request: NextRequest) {
   }
 
   // marcar el email como verificado
-  await db.users.update({
+  await db.user.update({
     where: {
       email: verifyToken.identifier,
     },
