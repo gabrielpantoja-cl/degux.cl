@@ -1,18 +1,7 @@
-import { AuthOptions, Session } from 'next-auth';
+import { AuthOptions, Session, User } from 'next-auth';
 import GoogleProvider from 'next-auth/providers/google';
 import { PrismaAdapter } from '@next-auth/prisma-adapter';
 import { prisma } from '@/lib/prisma';
-import { JWT } from 'next-auth/jwt';
-
-// Extender el tipo Session para incluir la propiedad id
-declare module 'next-auth' {
-  interface Session {
-    user: {
-      id: string;
-      role: string;
-    } & DefaultSession['user'];
-  }
-}
 
 const googleClientId = process.env.GOOGLE_CLIENT_ID;
 const googleClientSecret = process.env.GOOGLE_CLIENT_SECRET;
@@ -37,28 +26,15 @@ const authOptions: AuthOptions = {
   adapter: PrismaAdapter(prisma),
   session: { strategy: "database" as const },
   callbacks: {
-    async session({ session, token }: { session: Session; token: JWT }) {
+    async session({ session, user }: { session: Session; user: User }) {
       if (session.user) {
-        session.user.id = token.id as string;
-        session.user.role = token.role as string;
+        session.user.role = user.role;
       }
       return session;
     },
     async redirect({ url, baseUrl }) {
-      // Redirigir al dashboard después de la autenticación
+      console.log('Redirecting to:', url.startsWith(baseUrl) ? url : `${baseUrl}/dashboard`);
       return url.startsWith(baseUrl) ? url : `${baseUrl}/dashboard`;
-    },
-    async signIn(/*{ user, account, profile, email, credentials }*/) {
-      // Aquí puedes agregar lógica adicional para manejar el inicio de sesión
-      return true;
-    },
-    async jwt({ token, user /*, account, profile, isNewUser*/ }) {
-      // Agregar información adicional al token JWT
-      if (user) {
-        token.id = user.id;
-        token.role = user.role;
-      }
-      return token;
     },
   },
   pages: {
