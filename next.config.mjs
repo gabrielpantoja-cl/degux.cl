@@ -4,10 +4,17 @@ import { fileURLToPath } from 'url';
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    domains: ['lh3.googleusercontent.com'], // Permite imágenes de Google
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'lh3.googleusercontent.com',
+        port: '',
+        pathname: '/**',
+      },
+    ],
   },
-  reactStrictMode: true, // Habilita el modo estricto de React
-  swcMinify: true, // Habilita la minificación con SWC
+  reactStrictMode: true,
+  swcMinify: true,
   env: {
     GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
     GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
