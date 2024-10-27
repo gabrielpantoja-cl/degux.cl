@@ -1,5 +1,7 @@
 import { AuthOptions, Session, User } from 'next-auth';
 import GoogleProvider from 'next-auth/providers/google';
+import { PrismaAdapter } from '@next-auth/prisma-adapter';
+import { prisma } from '@/lib/prisma';
 
 const googleClientId = process.env.GOOGLE_CLIENT_ID;
 const googleClientSecret = process.env.GOOGLE_CLIENT_SECRET;
@@ -15,6 +17,7 @@ const authOptions: AuthOptions = {
       clientSecret: googleClientSecret,
     }),
   ],
+  adapter: PrismaAdapter(prisma),
   session: { strategy: "database" as const },
   callbacks: {
     async session({ session, user }: { session: Session; user: User }) {
