@@ -58,7 +58,7 @@ export default function RootLayout({
         />
         <link
           rel="stylesheet"
-          href="@/app/globals.css"
+          href="/app/globals.css"
           as="style"
         />
       </head>
