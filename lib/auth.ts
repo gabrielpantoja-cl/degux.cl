@@ -1,6 +1,5 @@
 import NextAuth, { AuthOptions, Session, User } from 'next-auth';
 import GoogleProvider from 'next-auth/providers/google';
-import { JWT } from 'next-auth/jwt';
 
 const googleClientId = process.env.GOOGLE_CLIENT_ID;
 const googleClientSecret = process.env.GOOGLE_CLIENT_SECRET;
@@ -16,17 +15,11 @@ const authOptions: AuthOptions = {
       clientSecret: googleClientSecret,
     }),
   ],
-  session: { strategy: "jwt" as const },
+  session: { strategy: "database" as const }, // Cambiar a "database"
   callbacks: {
-    async jwt({ token, user }: { token: JWT; user?: User }) {
-      if (user) {
-        token.role = user.role;
-      }
-      return token;
-    },
-    async session({ session, token }: { session: Session; token: JWT }) {
+    async session({ session, user }: { session: Session; user: User }) {
       if (session.user) {
-        session.user.role = token.role;
+        session.user.role = user.role; // Asumiendo que `user.role` está disponible
       }
       return session;
     },
