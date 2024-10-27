@@ -1,7 +1,7 @@
 // app/dashboard/referenciales/%5Bid%5D/edit/page.tsx
 
-import Form from '@/app/ui/referenciales/edit-form';
-import Breadcrumbs from '@/app/ui/referenciales/breadcrumbs';
+import Form from '@/components/ui/referenciales/edit-form';
+import Breadcrumbs from '@/components/ui/referenciales/breadcrumbs';
 import { fetchReferencialById } from '@/lib/referenciales';
 import { fetchColaboradores } from '@/lib/colaboradores';
 import { notFound } from 'next/navigation';

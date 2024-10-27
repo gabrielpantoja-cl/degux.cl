@@ -1,7 +1,7 @@
 // app/dashboard/referenciales/create/page.tsx
 
-import Form from '@/app/ui/referenciales/create-form';
-import Breadcrumbs from '@/app/ui/referenciales/breadcrumbs';
+import Form from '@/components/ui/referenciales/create-form';
+import Breadcrumbs from '@/components/ui/referenciales/breadcrumbs';
 // import { fetchColaboradores } from '@/app/lib/colaboradores';
 
 export default function Page() {
