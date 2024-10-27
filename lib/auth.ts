@@ -15,11 +15,11 @@ const authOptions: AuthOptions = {
       clientSecret: googleClientSecret,
     }),
   ],
-  session: { strategy: "database" as const }, // Cambiar a "database"
+  session: { strategy: "database" as const },
   callbacks: {
     async session({ session, user }: { session: Session; user: User }) {
       if (session.user) {
-        session.user.role = user.role; // Asumiendo que `user.role` está disponible
+        session.user.role = user.role;
       }
       return session;
     },
@@ -32,4 +32,4 @@ const authOptions: AuthOptions = {
   debug: process.env.NODE_ENV === 'development',
 };
 
-export default NextAuth(authOptions);
+export { authOptions };
