@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { MapContainer, TileLayer, CircleMarker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
-import { fetchReferencialesForMap } from '../../lib/mapData';
+import { fetchReferencialesForMap } from '@/lib/mapData';
 
 type Point = {
     id: string;
@@ -53,7 +53,7 @@ const Mapa = () => {
                     center={point.latLng} // Usar latLng en lugar de geom
                     radius={20}
                 >
-                   <Popup>
+                    <Popup>
                         <div>
                             {Object.entries(point).map(([key, value]) => (
                                 key !== 'id' && key !== 'latLng' && (

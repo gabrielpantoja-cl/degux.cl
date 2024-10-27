@@ -2,7 +2,7 @@
 import React from 'react';
 import dynamic from 'next/dynamic';
 
-const Mapa = dynamic(() => import('../../ui/mapa/mapa'), {
+const Mapa = dynamic(() => import('@/components/ui/mapa/mapa'), {
     ssr: false, // This will prevent the component from rendering on the server.
 });
 
