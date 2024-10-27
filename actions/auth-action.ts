@@ -2,15 +2,12 @@
 
 import { signIn } from "next-auth/react"; // Importación corregida
 import { db } from "@/lib/db";
-import { loginSchema, registerSchema } from "@/lib/zod";
-import bcrypt from "bcryptjs";
+import { registerSchema } from "@/lib/zod";
 import { z } from "zod";
 
-export const loginAction = async (values: z.infer<typeof loginSchema>) => {
+export const googleLoginAction = async () => {
   try {
-    const result = await signIn("credentials", {
-      email: values.email,
-      password: values.password,
+    const result = await signIn("google", {
       redirect: false,
     });
     if (result?.error) {
@@ -59,21 +56,15 @@ export const registerAction = async (
       };
     }
 
-    // hash de la contraseña
-    const passwordHash = await bcrypt.hash(data.password, 10);
-
-    // crear el usuario
+    // crear el usuario sin contraseña
     await db.user.create({
       data: {
         email: data.email,
         name: data.name,
-        password: passwordHash,
       },
     });
 
-    const result = await signIn("credentials", {
-      email: data.email,
-      password: data.password,
+    const result = await signIn("google", {
       redirect: false,
     });
 
