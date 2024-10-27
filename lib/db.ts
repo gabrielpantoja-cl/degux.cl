@@ -1,17 +1,10 @@
 // app/lib/db.ts
 import { PrismaClient } from "@prisma/client";
 
-const prismaClientSingleton = () => {
-  return new PrismaClient();
-};
+const globalForPrisma = global as unknown as { prisma: PrismaClient | undefined };
 
-declare global {
-  // Añadir prismaGlobal a la declaración global
-  var prismaGlobal: PrismaClient | undefined;
-}
+const prisma = globalForPrisma.prisma || new PrismaClient();
 
-const prisma = global.prismaGlobal || prismaClientSingleton();
-
-if (process.env.NODE_ENV !== "production") global.prismaGlobal = prisma;
+if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
 
 export const db = prisma;
