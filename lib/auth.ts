@@ -33,6 +33,7 @@ const authOptions: AuthOptions = {
       return session;
     },
     async redirect({ url, baseUrl }) {
+      // Asegúrate de redirigir al dashboard después de la autenticación
       console.log('Redirecting to:', url.startsWith(baseUrl) ? url : `${baseUrl}/dashboard`);
       return url.startsWith(baseUrl) ? url : `${baseUrl}/dashboard`;
     },
