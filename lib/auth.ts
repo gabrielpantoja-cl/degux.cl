@@ -5,9 +5,10 @@ import { prisma } from '@/lib/prisma';
 
 const googleClientId = process.env.GOOGLE_CLIENT_ID;
 const googleClientSecret = process.env.GOOGLE_CLIENT_SECRET;
+const googleRedirectUri = process.env.GOOGLE_REDIRECT_URI;
 
-if (!googleClientId || !googleClientSecret) {
-  throw new Error("Missing Google client ID or secret in environment variables");
+if (!googleClientId || !googleClientSecret || !googleRedirectUri) {
+  throw new Error("Missing Google client ID, secret, or redirect URI in environment variables");
 }
 
 const authOptions: AuthOptions = {
@@ -15,6 +16,11 @@ const authOptions: AuthOptions = {
     GoogleProvider({
       clientId: googleClientId,
       clientSecret: googleClientSecret,
+      authorization: {
+        params: {
+          redirect_uri: googleRedirectUri,
+        },
+      },
     }),
   ],
   adapter: PrismaAdapter(prisma),
