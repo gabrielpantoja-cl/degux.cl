@@ -2,10 +2,8 @@
 
 'use server';
 
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '@/lib/prisma'; // Importa la instancia única de PrismaClient
 import { unstable_noStore as noStore } from 'next/cache';
-
-const prisma = new PrismaClient();
 
 export async function fetchColaboradores() {
   noStore();
