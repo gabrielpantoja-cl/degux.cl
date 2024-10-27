@@ -1,6 +1,6 @@
 "use server";
 
-import { signIn } from "@/auth";
+import signIn from "@/auth"; // Importación corregida
 import { db } from "@/lib/db";
 import { loginSchema, registerSchema } from "@/lib/zod";
 import bcrypt from "bcryptjs";
