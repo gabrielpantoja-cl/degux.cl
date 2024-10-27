@@ -1,7 +1,5 @@
 // app/lib/colaboradores.ts
 
-'use server';
-
 import { prisma } from '@/lib/prisma'; // Importa la instancia única de PrismaClient
 import { unstable_noStore as noStore } from 'next/cache';
 
