@@ -2,6 +2,7 @@ import { AuthOptions, Session, User } from 'next-auth';
 import GoogleProvider from 'next-auth/providers/google';
 import { PrismaAdapter } from '@next-auth/prisma-adapter';
 import { prisma } from '@/lib/prisma';
+import { JWT } from 'next-auth/jwt';
 
 const googleClientId = process.env.GOOGLE_CLIENT_ID;
 const googleClientSecret = process.env.GOOGLE_CLIENT_SECRET;
@@ -26,9 +27,10 @@ const authOptions: AuthOptions = {
   adapter: PrismaAdapter(prisma),
   session: { strategy: "database" as const },
   callbacks: {
-    async session({ session, user }: { session: Session; user: User }) {
+    async session({ session, token, user }: { session: Session; token: JWT; user: User }) {
       if (session.user) {
-        session.user.role = user.role;
+        session.user.id = token.id;
+        session.user.role = token.role;
       }
       return session;
     },

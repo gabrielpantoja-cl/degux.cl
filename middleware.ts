@@ -1,30 +1,19 @@
-import { NextResponse, type NextRequest } from "next/server";
+import { NextResponse, type NextRequest } from 'next/server';
+import { isAuthenticated } from '@/lib/auth';
 
 // Extender el tipo NextRequest para incluir la propiedad auth
 interface AuthenticatedNextRequest extends NextRequest {
   auth?: any;
 }
 
-const publicRoutes = ["/", "/prices"];
-const authRoutes = ["/login", "/register"];
-const apiAuthPrefix = "/api/auth";
+const publicRoutes = ['/', '/prices'];
+const authRoutes = ['/login', '/register'];
+const apiAuthPrefix = '/api/auth';
 
-// Función para verificar la autenticación (ejemplo básico)
-const isAuthenticated = (req: AuthenticatedNextRequest): boolean => {
-  try {
-    // Verificar si el token de autenticación está presente en las cookies
-    const token = req.cookies.get("auth-token");
-    return !!token;
-  } catch (error) {
-    console.error("Error al verificar la autenticación:", error);
-    return false;
-  }
-};
-
-export default function middleware(req: AuthenticatedNextRequest) {
+export default async function middleware(req: AuthenticatedNextRequest) {
   try {
     const { nextUrl } = req;
-    const isLoggedIn = isAuthenticated(req);
+    const isLoggedIn = await isAuthenticated(req);
 
     console.log({ isLoggedIn, path: nextUrl.pathname });
 
@@ -40,7 +29,7 @@ export default function middleware(req: AuthenticatedNextRequest) {
 
     // Redirigir a /dashboard si el usuario está logueado y trata de acceder a rutas de autenticación
     if (isLoggedIn && authRoutes.includes(nextUrl.pathname)) {
-      return NextResponse.redirect(new URL("/dashboard", nextUrl));
+      return NextResponse.redirect(new URL('/dashboard', nextUrl));
     }
 
     // Redirigir a /login si el usuario no está logueado y trata de acceder a una ruta protegida
@@ -49,16 +38,16 @@ export default function middleware(req: AuthenticatedNextRequest) {
       !authRoutes.includes(nextUrl.pathname) &&
       !publicRoutes.includes(nextUrl.pathname)
     ) {
-      return NextResponse.redirect(new URL("/login", nextUrl));
+      return NextResponse.redirect(new URL('/login', nextUrl));
     }
 
     return NextResponse.next();
   } catch (error) {
-    console.error("Error en el middleware:", error);
+    console.error('Error en el middleware:', error);
     return NextResponse.error();
   }
 }
 
 export const config = {
-  matcher: ["/((?!.*\\..*|_next).*)", "/", "/(api|trpc)(.*)"],
+  matcher: ['/((?!.*\\..*|_next).*)', '/', '/(api|trpc)(.*)'],
 };
