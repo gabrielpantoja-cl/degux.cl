@@ -1,7 +1,7 @@
 // app/layout.tsx
 
 import React from 'react';
-import '@/app/globals.css'; 
+import '@/app/globals.css';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -25,6 +25,7 @@ export const metadata: Metadata = {
     title: 'referenciales.cl Dashboard',
     creator: '@referenciales.cl',
   },
+  // Agregar estilos críticos directamente en los estilos globales o en el archivo CSS
 };
 
 export default function RootLayout({
@@ -35,6 +36,14 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
+        <style>{`
+          /* Aquí va tu CSS crítico */
+          body {
+            -webkit-text-size-adjust: 100%;
+            -moz-osx-font-smoothing: grayscale;
+            text-size-adjust: 100%;
+          }
+        `}</style>
         <link
           rel="preload"
           href="/_next/static/media/c556ae4be4c9cfa8-s.p.woff2"
