@@ -34,7 +34,7 @@ export const registerAction = async (
     }
 
     // verificar si el usuario ya existe
-    const user = await db.users.findUnique({
+    const user = await db.user.findUnique({
       where: {
         email: data.email,
       },
@@ -63,7 +63,7 @@ export const registerAction = async (
     const passwordHash = await bcrypt.hash(data.password, 10);
 
     // crear el usuario
-    await db.users.create({
+    await db.user.create({
       data: {
         email: data.email,
         name: data.name,
