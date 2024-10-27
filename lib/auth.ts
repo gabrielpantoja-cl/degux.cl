@@ -27,7 +27,7 @@ const authOptions: AuthOptions = {
   adapter: PrismaAdapter(prisma),
   session: { strategy: "database" as const },
   callbacks: {
-    async session({ session, token, user }: { session: Session; token: JWT; user: User }) {
+    async session({ session, token }: { session: Session; token: JWT }) {
       if (session.user) {
         session.user.id = token.id;
         session.user.role = token.role;
@@ -38,11 +38,11 @@ const authOptions: AuthOptions = {
       // Redirigir al dashboard después de la autenticación
       return url.startsWith(baseUrl) ? url : `${baseUrl}/dashboard`;
     },
-    async signIn({ user, account, profile, email, credentials }) {
+    async signIn(/*{ user, account, profile, email, credentials }*/) {
       // Aquí puedes agregar lógica adicional para manejar el inicio de sesión
       return true;
     },
-    async jwt({ token, user, account, profile, isNewUser }) {
+    async jwt({ token, user /*, account, profile, isNewUser*/ }) {
       // Agregar información adicional al token JWT
       if (user) {
         token.id = user.id;
