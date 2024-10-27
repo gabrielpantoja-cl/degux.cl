@@ -8,7 +8,7 @@ if (!googleClientId || !googleClientSecret) {
   throw new Error("Missing Google client ID or secret in environment variables");
 }
 
-export const { handlers, signIn, signOut, auth } = NextAuth({
+export default NextAuth({
   providers: [
     GoogleProvider({
       clientId: googleClientId,
