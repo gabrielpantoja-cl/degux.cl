@@ -13,7 +13,7 @@ const apiAuthPrefix = "/api/auth";
 const isAuthenticated = (req: AuthenticatedNextRequest): boolean => {
   try {
     // Verificar si el token de autenticación está presente en las cookies
-    const token = req.cookies.get("auth-token");
+    const token = req.cookies.get("next-auth.session-token");
     return !!token;
   } catch (error) {
     console.error("Error al verificar la autenticación:", error);
