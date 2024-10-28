@@ -5,16 +5,14 @@ import NavLinks from '@/components/ui/dashboard/nav-links';
 import AcmeLogo from '@/components/ui/acme-logo';
 import { PowerIcon } from '@heroicons/react/24/outline';
 import { useRouter } from 'next/navigation';
+import { signOut } from 'next-auth/react';
 
 export default function SideNav() {
   const router = useRouter();
 
   const handleSignOut = async () => {
-    // Realiza la lógica de cierre de sesión aquí
-    // Por ejemplo, puedes eliminar el token de autenticación del almacenamiento local
-    localStorage.removeItem('authToken');
-    // Redirige a la página de login después de cerrar sesión
-    router.push('/login');
+    // Utiliza la función signOut de next-auth/react para cerrar la sesión
+    await signOut({ callbackUrl: '/' });
   };
 
   return (
