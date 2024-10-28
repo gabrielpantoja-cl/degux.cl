@@ -52,12 +52,6 @@ export default function middleware(req: AuthenticatedNextRequest) {
       return NextResponse.redirect(new URL("/login", nextUrl));
     }
 
-    // Permitir acceso a rutas protegidas si el usuario está autenticado
-    if (isLoggedIn) {
-      return NextResponse.next();
-    }
-
-    // Si ninguna de las condiciones anteriores se cumple, permitir el acceso
     return NextResponse.next();
   } catch (error) {
     console.error("Error en el middleware:", error);
