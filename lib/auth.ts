@@ -23,12 +23,19 @@ const authOptions: AuthOptions = {
       },
     }),
   ],
-  aadapter: PrismaAdapter(prisma),
+  adapter: PrismaAdapter(prisma),
   session: {
     strategy: "database" as const,
-    cookie: {
-      secure: true,
-      sameSite: "none", // Asegúrate de que las cookies tengan SameSite=None
+  },
+  cookies: {
+    sessionToken: {
+      name: `__Secure-next-auth.session-token`,
+      options: {
+        httpOnly: true,
+        sameSite: "none",
+        path: "/",
+        secure: true,
+      },
     },
   },
   callbacks: {
