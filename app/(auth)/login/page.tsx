@@ -1,7 +1,7 @@
 "use client";
 
 import { signIn } from 'next-auth/react';
-import React, { useState, useEffect } from 'react'; // Asegúrate de importar useEffect
+import React, { useState, useEffect, Suspense } from 'react'; // Asegúrate de importar Suspense
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import {
@@ -15,12 +15,11 @@ import {
 import { LoaderCircle } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 
-const LoginPage = () => {
+const LoginPageContent = () => {
   const searchParams = useSearchParams();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
 
-  // Manejo de errores de autenticación
   useEffect(() => {
     const error = searchParams.get("error");
     if (error) {
@@ -47,7 +46,6 @@ const LoginPage = () => {
         redirect: true,
       });
 
-      // Si llegamos aquí y hay un error, lo mostramos
       if (result?.error) {
         setError(result.error);
         setIsLoading(false);
@@ -133,6 +131,14 @@ const LoginPage = () => {
         </CardFooter>
       </Card>
     </div>
+  );
+};
+
+const LoginPage = () => {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <LoginPageContent />
+    </Suspense>
   );
 };
 
