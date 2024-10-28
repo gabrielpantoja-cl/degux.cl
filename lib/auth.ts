@@ -37,15 +37,6 @@ const authOptions: AuthOptions = {
         secure: true,
       },
     },
-    callbackToken: {
-      name: `__Secure-next-auth.callback-token`,
-      options: {
-        httpOnly: true,
-        sameSite: "none",
-        path: "/",
-        secure: true,
-      },
-    },
     csrfToken: {
       name: `__Host-next-auth.csrf-token`,
       options: {
