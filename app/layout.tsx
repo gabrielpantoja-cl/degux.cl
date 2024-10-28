@@ -1,6 +1,6 @@
 // app/layout.tsx
 
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import '@/app/globals.css';
 import { Metadata } from 'next';
 
@@ -32,21 +32,6 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const [isStylesLoaded, setIsStylesLoaded] = useState(false);
-
-  useEffect(() => {
-    const handleLoad = () => setIsStylesLoaded(true);
-    const link = document.querySelector('link[rel="stylesheet"]');
-    if (link) {
-      link.addEventListener('load', handleLoad);
-    }
-    return () => {
-      if (link) {
-        link.removeEventListener('load', handleLoad);
-      }
-    };
-  }, []);
-
   return (
     <html lang="en">
       <head>
@@ -71,18 +56,9 @@ export default function RootLayout({
           type="font/woff2"
           crossOrigin="anonymous"
         />
-        <link
-          rel="stylesheet"
-          href="/_next/static/css/app/layout.css"
-          onLoad={() => setIsStylesLoaded(true)}
-        />
       </head>
       <body className="antialiased">
-        {!isStylesLoaded ? (
-          <div className="loading-indicator">Cargando...</div>
-        ) : (
-          children
-        )}
+        {children}
       </body>
     </html>
   );
