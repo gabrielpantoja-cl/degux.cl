@@ -35,14 +35,6 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <style>{`
-          /* Aquí va tu CSS crítico */
-          body {
-            -webkit-text-size-adjust: 100%;
-            -moz-osx-font-smoothing: grayscale;
-            text-size-adjust: 100%;
-          }
-        `}</style>
         <link
           rel="preload"
           href="/_next/static/media/c556ae4be4c9cfa8-s.p.woff2"
