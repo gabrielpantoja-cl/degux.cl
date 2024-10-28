@@ -4,12 +4,9 @@ import Link from 'next/link';
 import NavLinks from '@/components/ui/dashboard/nav-links';
 import AcmeLogo from '@/components/ui/acme-logo';
 import { PowerIcon } from '@heroicons/react/24/outline';
-import { useRouter } from 'next/navigation';
 import { signOut } from 'next-auth/react';
 
 export default function SideNav() {
-  const router = useRouter();
-
   const handleSignOut = async () => {
     // Utiliza la función signOut de next-auth/react para cerrar la sesión
     await signOut({ callbackUrl: '/' });
