@@ -25,7 +25,6 @@ export const metadata: Metadata = {
     title: 'referenciales.cl Dashboard',
     creator: '@referenciales.cl',
   },
-  // Agregar estilos críticos directamente en los estilos globales o en el archivo CSS
 };
 
 export default function RootLayout({
