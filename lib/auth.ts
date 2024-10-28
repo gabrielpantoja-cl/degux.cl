@@ -23,8 +23,14 @@ const authOptions: AuthOptions = {
       },
     }),
   ],
-  adapter: PrismaAdapter(prisma),
-  session: { strategy: "database" as const },
+  aadapter: PrismaAdapter(prisma),
+  session: {
+    strategy: "database" as const,
+    cookie: {
+      secure: true,
+      sameSite: "none", // Asegúrate de que las cookies tengan SameSite=None
+    },
+  },
   callbacks: {
     async session({ session, user }: { session: Session; user: User }) {
       if (session.user) {
