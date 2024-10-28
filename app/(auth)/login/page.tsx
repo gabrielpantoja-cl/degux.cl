@@ -1,7 +1,7 @@
 "use client";
 
 import { signIn } from 'next-auth/react';
-import React, { useState, useEffect, Suspense } from 'react'; // Asegúrate de importar Suspense
+import React, { useState, useEffect, Suspense } from 'react';
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import {
