@@ -37,6 +37,24 @@ const authOptions: AuthOptions = {
         secure: true,
       },
     },
+    callbackToken: {
+      name: `__Secure-next-auth.callback-token`,
+      options: {
+        httpOnly: true,
+        sameSite: "none",
+        path: "/",
+        secure: true,
+      },
+    },
+    csrfToken: {
+      name: `__Host-next-auth.csrf-token`,
+      options: {
+        httpOnly: true,
+        sameSite: "none",
+        path: "/",
+        secure: true,
+      },
+    },
   },
   callbacks: {
     async session({ session, user }: { session: Session; user: User }) {
@@ -46,6 +64,7 @@ const authOptions: AuthOptions = {
       return session;
     },
     async redirect({ url, baseUrl }) {
+      // Asegúrate de redirigir al dashboard después de la autenticación
       console.log('Redirecting to:', url.startsWith(baseUrl) ? url : `${baseUrl}/dashboard`);
       return url.startsWith(baseUrl) ? url : `${baseUrl}/dashboard`;
     },
@@ -55,7 +74,7 @@ const authOptions: AuthOptions = {
     error: "/auth/error",
   },
   secret: process.env.NEXTAUTH_SECRET,
-  debug: process.env.NODE_ENV === 'development',
+  debug: process.env.NEXTAUTH_DEBUG === 'true',
 };
 
 export { authOptions };
