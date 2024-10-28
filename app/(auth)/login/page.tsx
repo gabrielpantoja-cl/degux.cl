@@ -64,7 +64,7 @@ const LoginPageContent = () => {
             Bienvenido a Referenciales.cl
           </CardTitle>
           <CardDescription className="text-center">
-            Ingrese con su cuenta de Google para acceder a su cuenta
+            Ingrese con su cuenta de Google para acceder
           </CardDescription>
         </CardHeader>
 
