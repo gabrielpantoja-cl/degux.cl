@@ -35,27 +35,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <link
-          rel="preload"
-          href="/_next/static/media/c556ae4be4c9cfa8-s.p.woff2"
-          as="font"
-          type="font/woff2"
-          crossOrigin="anonymous"
-        />
-        <link
-          rel="preload"
-          href="/_next/static/media/ebd7dc65a6ba3e83-s.p.woff2"
-          as="font"
-          type="font/woff2"
-          crossOrigin="anonymous"
-        />
-        <link
-          rel="preload"
-          href="/_next/static/media/a34f9d1faa5f3315-s.p.woff2"
-          as="font"
-          type="font/woff2"
-          crossOrigin="anonymous"
-        />
+        {/* Aquí puedes agregar otras etiquetas de enlace o meta si es necesario */}
       </head>
       <body className="antialiased">
         {children}
