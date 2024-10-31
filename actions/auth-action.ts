@@ -1,10 +1,11 @@
 "use server";
 
-import { signIn } from "next-auth/react"; // Importación corregida
+import { signIn } from "next-auth/react";
 import { db } from "@/lib/db";
 import { registerSchema } from "@/lib/zod";
 import { z } from "zod";
 
+// Acción para iniciar sesión con Google
 export const googleLoginAction = async () => {
   try {
     const result = await signIn("google", {
@@ -15,10 +16,12 @@ export const googleLoginAction = async () => {
     }
     return { success: true };
   } catch (error) {
-    return { error: "error 500" };
+    console.error("Error en googleLoginAction:", error);
+    return { error: "Error interno del servidor" };
   }
 };
 
+// Acción para registrar un nuevo usuario
 export const registerAction = async (
   values: z.infer<typeof registerSchema>
 ) => {
@@ -26,11 +29,11 @@ export const registerAction = async (
     const { data, success } = registerSchema.safeParse(values);
     if (!success) {
       return {
-        error: "Invalid data",
+        error: "Datos inválidos",
       };
     }
 
-    // verificar si el usuario ya existe
+    // Verificar si el usuario ya existe
     const user = await db.user.findUnique({
       where: {
         email: data.email,
@@ -48,15 +51,15 @@ export const registerAction = async (
       if (oauthAccounts.length > 0) {
         return {
           error:
-            "To confirm your identity, sign in with the same account you used originally.",
+            "Para confirmar tu identidad, inicia sesión con la misma cuenta que usaste originalmente.",
         };
       }
       return {
-        error: "User already exists",
+        error: "El usuario ya existe",
       };
     }
 
-    // crear el usuario sin contraseña
+    // Crear el usuario sin contraseña
     await db.user.create({
       data: {
         email: data.email,
@@ -74,6 +77,7 @@ export const registerAction = async (
 
     return { success: true };
   } catch (error) {
-    return { error: "error 500" };
+    console.error("Error en registerAction:", error);
+    return { error: "Error interno del servidor" };
   }
 };
