@@ -1,10 +1,13 @@
-export default {
-  darkMode: ['class'],
+import { Config } from 'tailwindcss';
+import tailwindcssAnimate from 'tailwindcss-animate';
+
+const config: Config = {
+  darkMode: ['class'], // Habilitar modo oscuro basado en clases
   content: [
-    './pages/**/*.{ts,tsx}',
-    './components/**/*.{ts,tsx}',
-    './app/**/*.{ts,tsx}',
-    './src/**/*.{ts,tsx}'
+    './pages/**/*.{ts,tsx}', // Incluir archivos en la carpeta pages
+    './components/**/*.{ts,tsx}', // Incluir archivos en la carpeta components
+    './app/**/*.{ts,tsx}', // Incluir archivos en la carpeta app
+    './src/**/*.{ts,tsx}' // Incluir archivos en la carpeta src
   ],
   theme: {
     extend: {
@@ -24,5 +27,7 @@ export default {
       }
     }
   },
-  plugins: [require('tailwindcss-animate')]
+  plugins: [tailwindcssAnimate]
 };
+
+export default config;
