@@ -5,11 +5,10 @@
 /* Root adjustments for better text rendering */
 :root {
   text-size-adjust: 100%;
-  /* Propiedad estándar */
   -moz-text-size-adjust: 100%;
-  /* Para Firefox */
+  /* Firefox */
   -moz-osx-font-smoothing: grayscale;
-  /* Para Firefox en macOS */
+  /* Firefox on macOS */
 }
 
 /* Universal selector for box-sizing and resetting padding/margin */
@@ -29,21 +28,21 @@ body {
 /* Custom styles for number input fields */
 input[type='number'] {
   -moz-appearance: textfield;
-  /* Para Firefox */
+  /* Firefox */
   appearance: textfield;
-  /* Propiedad estándar */
+  /* Standard */
 }
 
 input[type='number']::-webkit-inner-spin-button,
 input[type='number']::-webkit-outer-spin-button {
   -webkit-appearance: none;
-  /* No es necesario para Firefox */
+  /* Chrome, Safari */
   margin: 0;
 }
 
-/* Estilos adicionales para compatibilidad con Firefox */
+/* Additional styles for file input compatibility with Firefox */
 .file\:border-0::file-selector-button {
-  border-width: 0px;
+  border-width: 0;
 }
 
 .file\:bg-transparent::file-selector-button {
@@ -59,8 +58,8 @@ input[type='number']::-webkit-outer-spin-button {
   font-weight: 500;
 }
 
-/* Otros estilos necesarios */
-abbr:where([title]) {
+/* General element styles */
+abbr[title] {
   text-decoration: underline dotted;
 }
 
@@ -166,12 +165,6 @@ dialog {
 
 textarea {
   resize: vertical;
-}
-
-input::-moz-placeholder,
-textarea::-moz-placeholder {
-  opacity: 1;
-  color: #9ca3af;
 }
 
 input::placeholder,
