@@ -1,7 +1,7 @@
 "use client";
 
 import { signIn } from 'next-auth/react';
-import React, { useState, useEffect, Suspense } from 'react';
+import React, { useState, useEffect, useCallback, useMemo, Suspense } from 'react';
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import {
@@ -20,23 +20,25 @@ const LoginPageContent = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
 
+  const handleError = useCallback((error: string) => {
+    switch (error) {
+      case "AccessDenied":
+        return "No tienes permiso para acceder a esta aplicación.";
+      case "OAuthSignin":
+        return "Ocurrió un error durante el inicio de sesión con Google.";
+      default:
+        return "Ocurrió un error durante el inicio de sesión.";
+    }
+  }, []);
+
   useEffect(() => {
     const error = searchParams.get("error");
     if (error) {
-      switch (error) {
-        case "AccessDenied":
-          setError("No tienes permiso para acceder a esta aplicación.");
-          break;
-        case "OAuthSignin":
-          setError("Ocurrió un error durante el inicio de sesión con Google.");
-          break;
-        default:
-          setError("Ocurrió un error durante el inicio de sesión.");
-      }
+      setError(handleError(error));
     }
-  }, [searchParams]);
+  }, [searchParams, handleError]);
 
-  async function handleGoogleLogin() {
+  const handleGoogleLogin = useCallback(async () => {
     try {
       setIsLoading(true);
       setError("");
@@ -54,7 +56,9 @@ const LoginPageContent = () => {
       setError("Ocurrió un error inesperado. Por favor, intente nuevamente.");
       setIsLoading(false);
     }
-  }
+  }, []);
+
+  const errorMessage = useMemo(() => error, [error]);
 
   return (
     <div className="min-h-screen flex justify-center items-start md:items-center p-8 bg-gray-50">
@@ -69,9 +73,9 @@ const LoginPageContent = () => {
         </CardHeader>
 
         <CardContent>
-          {error && (
+          {errorMessage && (
             <Alert variant="destructive" className="mb-4">
-              <AlertDescription>{error}</AlertDescription>
+              <AlertDescription>{errorMessage}</AlertDescription>
             </Alert>
           )}
 
