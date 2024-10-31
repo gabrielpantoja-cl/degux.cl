@@ -11,6 +11,7 @@ const nextConfig = {
         port: '',
         pathname: '/**',
       },
+      // Agrega otros dominios de imágenes remotas si es necesario
     ],
   },
   reactStrictMode: true,
