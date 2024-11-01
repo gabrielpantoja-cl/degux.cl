@@ -1,7 +1,9 @@
 "use client";
 
+import { SessionProvider, useSession } from 'next-auth/react';
 import { signIn } from 'next-auth/react';
 import React, { useState, useEffect, useCallback, useMemo, Suspense } from 'react';
+import { useRouter } from 'next/navigation';
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import {
@@ -16,6 +18,8 @@ import { LoaderCircle } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 
 const LoginPageContent = () => {
+  const { status } = useSession();
+  const router = useRouter();
   const searchParams = useSearchParams();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
@@ -37,6 +41,12 @@ const LoginPageContent = () => {
       setError(handleError(error));
     }
   }, [searchParams, handleError]);
+
+  useEffect(() => {
+    if (status === "authenticated") {
+      router.push("/dashboard");
+    }
+  }, [status, router]);
 
   const handleGoogleLogin = useCallback(async () => {
     try {
@@ -140,9 +150,11 @@ const LoginPageContent = () => {
 
 const LoginPage = () => {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <LoginPageContent />
-    </Suspense>
+    <SessionProvider>
+      <Suspense fallback={<div>Loading...</div>}>
+        <LoginPageContent />
+      </Suspense>
+    </SessionProvider>
   );
 };
 
