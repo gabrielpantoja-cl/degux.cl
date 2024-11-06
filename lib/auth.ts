@@ -1,5 +1,7 @@
 import NextAuth, { AuthOptions } from 'next-auth';
 import GoogleProvider from 'next-auth/providers/google';
+import { PrismaAdapter } from '@auth/prisma-adapter';
+import { prisma } from '@/lib/prisma';
 
 const googleClientId = process.env.GOOGLE_CLIENT_ID;
 const googleClientSecret = process.env.GOOGLE_CLIENT_SECRET;
@@ -9,6 +11,7 @@ if (!googleClientId || !googleClientSecret) {
 }
 
 export const authOptions: AuthOptions = {
+  adapter: PrismaAdapter(prisma),
   providers: [
     GoogleProvider({
       clientId: googleClientId,
@@ -18,6 +21,12 @@ export const authOptions: AuthOptions = {
   callbacks: {
     async redirect({ url, baseUrl }) {
       return url.startsWith(baseUrl) ? url : `${baseUrl}/dashboard`;
+    },
+    session: async ({ session, user }) => {
+      if (session?.user) {
+        session.user.id = user.id;
+      }
+      return session;
     },
   },
   pages: {
