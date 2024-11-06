@@ -3,8 +3,10 @@ import GoogleProvider from 'next-auth/providers/google';
 import { PrismaAdapter } from '@auth/prisma-adapter';
 import { prisma } from '@/lib/prisma';
 
+// Validación de variables de entorno
 const googleClientId = process.env.GOOGLE_CLIENT_ID;
 const googleClientSecret = process.env.GOOGLE_CLIENT_SECRET;
+const isProd = process.env.NODE_ENV === 'production';
 
 if (!googleClientId || !googleClientSecret) {
   throw new Error("Missing Google client ID or secret in environment variables");
@@ -18,41 +20,58 @@ export const authOptions: AuthOptions = {
       clientSecret: googleClientSecret,
       authorization: {
         params: {
-          prompt: "select_account"
+          prompt: "select_account",
+          access_type: "offline",
+          response_type: "code"
         }
       }
     }),
   ],
   callbacks: {
     async redirect({ url, baseUrl }) {
-      return url.startsWith(baseUrl) ? url : `${baseUrl}/dashboard`;
+      // Manejar redirecciones de forma segura
+      if (url.startsWith(baseUrl)) return url;
+      if (url.startsWith('/')) return `${baseUrl}${url}`;
+      return baseUrl;
     },
-    session: async ({ session, user }) => {
+    async session({ session, user, token }) {
       if (session?.user) {
         session.user.id = user.id;
+        session.user.role = user.role || 'user';
       }
       return session;
     },
+    async jwt({ token, user }) {
+      if (user) {
+        token.id = user.id;
+        token.role = user.role;
+      }
+      return token;
+    }
   },
   pages: {
     signIn: "/login",
     error: "/auth/error",
   },
   secret: process.env.NEXTAUTH_SECRET,
-  debug: process.env.NODE_ENV === 'development',
+  debug: !isProd,
   cookies: {
     sessionToken: {
-      name: process.env.NODE_ENV === 'production'
-        ? '__Secure-next-auth.session-token'
-        : 'next-auth.session-token',
+      name: isProd ? '__Secure-next-auth.session-token' : 'next-auth.session-token',
       options: {
         httpOnly: true,
         sameSite: 'lax',
         path: '/',
-        secure: process.env.NODE_ENV === 'production',
-        domain: process.env.NODE_ENV === 'production'
-          ? '.referenciales.cl'
-          : 'localhost'
+        secure: isProd,
+        domain: isProd ? '.referenciales.cl' : 'localhost'
+      }
+    },
+    callbackUrl: {
+      name: isProd ? '__Secure-next-auth.callback-url' : 'next-auth.callback-url',
+      options: {
+        sameSite: 'lax',
+        path: '/',
+        secure: isProd
       }
     }
   },
