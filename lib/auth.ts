@@ -34,7 +34,7 @@ export const authOptions: AuthOptions = {
       if (url.startsWith('/')) return `${baseUrl}${url}`;
       return baseUrl;
     },
-    async session({ session, user, token }) {
+    async session({ session, user }) { // Removido el parámetro token no utilizado
       if (session?.user) {
         session.user.id = user.id;
         session.user.role = user.role || 'user';
