@@ -39,7 +39,28 @@ export const authOptions: AuthOptions = {
     error: "/auth/error",
   },
   secret: process.env.NEXTAUTH_SECRET,
-  debug: process.env.NEXTAUTH_DEBUG === 'true',
+  debug: process.env.NODE_ENV === 'development',
+  cookies: {
+    sessionToken: {
+      name: process.env.NODE_ENV === 'production'
+        ? '__Secure-next-auth.session-token'
+        : 'next-auth.session-token',
+      options: {
+        httpOnly: true,
+        sameSite: 'lax',
+        path: '/',
+        secure: process.env.NODE_ENV === 'production',
+        domain: process.env.NODE_ENV === 'production'
+          ? '.referenciales.cl'
+          : 'localhost'
+      }
+    }
+  },
+  session: {
+    strategy: "jwt",
+    maxAge: 30 * 24 * 60 * 60, // 30 días
+    updateAge: 24 * 60 * 60, // 24 horas
+  }
 };
 
 export default NextAuth(authOptions);

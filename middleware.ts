@@ -1,17 +1,27 @@
 import { NextResponse, type NextRequest } from "next/server";
-// Extender el tipo NextRequest para incluir la propiedad auth
+
 interface AuthenticatedNextRequest extends NextRequest {/*...*/ }
 
 const publicRoutes = ["/", "/prices"];
 const authRoutes = ["/login", "/register"];
 const apiAuthPrefix = "/api/auth";
+const oauthCallbacks = [
+  "/api/auth/callback",
+  "/api/auth/callback/google",
+  "/api/auth/signout",
+  "/api/auth/signin",
+  "/api/auth/session"
+];
 
-// Función para verificar la autenticación (ejemplo básico)
 const isAuthenticated = (req: AuthenticatedNextRequest): boolean => {
   try {
-    // Verificar si el token de autenticación está presente en las cookies
-    const token = req.cookies.get("next-auth.session-token");
-    return !!token;
+    // Comprobar tanto cookies seguras como no seguras
+    const isProd = process.env.NODE_ENV === 'production';
+    const sessionToken = isProd
+      ? req.cookies.get("__Secure-next-auth.session-token")
+      : req.cookies.get("next-auth.session-token");
+
+    return !!sessionToken;
   } catch (error) {
     console.error("Error al verificar la autenticación:", error);
     return false;
@@ -22,33 +32,48 @@ export default function middleware(req: AuthenticatedNextRequest) {
   try {
     const { nextUrl } = req;
     const isLoggedIn = isAuthenticated(req);
-    console.log({ isLoggedIn, path: nextUrl.pathname });
-    // Permitir todas las rutas de API de autenticación
-    if (nextUrl.pathname.startsWith(apiAuthPrefix)) {
+
+    // Permitir todas las rutas de autenticación y callbacks
+    if (
+      nextUrl.pathname.startsWith(apiAuthPrefix) ||
+      oauthCallbacks.some(path => nextUrl.pathname.startsWith(path))
+    ) {
       return NextResponse.next();
     }
-    // Permitir acceso a rutas públicas sin importar el estado de autenticación
+
+    // Permitir rutas públicas
     if (publicRoutes.includes(nextUrl.pathname)) {
       return NextResponse.next();
     }
-    // Redirigir a /dashboard si el usuario está logueado y trata de acceder a rutas de autenticación
+
+    // Redirigir a dashboard si intenta acceder a rutas de auth estando autenticado
     if (isLoggedIn && authRoutes.includes(nextUrl.pathname)) {
       return NextResponse.redirect(new URL("/dashboard", nextUrl));
     }
-    // Redirigir a /login si el usuario no está logueado y trata de acceder a una ruta protegida
+
+    // Redirigir a login si intenta acceder a rutas protegidas sin autenticación
     if (
       !isLoggedIn &&
       !authRoutes.includes(nextUrl.pathname) &&
       !publicRoutes.includes(nextUrl.pathname)
     ) {
-      return NextResponse.redirect(new URL("/login", nextUrl));
+      const loginUrl = new URL("/login", nextUrl);
+      loginUrl.searchParams.set("callbackUrl", nextUrl.pathname);
+      return NextResponse.redirect(loginUrl);
     }
+
+    return NextResponse.next();
+
   } catch (error) {
     console.error("Error en el middleware:", error);
+    const errorUrl = new URL("/auth/error", req.url);
+    errorUrl.searchParams.set("error", "middleware_error");
+    return NextResponse.redirect(errorUrl);
   }
-  return NextResponse.next();
 }
 
 export const config = {
-  matcher: ["/((?!.*\\..*|_next).*)", "/", "/(api|trpc)(.*)"],
+  matcher: [
+    "/((?!_next/static|_next/image|favicon.ico|public/|assets/).*)",
+  ],
 };

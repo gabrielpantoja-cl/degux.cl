@@ -5,11 +5,23 @@ import NavLinks from '@/components/ui/dashboard/nav-links';
 import AcmeLogo from '@/components/ui/acme-logo';
 import { PowerIcon } from '@heroicons/react/24/outline';
 import { signOut } from 'next-auth/react';
+import { useState } from 'react';
 
 export default function SideNav() {
+  const [isLoading, setIsLoading] = useState(false);
+
   const handleSignOut = async () => {
-    // Utiliza la función signOut de next-auth/react para cerrar la sesión
-    await signOut({ callbackUrl: '/' });
+    try {
+      setIsLoading(true);
+      await signOut({
+        callbackUrl: '/',
+        redirect: true
+      });
+    } catch (error) {
+      console.error('Error during sign out:', error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -27,10 +39,13 @@ export default function SideNav() {
         <div className="hidden h-auto w-full grow rounded-md bg-gray-50 md:block"></div>
         <button
           onClick={handleSignOut}
-          className="flex h-[48px] grow items-center justify-center gap-2 rounded-md bg-gray-50 p-3 text-sm font-medium hover:bg-sky-100 hover:text-blue-600 md:flex-none md:justify-start md:p-2 md:px-3"
+          disabled={isLoading}
+          className={`flex h-[48px] grow items-center justify-center gap-2 rounded-md bg-gray-50 p-3 text-sm font-medium 
+            ${isLoading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-sky-100 hover:text-blue-600'} 
+            md:flex-none md:justify-start md:p-2 md:px-3`}
         >
-          <PowerIcon className="w-6" />
-          <div className="hidden md:block">Sign Out</div>
+          <PowerIcon className={`w-6 ${isLoading ? 'animate-pulse' : ''}`} />
+          <div className="hidden md:block">{isLoading ? 'Saliendo...' : 'Cerrar Sesión'}</div>
         </button>
       </div>
     </div>
