@@ -20,7 +20,8 @@ const InputField: React.FC<{
   type?: string;
   placeholder: string;
   error?: string[];
-}> = ({ label, id, name, type = "text", placeholder, error }) => (
+  step?: string;
+}> = ({ label, id, name, type = "text", placeholder, error, step }) => (
   <div className="mb-4">
     <label htmlFor={id} className="mb-2 block text-sm font-medium">
       {label}
@@ -30,6 +31,7 @@ const InputField: React.FC<{
         id={id}
         name={name}
         type={type}
+        step={step} // Agrega esta línea
         placeholder={placeholder}
         className="peer block w-full rounded-md border border-gray-200 py-2 pl-3 text-sm outline-2 placeholder:text-gray-500"
         aria-describedby={`${id}-error`}
@@ -185,6 +187,7 @@ const InnerForm: React.FC = () => {
           name="latitud"
           type="number"
           placeholder="-39.851241"
+          step="any"
           error={state.errors.latitud}
         />
 
@@ -194,6 +197,7 @@ const InnerForm: React.FC = () => {
           name="longitud"
           type="number"
           placeholder="-73.215171"
+          step="any"
           error={state.errors.longitud}
         />
 
