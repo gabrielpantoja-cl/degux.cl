@@ -1,9 +1,8 @@
 'use client';
-import React from "react";
+import React, { useState } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { createReferencial } from '@/lib/actions';
-import { useFormState } from 'react-dom';
 import { useSession, SessionProvider } from 'next-auth/react';
 
 interface FormState {
@@ -31,7 +30,7 @@ const InputField: React.FC<{
         id={id}
         name={name}
         type={type}
-        step={step} // Agrega esta línea
+        step={step}
         placeholder={placeholder}
         className="peer block w-full rounded-md border border-gray-200 py-2 pl-3 text-sm outline-2 placeholder:text-gray-500"
         aria-describedby={`${id}-error`}
@@ -60,15 +59,26 @@ const Form: React.FC = () => (
 const InnerForm: React.FC = () => {
   const { data: session } = useSession();
   const initialState: FormState = { message: null, errors: {} };
-  const [state, dispatch] = useFormState<FormState>(() => createReferencial(new FormData()), initialState);
+  const [state, setState] = useState<FormState>(initialState);
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const result = await createReferencial(formData);
+
+    if (result.errors) {
+      setState({
+        errors: result.errors,
+        message: result.message,
+      });
+    } else {
+      // Maneja el éxito (redirigir o mostrar mensaje)
+      setState(initialState);
+    }
+  };
 
   return (
-    <form
-      onSubmit={(e) => {
-        e.preventDefault();
-        dispatch();
-      }}
-    >
+    <form onSubmit={handleSubmit}>
       <div className="rounded-md bg-gray-50 p-4 md:p-6">
         {/* Colaborador (Usuario autenticado) */}
         {session?.user && (
