@@ -63,19 +63,27 @@ const InnerForm: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-    const result = await createReferencial(formData);
+    try {
+      const formData = new FormData(e.currentTarget);
+      const result = await createReferencial(formData);
 
-    if (result.errors) {
+      if (result.errors) {
+        setState({
+          errors: result.errors,
+          message: result.message,
+        });
+      } else {
+        // Maneja el éxito (redirigir o mostrar mensaje)
+        setState(initialState);
+      }
+    } catch (error) {
       setState({
-        errors: result.errors,
-        message: result.message,
+        errors: {},
+        message: "Error inesperado al procesar el formulario"
       });
-    } else {
-      // Maneja el éxito (redirigir o mostrar mensaje)
-      setState(initialState);
     }
   };
+
 
   return (
     <form onSubmit={handleSubmit}>
