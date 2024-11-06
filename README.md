@@ -97,4 +97,3 @@ Para la administración de la base de datos, puedes utilizar herramientas como p
 ## Próximos pasos
 
 Autenticación con Google Auth 2.0
-Carga masiva de datos desde xlsx
