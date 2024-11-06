@@ -1,5 +1,3 @@
-// app/ui/referenciales/create-form.tsx
-
 'use client';
 import React from "react";
 import Link from 'next/link';
@@ -12,14 +10,11 @@ interface FormState {
   errors: {
     colaboradorId?: string[];
     monto?: string[];
-    // Agrega aquí los errores de validación para los demás campos
   };
   message: string | null;
 }
 
-// Define las propiedades del componente Form
 interface FormProps {
-  // Elimina colaboradores si no es necesario
 }
 
 const Form: React.FC<FormProps> = () => {
@@ -27,7 +22,6 @@ const Form: React.FC<FormProps> = () => {
   const initialState: FormState = { message: null, errors: {} };
   const [state, dispatch] = useFormState<FormState>(() => createReferencial(new FormData()), initialState);
 
-  // Utiliza colaboradores, state y dispatch en tu componente
 
   return (
     <form onSubmit={(e) => { e.preventDefault(); dispatch(); }}>
