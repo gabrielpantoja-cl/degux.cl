@@ -2,6 +2,7 @@
 'use client';
 import React, { useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation'; // 🆕 Importar router
 import { Button } from '@/components/ui/button';
 import { createReferencial } from '@/lib/actions';
 import { useSession, SessionProvider } from 'next-auth/react';
@@ -11,8 +12,27 @@ interface FormState {
     [key: string]: string[];
   };
   message: string | null;
-  invalidFields: Set<string>; // Nuevo: tracking de campos inválidos
+  invalidFields: Set<string>;
+  isSubmitting: boolean; // 🆕 Nuevo estado
+
 }
+
+const REQUIRED_FIELDS = [
+  'fojas',
+  'numero',
+  'anno',
+  'cbr',
+  'comuna',
+  'fechaEscritura',
+  'latitud',
+  'longitud',
+  'predio',
+  'vendedor',
+  'comprador',
+  'superficie',
+  'monto',
+  'rolAvaluo'
+];
 
 const InputField: React.FC<{
   label: string;
@@ -61,14 +81,39 @@ const Form: React.FC = () => (
 );
 
 const InnerForm: React.FC = () => {
+  const router = useRouter();
   const { data: session } = useSession();
+
+  // ✅ Corregir sintaxis del objeto initialState
   const initialState: FormState = {
     message: null,
     errors: {},
-    invalidFields: new Set()
+    invalidFields: new Set(),  // 🔍 Agregar coma aquí
+    isSubmitting: false
   };
   const [state, setState] = useState<FormState>(initialState);
 
+  // 🆕 Función de validación
+  const validateForm = (formData: FormData): boolean => {
+    const errors: { [key: string]: string[] } = {};
+
+    REQUIRED_FIELDS.forEach(field => {
+      if (!formData.get(field)) {
+        errors[field] = ['Este campo es requerido'];
+      }
+    });
+
+    if (Object.keys(errors).length > 0) {
+      setState(prev => ({
+        ...prev,
+        errors,
+        message: 'Por favor complete todos los campos requeridos',
+        invalidFields: new Set(Object.keys(errors))
+      }));
+      return false;
+    }
+    return true;
+  };
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
@@ -78,20 +123,21 @@ const InnerForm: React.FC = () => {
       if (result.errors) {
         const invalidFields = new Set(Object.keys(result.errors));
         setState({
+          ...initialState,
           errors: result.errors,
-          message: "Por favor corrija los errores en los campos marcados",
+          message: "Por favor corrija los errores marcados",
           invalidFields
         });
-      } else {
         // Maneja el éxito (redirigir o mostrar mensaje)
         setState(initialState);
       }
     } catch (error) {
       console.error('Error detallado:', error);
       setState({
-        errors: {},
-        message: "Error inesperado al procesar el formulario. Por favor intente nuevamente.",
-        invalidFields: new Set()
+        ...initialState,
+        message: error instanceof Error
+          ? `Error: ${error.message}`
+          : "Error inesperado al procesar el formulario",
       });
     }
   };
@@ -117,6 +163,7 @@ const InnerForm: React.FC = () => {
           type="number"
           placeholder="Escribe las fojas de la inscripción"
           error={state.errors.fojas}
+          required={true}
         />
 
         <InputField
@@ -126,6 +173,7 @@ const InnerForm: React.FC = () => {
           type="number"
           placeholder="Escribe el número de la inscripción"
           error={state.errors.numero}
+          required={true}
         />
 
         <InputField
@@ -135,6 +183,7 @@ const InnerForm: React.FC = () => {
           type="number"
           placeholder="Escribe el año de la inscripción"
           error={state.errors.anno}
+          required={true}
         />
 
         <InputField
@@ -143,6 +192,7 @@ const InnerForm: React.FC = () => {
           name="cbr"
           placeholder="Escribe el nombre del Conservador de Bienes Raíces"
           error={state.errors.cbr}
+          required={true}
         />
 
         <InputField
@@ -151,6 +201,7 @@ const InnerForm: React.FC = () => {
           name="comuna"
           placeholder="Escribe el nombre de la comuna"
           error={state.errors.comuna}
+          required={true}
         />
 
         <InputField
@@ -159,6 +210,8 @@ const InnerForm: React.FC = () => {
           name="rolAvaluo"
           placeholder="Escribe el rol de avalúo de la propiedad"
           error={state.errors.rolAvaluo}
+          required={true}
+
         />
 
         <InputField
@@ -167,6 +220,8 @@ const InnerForm: React.FC = () => {
           name="predio"
           placeholder="Escribe el nombre del predio"
           error={state.errors.predio}
+          required={true}
+
         />
 
         <InputField
@@ -175,6 +230,8 @@ const InnerForm: React.FC = () => {
           name="vendedor"
           placeholder="Escribe el nombre del vendedor"
           error={state.errors.vendedor}
+          required={true}
+
         />
 
         <InputField
@@ -183,6 +240,8 @@ const InnerForm: React.FC = () => {
           name="comprador"
           placeholder="Escribe el nombre del comprador"
           error={state.errors.comprador}
+          required={true}
+
         />
 
         <InputField
@@ -192,6 +251,8 @@ const InnerForm: React.FC = () => {
           type="number"
           placeholder="Digita la superficie de la propiedad en m²"
           error={state.errors.superficie}
+          required={true}
+
         />
 
         <InputField
@@ -201,6 +262,8 @@ const InnerForm: React.FC = () => {
           type="number"
           placeholder="Digita el monto de la transacción en CLP"
           error={state.errors.monto}
+          required={true}
+
         />
 
         <InputField
@@ -211,7 +274,8 @@ const InnerForm: React.FC = () => {
           placeholder="dd-mm-aaaa"
           pattern="\d{2}-\d{2}-\d{4}" // Patrón para dd-mm-aaaa
           error={state.errors.fechaEscritura}
-          required
+          required={true}
+
         />
 
         <InputField
@@ -222,6 +286,8 @@ const InnerForm: React.FC = () => {
           placeholder="-39.851241"
           step="any"
           error={state.errors.latitud}
+          required={true}
+
         />
 
         <InputField
@@ -232,6 +298,8 @@ const InnerForm: React.FC = () => {
           placeholder="-73.215171"
           step="any"
           error={state.errors.longitud}
+          required={true}
+
         />
 
         <InputField
