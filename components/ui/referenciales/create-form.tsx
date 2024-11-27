@@ -84,16 +84,14 @@ const InnerForm: React.FC = () => {
   const router = useRouter();
   const { data: session } = useSession();
 
-  // ✅ Corregir sintaxis del objeto initialState
   const initialState: FormState = {
     message: null,
     errors: {},
-    invalidFields: new Set(),  // 🔍 Agregar coma aquí
+    invalidFields: new Set(),
     isSubmitting: false
   };
   const [state, setState] = useState<FormState>(initialState);
 
-  // 🆕 Función de validación
   const validateForm = (formData: FormData): boolean => {
     const errors: { [key: string]: string[] } = {};
 
@@ -119,7 +117,6 @@ const InnerForm: React.FC = () => {
     try {
       const formData = new FormData(e.currentTarget);
 
-      // ✅ Usar validateForm en lugar de validación duplicada
       if (!validateForm(formData)) {
         setState(prev => ({ ...prev, isSubmitting: false }));
         return;
@@ -140,7 +137,6 @@ const InnerForm: React.FC = () => {
           message: "¡Referencial creado exitosamente!"
         });
 
-        // ✅ Usar router para redirección
         setTimeout(() => {
           router.push('/dashboard/referenciales');
         }, 2000);
@@ -162,13 +158,13 @@ const InnerForm: React.FC = () => {
   return (
     <form onSubmit={handleSubmit}>
       <div className="rounded-md bg-gray-50 p-4 md:p-6">
-        {/* Colaborador (Usuario autenticado) */}
+        {/* Usuario autenticado */}
         {session?.user && (
           <div className="mb-4">
             <p className="mb-2 text-sm font-medium">
-              Colaborador: {session.user.name}
+              Usuario: {session.user.name}
             </p>
-            <input type="hidden" name="colaboradorId" value={session.user.id} />
+            <input type="hidden" name="userId" value={session.user.id} />
           </div>
         )}
 
