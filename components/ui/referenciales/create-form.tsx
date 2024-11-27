@@ -119,21 +119,9 @@ const InnerForm: React.FC = () => {
     try {
       const formData = new FormData(e.currentTarget);
 
-      // ✅ Usar validateForm
-      const errors: { [key: string]: string[] } = {};
-      REQUIRED_FIELDS.forEach(field => {
-        if (!formData.get(field)) {
-          errors[field] = ['Este campo es requerido'];
-        }
-      });
-
-      if (Object.keys(errors).length > 0) {
-        setState({
-          errors,
-          message: 'Por favor complete todos los campos requeridos',
-          invalidFields: new Set(Object.keys(errors)),
-          isSubmitting: false
-        });
+      // ✅ Usar validateForm en lugar de validación duplicada
+      if (!validateForm(formData)) {
+        setState(prev => ({ ...prev, isSubmitting: false }));
         return;
       }
 
