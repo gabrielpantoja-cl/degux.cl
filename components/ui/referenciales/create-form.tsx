@@ -1,3 +1,4 @@
+// components/ui/referenciales/create-form.tsx
 'use client';
 import React, { useState } from 'react';
 import Link from 'next/link';
@@ -10,6 +11,7 @@ interface FormState {
     [key: string]: string[];
   };
   message: string | null;
+  invalidFields: Set<string>; // Nuevo: tracking de campos inválidos
 }
 
 const InputField: React.FC<{
@@ -20,6 +22,7 @@ const InputField: React.FC<{
   placeholder: string;
   error?: string[];
   step?: string;
+  required?: boolean;
 }> = ({ label, id, name, type = "text", placeholder, error, step }) => (
   <div className="mb-4">
     <label htmlFor={id} className="mb-2 block text-sm font-medium">
@@ -58,7 +61,11 @@ const Form: React.FC = () => (
 
 const InnerForm: React.FC = () => {
   const { data: session } = useSession();
-  const initialState: FormState = { message: null, errors: {} };
+  const initialState: FormState = {
+    message: null,
+    errors: {},
+    invalidFields: new Set()
+  };
   const [state, setState] = useState<FormState>(initialState);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -68,18 +75,22 @@ const InnerForm: React.FC = () => {
       const result = await createReferencial(formData);
 
       if (result.errors) {
+        const invalidFields = new Set(Object.keys(result.errors));
         setState({
           errors: result.errors,
-          message: result.message,
+          message: "Por favor corrija los errores en los campos marcados",
+          invalidFields
         });
       } else {
         // Maneja el éxito (redirigir o mostrar mensaje)
         setState(initialState);
       }
     } catch (error) {
+      console.error('Error detallado:', error);
       setState({
         errors: {},
-        message: "Error inesperado al procesar el formulario"
+        message: "Error inesperado al procesar el formulario. Por favor intente nuevamente.",
+        invalidFields: new Set()
       });
     }
   };
