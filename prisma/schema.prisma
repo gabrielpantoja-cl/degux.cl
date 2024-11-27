@@ -13,26 +13,24 @@ enum Role {
 }
 
 model referenciales {
-  id              String         @id @default(uuid())
-  userId          String // Cambiado de colaborador_id a userId
-  user            User           @relation(fields: [userId], references: [id])
-  lat             Float
-  lng             Float
-  fojas           Int
-  numero          Int
-  anio            Int
-  cbr             String
-  comprador       String
-  vendedor        String
-  predio          String
-  comuna          String
-  rol             String
-  fechaescritura  DateTime
-  superficie      Float
-  monto           Int
-  observaciones   String?
-  colaboradores   colaboradores? @relation(fields: [colaboradoresId], references: [id])
-  colaboradoresId String?
+  id             String   @id @default(uuid())
+  userId         String // Cambiado de colaborador_id a userId
+  user           User     @relation(fields: [userId], references: [id])
+  lat            Float
+  lng            Float
+  fojas          Int
+  numero         Int
+  anio           Int
+  cbr            String
+  comprador      String
+  vendedor       String
+  predio         String
+  comuna         String
+  rol            String
+  fechaescritura DateTime
+  superficie     Float
+  monto          Int
+  observaciones  String?
 }
 
 model User {
@@ -46,7 +44,7 @@ model User {
 
   accounts      Account[]
   sessions      Session[]
-  referenciales referenciales[] // Añadir esta línea para la relación inversa
+  referenciales referenciales[] // Relación inversa
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -92,9 +90,8 @@ model VerificationToken {
 }
 
 model colaboradores {
-  id            String          @id @default(uuid())
-  name          String
-  email         String          @unique
-  image_url     String
-  referenciales referenciales[]
+  id        String @id @default(uuid())
+  name      String
+  email     String @unique
+  image_url String
 }
