@@ -6,7 +6,7 @@ import { fetchLatestReferenciales } from '@/lib/referenciales';
 
 type LatestReferencial = {
   id: string;
-  colaborador_id: string;
+  userId: string;
   lat: number;
   lng: number;
   fojas: number;
@@ -14,9 +14,9 @@ type LatestReferencial = {
   anio: number;
   cbr: string;
   monto: number;
-  colaborador: {
+  user: {
     id: string;
-    name: string;
+    name: string | null; // Permitir que name sea string o null
     email: string;
   };
 };
