@@ -5,11 +5,11 @@ import { z } from 'zod';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { signIn } from 'next-auth/react';
-import { prisma } from '@/lib/prisma'; 
+import { prisma } from '@/lib/prisma';
 
 const ReferencialSchema = z.object({
   id: z.string(),
-  colaboradorId: z.string({
+  userId: z.string({
     invalid_type_error: 'Please select a colaborador.',
   }),
   amount: z.coerce
@@ -62,12 +62,12 @@ export async function updateReferencial(formData: FormData) {
     };
   }
 
-  const { colaboradorId, amount } = validatedFields.data;
+  const { userId, amount } = validatedFields.data;
   const amountInCents = amount * 100;
   try {
     await prisma.referenciales.create({
       data: {
-        colaborador_id: colaboradorId,
+        userId: userId,
         monto: amountInCents,
         fechaescritura: new Date(),
         lat: 0, // replace with actual value
