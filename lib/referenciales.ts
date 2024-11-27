@@ -2,7 +2,7 @@
 
 'use server';
 
-import { prisma } from '@/lib/prisma'; // Importa la instancia única de PrismaClient
+import { prisma } from '@/lib/prisma';
 import { formatCurrency } from './utils';
 import { unstable_noStore as noStore } from 'next/cache';
 
@@ -17,7 +17,7 @@ export async function fetchLatestReferenciales() {
         fechaescritura: 'desc',
       },
       include: {
-        colaborador: true,
+        user: true, // Cambiado de colaborador a user
       },
     });
 
@@ -66,7 +66,7 @@ export async function fetchFilteredReferenciales(query: string, currentPage: num
       take: ITEMS_PER_PAGE,
       skip: offset,
       include: {
-        colaborador: {
+        user: {
           select: {
             name: true,
             email: true,

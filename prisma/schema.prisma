@@ -13,24 +13,26 @@ enum Role {
 }
 
 model referenciales {
-  id             String        @id @default(uuid())
-  colaborador_id String
-  colaborador    colaboradores @relation(fields: [colaborador_id], references: [id])
-  lat            Float
-  lng            Float
-  fojas          Int
-  numero         Int
-  anio           Int
-  cbr            String
-  comprador      String
-  vendedor       String
-  predio         String
-  comuna         String
-  rol            String
-  fechaescritura DateTime
-  superficie     Float
-  monto          Int
-  observaciones  String?
+  id              String         @id @default(uuid())
+  userId          String // Cambiado de colaborador_id a userId
+  user            User           @relation(fields: [userId], references: [id])
+  lat             Float
+  lng             Float
+  fojas           Int
+  numero          Int
+  anio            Int
+  cbr             String
+  comprador       String
+  vendedor        String
+  predio          String
+  comuna          String
+  rol             String
+  fechaescritura  DateTime
+  superficie      Float
+  monto           Int
+  observaciones   String?
+  colaboradores   colaboradores? @relation(fields: [colaboradoresId], references: [id])
+  colaboradoresId String?
 }
 
 model User {
@@ -42,8 +44,9 @@ model User {
   image         String?
   role          Role      @default(user)
 
-  accounts Account[]
-  sessions Session[]
+  accounts      Account[]
+  sessions      Session[]
+  referenciales referenciales[] // Añadir esta línea para la relación inversa
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
