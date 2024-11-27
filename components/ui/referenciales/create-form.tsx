@@ -23,6 +23,7 @@ const InputField: React.FC<{
   error?: string[];
   step?: string;
   required?: boolean;
+  pattern?: string;
 }> = ({ label, id, name, type = "text", placeholder, error, step }) => (
   <div className="mb-4">
     <label htmlFor={id} className="mb-2 block text-sm font-medium">
@@ -206,8 +207,11 @@ const InnerForm: React.FC = () => {
           label="Fecha de escritura"
           id="fechaEscritura"
           name="fechaEscritura"
-          placeholder="Escribe la fecha de escritura dd-mm-aaaa"
+          type="date" // Cambiar a type date
+          placeholder="dd-mm-aaaa"
+          pattern="\d{2}-\d{2}-\d{4}" // Patrón para dd-mm-aaaa
           error={state.errors.fechaEscritura}
+          required
         />
 
         <InputField
