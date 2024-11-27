@@ -29,12 +29,11 @@ export const authOptions: AuthOptions = {
   ],
   callbacks: {
     async redirect({ url, baseUrl }) {
-      // Manejar redirecciones de forma segura
       if (url.startsWith(baseUrl)) return url;
       if (url.startsWith('/')) return `${baseUrl}${url}`;
       return baseUrl;
     },
-    async session({ session, user }) { // Removido el parámetro token no utilizado
+    async session({ session, user }) {
       if (session?.user) {
         session.user.id = user.id;
         session.user.role = user.role || 'user';
@@ -77,8 +76,8 @@ export const authOptions: AuthOptions = {
   },
   session: {
     strategy: "jwt",
-    maxAge: 30 * 24 * 60 * 60, // 30 días
-    updateAge: 24 * 60 * 60, // 24 horas
+    maxAge: 30 * 24 * 60 * 60,
+    updateAge: 24 * 60 * 60,
   }
 };
 
