@@ -118,18 +118,44 @@ const InnerForm: React.FC = () => {
     e.preventDefault();
     try {
       const formData = new FormData(e.currentTarget);
+
+      // ✅ Usar validateForm
+      const errors: { [key: string]: string[] } = {};
+      REQUIRED_FIELDS.forEach(field => {
+        if (!formData.get(field)) {
+          errors[field] = ['Este campo es requerido'];
+        }
+      });
+
+      if (Object.keys(errors).length > 0) {
+        setState({
+          errors,
+          message: 'Por favor complete todos los campos requeridos',
+          invalidFields: new Set(Object.keys(errors)),
+          isSubmitting: false
+        });
+        return;
+      }
+
       const result = await createReferencial(formData);
 
-      if (result.errors) {
-        const invalidFields = new Set(Object.keys(result.errors));
+      if (result?.errors) {
         setState({
-          ...initialState,
           errors: result.errors,
           message: "Por favor corrija los errores marcados",
-          invalidFields
+          invalidFields: new Set(Object.keys(result.errors)),
+          isSubmitting: false
         });
-        // Maneja el éxito (redirigir o mostrar mensaje)
-        setState(initialState);
+      } else {
+        setState({
+          ...initialState,
+          message: "¡Referencial creado exitosamente!"
+        });
+
+        // ✅ Usar router para redirección
+        setTimeout(() => {
+          router.push('/dashboard/referenciales');
+        }, 2000);
       }
     } catch (error) {
       console.error('Error detallado:', error);
@@ -139,6 +165,8 @@ const InnerForm: React.FC = () => {
           ? `Error: ${error.message}`
           : "Error inesperado al procesar el formulario",
       });
+    } finally {
+      setState(prev => ({ ...prev, isSubmitting: false }));
     }
   };
 
@@ -327,8 +355,12 @@ const InnerForm: React.FC = () => {
         >
           Cancelar
         </Link>
-        <Button type="submit">Crear Referencial</Button>
-      </div>
+        <Button
+          type="submit"
+          disabled={state.isSubmitting}
+        >
+          {state.isSubmitting ? 'Creando...' : 'Crear Referencial'}
+        </Button>      </div>
     </form>
   );
 };
