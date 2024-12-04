@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { createReferencial } from '@/lib/actions';
 import { useSession, SessionProvider } from 'next-auth/react';
 import { validateReferencial } from '@/lib/validation';
-import { Input } from '@/components/ui/input'; // Importamos el componente Input
+import { Input } from '@/components/ui/input';
 import { ValidationResult } from '@/types/types';
 
 interface FormState {
