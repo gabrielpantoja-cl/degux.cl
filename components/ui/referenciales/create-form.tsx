@@ -142,6 +142,7 @@ const InnerForm: React.FC = (): ReactNode => {
       const superficie = parseFloat(formData.get('superficie') as string);
       const monto = parseFloat(formData.get('monto') as string);
 
+      // Validar coordenadas
       if (isNaN(latitud) || isNaN(longitud)) {
         setState(prev => ({
           ...prev,
@@ -157,9 +158,36 @@ const InnerForm: React.FC = (): ReactNode => {
         return;
       }
 
+      // Validar superficie y monto
+      if (isNaN(superficie) || superficie <= 0) {
+        setState(prev => ({
+          ...prev,
+          isSubmitting: false,
+          message: "La superficie debe ser un número positivo",
+          messageType: 'error',
+          errors: {
+            ...prev.errors,
+            superficie: ['Superficie inválida']
+          }
+        }));
+        return;
+      }
 
+      if (isNaN(monto) || monto <= 0) {
+        setState(prev => ({
+          ...prev,
+          isSubmitting: false,
+          message: "El monto debe ser un número positivo",
+          messageType: 'error',
+          errors: {
+            ...prev.errors,
+            monto: ['Monto inválido']
+          }
+        }));
+        return;
+      }
       const result = await createReferencial(formData);
-      console.log('Respuesta del servidor:', result); // Logging de la respuesta
+      console.log('Respuesta del servidor:', result);
 
 
       if (result?.errors) {
