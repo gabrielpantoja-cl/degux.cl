@@ -1,7 +1,4 @@
 // src/lib/validation.ts
-interface ValidationErrors {
-  [key: string]: string[];
-}
 
 export const REQUIRED_FIELDS = [
   'fojas',
@@ -18,10 +15,24 @@ export const REQUIRED_FIELDS = [
   'superficie',
   'monto',
   'rolAvaluo'
-] as const;
+];
 
-export const validateReferencial = (formData: FormData): ValidationErrors | null => {
-  const errors: ValidationErrors = {};
+export const validateReferencial = (formData: FormData): {
+  isValid: boolean;
+  errors: { [key: string]: string[] };
+  message?: string;
+} => {
+  const errors: { [key: string]: string[] } = {};
+  const userId = formData.get('userId');
+
+  if (!userId) {
+    errors['userId'] = ['Usuario no autenticado'];
+    return {
+      isValid: false,
+      errors,
+      message: 'Se requiere autenticación'
+    };
+  }
 
   // Validación de campos requeridos
   REQUIRED_FIELDS.forEach(field => {
@@ -30,26 +41,23 @@ export const validateReferencial = (formData: FormData): ValidationErrors | null
     }
   });
 
-  // Validación de coordenadas
-  const latitud = parseFloat(formData.get('latitud') as string);
-  const longitud = parseFloat(formData.get('longitud') as string);
-  if (isNaN(latitud)) errors['latitud'] = ['Latitud inválida'];
-  if (isNaN(longitud)) errors['longitud'] = ['Longitud inválida'];
+  // Validación de números
+  const numericalValidations = {
+    latitud: { value: parseFloat(formData.get('latitud') as string), message: 'Latitud inválida' },
+    longitud: { value: parseFloat(formData.get('longitud') as string), message: 'Longitud inválida' },
+    superficie: { value: parseFloat(formData.get('superficie') as string), min: 0, message: 'Superficie inválida' },
+    monto: { value: parseFloat(formData.get('monto') as string), min: 0, message: 'Monto inválido' }
+  };
 
-  // Validación de números positivos
-  const superficie = parseFloat(formData.get('superficie') as string);
-  const monto = parseFloat(formData.get('monto') as string);
-  if (isNaN(superficie) || superficie <= 0) errors['superficie'] = ['Superficie debe ser un número positivo'];
-  if (isNaN(monto) || monto <= 0) errors['monto'] = ['Monto debe ser un número positivo'];
+  Object.entries(numericalValidations).forEach(([field, validation]) => {
+    if (isNaN(validation.value) || ('min' in validation && validation.value <= validation.min)) {
+      errors[field] = [validation.message];
+    }
+  });
 
-  return Object.keys(errors).length > 0 ? errors : null;
-};
-
-export const validateAuth = (userId: string | null): ValidationErrors | null => {
-  if (!userId) {
-    return {
-      userId: ['Usuario no autenticado']
-    };
-  }
-  return null;
+  return {
+    isValid: Object.keys(errors).length === 0,
+    errors,
+    message: Object.keys(errors).length > 0 ? 'Por favor complete todos los campos requeridos correctamente' : undefined
+  };
 };

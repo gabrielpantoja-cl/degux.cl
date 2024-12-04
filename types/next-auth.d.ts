@@ -1,3 +1,4 @@
+// types/next-auth.d.ts
 import { DefaultSession } from "next-auth";
 import "next-auth/jwt";
 
@@ -20,4 +21,11 @@ declare module "next-auth/jwt" {
     id?: string;
     role?: string;
   }
+}
+
+// 
+export interface ValidationResult {
+  isValid: boolean;
+  errors: { [key: string]: string[] };
+  message?: string;
 }
