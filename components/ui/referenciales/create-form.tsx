@@ -82,7 +82,7 @@ const Form: React.FC = () => (
 );
 
 // Componente InnerForm corregido
-const InnerForm: React.FC = (): ReactNode => {
+const InnerForm = () => {
   const router = useRouter();
   const { data: session } = useSession();
 
