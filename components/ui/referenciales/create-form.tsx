@@ -74,27 +74,22 @@ const InputField: React.FC<{
   </div>
 );
 
-// Componente Form wrapper simplificado
 const Form = () => (
   <SessionProvider>
     <InnerForm />
   </SessionProvider>
 );
 
-// Componente InnerForm corregido
 const InnerForm = () => {
   const router = useRouter();
   const { data: session } = useSession();
 
 
-  // 1. Crear un estado local para el userId
   const [userId] = useState<string>('');
 
 
-  // Asegurar que tenemos el userId desde el inicio
   useEffect(() => {
     if (session?.user?.email) {
-      // Verificar que tenemos la sesión
       console.log('Sesión detectada:', {
         email: session.user.email,
         name: session.user.name
@@ -103,11 +98,9 @@ const InnerForm = () => {
   }, [session]);
 
 
-  // Debugging session
   console.log('Session completa:', session);
   console.log('User ID:', session?.user?.id);
 
-  // Estado inicial
   const initialState: FormState = {
     message: null,
     messageType: null,
@@ -118,7 +111,6 @@ const InnerForm = () => {
 
   const [state, setState] = useState<FormState>(initialState);
 
-  // Modificar la función validateForm para mejor logging del userId
   const validateForm = (formData: FormData): boolean => {
     const errors: { [key: string]: string[] } = {};
     const userId = formData.get('userId');
@@ -175,11 +167,9 @@ const InnerForm = () => {
     try {
       const formData = new FormData(e.currentTarget);
 
-      // Asegurar que el userId está presente
       if (!formData.get('userId')) {
         formData.set('userId', session?.user?.email || '');
       }
-      // Log detallado antes de enviar
       console.log('Datos a enviar:', {
         userId: formData.get('userId'),
         fojas: formData.get('fojas'),
@@ -188,7 +178,6 @@ const InnerForm = () => {
         // ... otros campos
       });
 
-      // Log más detallado
       console.log('Session:', session);
       console.log('UserId:', formData.get('userId'));
       console.log('Datos completos:', Object.fromEntries(formData));
@@ -204,13 +193,11 @@ const InnerForm = () => {
         return;
       }
 
-      // Validaciones adicionales de formato
       const latitud = parseFloat(formData.get('latitud') as string);
       const longitud = parseFloat(formData.get('longitud') as string);
       const superficie = parseFloat(formData.get('superficie') as string);
       const monto = parseFloat(formData.get('monto') as string);
 
-      // Validar coordenadas
       if (isNaN(latitud) || isNaN(longitud)) {
         setState(prev => ({
           ...prev,
@@ -226,7 +213,6 @@ const InnerForm = () => {
         return;
       }
 
-      // Validar superficie y monto
       if (isNaN(superficie) || superficie <= 0) {
         setState(prev => ({
           ...prev,
@@ -256,7 +242,6 @@ const InnerForm = () => {
       }
       const result = await createReferencial(formData);
 
-      // Log detallado de la respuesta
       console.log('Respuesta del servidor:', result);
 
 
@@ -315,7 +300,7 @@ const InnerForm = () => {
             <input
               type="hidden"
               name="userId"
-              value={session?.user?.email || ''} // Usar directamente el email de la sesión
+              value={session?.user?.email || ''}
               required
             />
             {/* Debug info */}
