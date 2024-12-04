@@ -175,12 +175,3 @@ export async function updateReferencial(formData: FormData) {
     };
   }
 }
-
-export async function authenticate() {
-  try {
-    await signIn('google');
-  } catch (error) {
-    console.error('Error during sign-in:', error);
-    return 'SignInError';
-  }
-}
