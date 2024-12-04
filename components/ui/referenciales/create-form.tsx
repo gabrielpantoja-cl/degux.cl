@@ -1,6 +1,6 @@
 // components/ui/referenciales/create-form.tsx
 'use client';
-import React, { useState, useEffect, ReactNode } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
@@ -75,7 +75,7 @@ const InputField: React.FC<{
 );
 
 // Componente Form wrapper simplificado
-const Form: React.FC = () => (
+const Form = () => (
   <SessionProvider>
     <InnerForm />
   </SessionProvider>
@@ -91,10 +91,14 @@ const InnerForm = () => {
   const [userId, setUserId] = useState<string>('');
 
 
-  // 2. Efecto para establecer el userId cuando la sesión esté disponible
+  // Asegurar que tenemos el userId desde el inicio
   useEffect(() => {
     if (session?.user?.email) {
-      setUserId(session.user.email); // Usar email como ID temporal
+      // Verificar que tenemos la sesión
+      console.log('Sesión detectada:', {
+        email: session.user.email,
+        name: session.user.name
+      });
     }
   }, [session]);
 
@@ -102,6 +106,8 @@ const InnerForm = () => {
   // Debugging session
   console.log('Session completa:', session);
   console.log('User ID:', session?.user?.id);
+
+  // Estado inicial
   const initialState: FormState = {
     message: null,
     messageType: null,
@@ -154,15 +160,12 @@ const InnerForm = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    // Validación de sesión
     if (!session?.user?.email) {
       setState({
         ...initialState,
-        message: "Error: No hay una sesión de usuario activa. Por favor, inicie sesión nuevamente.",
+        message: "Error: Usuario no autenticado",
         messageType: 'error',
-        errors: {
-          userId: ['Usuario no autenticado']
-        }
+        errors: { auth: ['Se requiere autenticación'] }
       });
       return;
     }
