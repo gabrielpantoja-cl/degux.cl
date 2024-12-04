@@ -74,18 +74,22 @@ const InputField: React.FC<{
   </div>
 );
 
+// Componente Form wrapper simplificado
 const Form: React.FC = () => (
   <SessionProvider>
     <InnerForm />
   </SessionProvider>
 );
 
+// Componente InnerForm corregido
 const InnerForm: React.FC = (): ReactNode => {
   const router = useRouter();
   const { data: session } = useSession();
 
+
   // 1. Crear un estado local para el userId
   const [userId, setUserId] = useState<string>('');
+
 
   // 2. Efecto para establecer el userId cuando la sesión esté disponible
   useEffect(() => {
@@ -94,10 +98,10 @@ const InnerForm: React.FC = (): ReactNode => {
     }
   }, [session]);
 
+
   // Debugging session
   console.log('Session completa:', session);
   console.log('User ID:', session?.user?.id);
-
   const initialState: FormState = {
     message: null,
     messageType: null,
@@ -149,10 +153,37 @@ const InnerForm: React.FC = (): ReactNode => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    // Validación de sesión
+    if (!session?.user?.email) {
+      setState({
+        ...initialState,
+        message: "Error: No hay una sesión de usuario activa. Por favor, inicie sesión nuevamente.",
+        messageType: 'error',
+        errors: {
+          userId: ['Usuario no autenticado']
+        }
+      });
+      return;
+    }
+
     setState(prev => ({ ...prev, isSubmitting: true, message: null }));
 
     try {
       const formData = new FormData(e.currentTarget);
+
+      // Asegurar que el userId está presente
+      if (!formData.get('userId')) {
+        formData.set('userId', session?.user?.email || '');
+      }
+      // Log detallado antes de enviar
+      console.log('Datos a enviar:', {
+        userId: formData.get('userId'),
+        fojas: formData.get('fojas'),
+        numero: formData.get('numero'),
+        anno: formData.get('anno'),
+        // ... otros campos
+      });
 
       // Log más detallado
       console.log('Session:', session);
@@ -221,6 +252,8 @@ const InnerForm: React.FC = (): ReactNode => {
         return;
       }
       const result = await createReferencial(formData);
+
+      // Log detallado de la respuesta
       console.log('Respuesta del servidor:', result);
 
 
@@ -279,7 +312,7 @@ const InnerForm: React.FC = (): ReactNode => {
             <input
               type="hidden"
               name="userId"
-              value={userId} // Usar el estado local
+              value={session?.user?.email || ''} // Usar directamente el email de la sesión
               required
             />
             {/* Debug info */}
