@@ -117,10 +117,14 @@ const InnerForm: React.FC = (): ReactNode => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setState(prev => ({ ...prev, isSubmitting: true }));
+    setState(prev => ({ ...prev, isSubmitting: true, message: null }));
 
     try {
       const formData = new FormData(e.currentTarget);
+
+      // Logging detallado de los datos enviados
+      console.log('Datos del formulario a enviar:', Object.fromEntries(formData));
+
 
       if (!validateForm(formData)) {
         setState(prev => ({
@@ -132,12 +136,37 @@ const InnerForm: React.FC = (): ReactNode => {
         return;
       }
 
+      // Validaciones adicionales de formato
+      const latitud = parseFloat(formData.get('latitud') as string);
+      const longitud = parseFloat(formData.get('longitud') as string);
+      const superficie = parseFloat(formData.get('superficie') as string);
+      const monto = parseFloat(formData.get('monto') as string);
+
+      if (isNaN(latitud) || isNaN(longitud)) {
+        setState(prev => ({
+          ...prev,
+          isSubmitting: false,
+          message: "Las coordenadas deben ser números válidos",
+          messageType: 'error',
+          errors: {
+            ...prev.errors,
+            latitud: isNaN(latitud) ? ['Latitud inválida'] : [],
+            longitud: isNaN(longitud) ? ['Longitud inválida'] : []
+          }
+        }));
+        return;
+      }
+
+
       const result = await createReferencial(formData);
+      console.log('Respuesta del servidor:', result); // Logging de la respuesta
+
 
       if (result?.errors) {
+        console.error('Errores del servidor:', result.errors);
         setState({
           errors: result.errors,
-          message: "Por favor corrija los errores marcados",
+          message: "Error al crear el referencial: " + (result.message || Object.values(result.errors).flat().join(', ')),
           messageType: 'error',
           invalidFields: new Set(Object.keys(result.errors)),
           isSubmitting: false
@@ -145,7 +174,6 @@ const InnerForm: React.FC = (): ReactNode => {
         return;
       }
 
-      // Verificar el éxito basado en la presencia de success o message
       if ('success' in result && result.success) {
         setState({
           ...initialState,
@@ -157,19 +185,20 @@ const InnerForm: React.FC = (): ReactNode => {
           router.push('/dashboard/referenciales');
         }, 2000);
       } else {
-        setState({
-          ...initialState,
-          message: result.message || "No se pudo crear el referencial. Por favor intente nuevamente.",
-          messageType: 'error'
-        });
+        throw new Error(result.message || 'Error desconocido al crear el referencial');
       }
     } catch (error) {
-      console.error('Error detallado:', error);
+      console.error('Error detallado:', {
+        name: error instanceof Error ? error.name : 'Unknown',
+        message: error instanceof Error ? error.message : String(error),
+        stack: error instanceof Error ? error.stack : undefined
+      });
+
       setState({
         ...initialState,
         message: error instanceof Error
-          ? `Error: ${error.message}`
-          : "Error inesperado al procesar el formulario",
+          ? `Error al crear el referencial: ${error.message}`
+          : "Error inesperado al procesar el formulario. Por favor, revise la consola para más detalles.",
         messageType: 'error'
       });
     } finally {
