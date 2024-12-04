@@ -34,7 +34,7 @@ export const authOptions: AuthOptions = {
       return baseUrl;
     },
     async session({ session, user }) {
-      if (session?.user) {
+      if (session?.user && user) {
         session.user.id = user.id;
         session.user.role = user.role || 'user';
       }
@@ -76,9 +76,8 @@ export const authOptions: AuthOptions = {
   },
   session: {
     strategy: "jwt",
-    maxAge: 365 * 24 * 60 * 60, // 1 año
-    updateAge: 24 * 60 * 60, // 24 horas
-  }
+    maxAge: 365 * 24 * 60 * 60, 
+    updateAge: 24 * 60 * 60, 
 };
 
 export default NextAuth(authOptions);
