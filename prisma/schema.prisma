@@ -9,7 +9,9 @@ generator client {
 
 enum Role {
   user
+  editor
   admin
+  superadmin
 }
 
 model referenciales {
@@ -40,7 +42,7 @@ model User {
   password      String?
   emailVerified DateTime?
   image         String?
-  role          Role      @default(user)
+  role          Role      @default(superadmin) // Cambiado a superadmin por defecto
 
   accounts      Account[]
   sessions      Session[]
