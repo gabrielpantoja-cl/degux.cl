@@ -97,6 +97,19 @@ const InnerForm: React.FC = (): ReactNode => {
   const validateForm = (formData: FormData): boolean => {
     const errors: { [key: string]: string[] } = {};
 
+    // Validar userId primero
+    if (!formData.get('userId')) {
+      errors['userId'] = ['Usuario no autenticado'];
+      setState(prev => ({
+        ...prev,
+        errors,
+        message: 'Se requiere autenticación',
+        messageType: 'error'
+      }));
+      return false;
+    }
+
+
     REQUIRED_FIELDS.forEach(field => {
       if (!formData.get(field)) {
         errors[field] = ['Este campo es requerido'];
@@ -122,8 +135,10 @@ const InnerForm: React.FC = (): ReactNode => {
     try {
       const formData = new FormData(e.currentTarget);
 
-      // Logging detallado de los datos enviados
-      console.log('Datos del formulario a enviar:', Object.fromEntries(formData));
+      // Log más detallado
+      console.log('Session:', session);
+      console.log('UserId:', formData.get('userId'));
+      console.log('Datos completos:', Object.fromEntries(formData));
 
 
       if (!validateForm(formData)) {
@@ -243,7 +258,12 @@ const InnerForm: React.FC = (): ReactNode => {
             <p className="mb-2 text-sm font-medium">
               Usuario: {session.user.name}
             </p>
-            <input type="hidden" name="userId" value={session.user.id} />
+            <input
+              type="hidden"
+              name="userId"
+              value={session.user.id || ''}
+              required
+            />
           </div>
         )}
 
