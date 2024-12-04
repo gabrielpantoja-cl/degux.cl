@@ -1,6 +1,6 @@
 // components/ui/referenciales/create-form.tsx
 'use client';
-import React, { useState, ReactNode } from 'react';
+import React, { useState, useEffect, ReactNode } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
@@ -83,6 +83,16 @@ const Form: React.FC = () => (
 const InnerForm: React.FC = (): ReactNode => {
   const router = useRouter();
   const { data: session } = useSession();
+
+  // 1. Crear un estado local para el userId
+  const [userId, setUserId] = useState<string>('');
+
+  // 2. Efecto para establecer el userId cuando la sesión esté disponible
+  useEffect(() => {
+    if (session?.user?.email) {
+      setUserId(session.user.email); // Usar email como ID temporal
+    }
+  }, [session]);
 
   // Debugging session
   console.log('Session completa:', session);
@@ -261,7 +271,6 @@ const InnerForm: React.FC = (): ReactNode => {
   return (
     <form onSubmit={handleSubmit}>
       <div className="rounded-md bg-gray-50 p-4 md:p-6">
-        {/* Usuario autenticado */}
         {session?.user && (
           <div className="mb-4">
             <p className="mb-2 text-sm font-medium">
@@ -270,9 +279,13 @@ const InnerForm: React.FC = (): ReactNode => {
             <input
               type="hidden"
               name="userId"
-              value={session.user.id || ''}
+              value={userId} // Usar el estado local
               required
             />
+            {/* Debug info */}
+            <p className="text-xs text-gray-500">
+              Email (ID temporal): {userId}
+            </p>
           </div>
         )}
 
