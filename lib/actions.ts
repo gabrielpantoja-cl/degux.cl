@@ -25,8 +25,6 @@ const ReferencialSchema = z.object({
   observaciones: z.string().optional(),
 });
 
-const CreateReferencial = ReferencialSchema.omit({ id: true });
-
 export type State = {
   errors?: {
     userId?: string[];
@@ -50,7 +48,7 @@ export type State = {
 };
 
 export async function createReferencial(formData: FormData) {
-  const validatedFields = CreateReferencial.safeParse({
+  const validatedFields = ReferencialSchema.safeParse({
     userId: formData.get('userId'),
     fojas: Number(formData.get('fojas')),
     numero: Number(formData.get('numero')),
@@ -111,10 +109,8 @@ export async function createReferencial(formData: FormData) {
   }
 }
 
-const UpdateReferencial = ReferencialSchema.omit({ id: true });
-
 export async function updateReferencial(formData: FormData) {
-  const validatedFields = UpdateReferencial.safeParse({
+  const validatedFields = ReferencialSchema.safeParse({
     userId: formData.get('userId'),
     fojas: Number(formData.get('fojas')),
     numero: Number(formData.get('numero')),
