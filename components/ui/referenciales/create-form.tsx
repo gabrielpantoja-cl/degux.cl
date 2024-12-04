@@ -282,9 +282,9 @@ const InnerForm: React.FC = () => {
           label="Fecha de escritura"
           id="fechaEscritura"
           name="fechaEscritura"
-          type="date" // Cambiar a type date
+          type="date" 
           placeholder="dd-mm-aaaa"
-          pattern="\d{2}-\d{2}-\d{4}" // Patrón para dd-mm-aaaa
+          pattern="\d{2}-\d{2}-\d{4}" 
           error={state.errors.fechaEscritura}
           required={true}
 

@@ -4,35 +4,69 @@
 import { z } from 'zod';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
-import { signIn } from 'next-auth/react';
 import { prisma } from '@/lib/prisma';
 
 const ReferencialSchema = z.object({
-  id: z.string(),
-  userId: z.string({
-    invalid_type_error: 'Please select a colaborador.',
-  }),
-  amount: z.coerce
-    .number()
-    .gt(0, { message: 'Please enter an amount greater than $0.' }),
-
-  date: z.string(),
+  userId: z.string(),
+  fojas: z.number(),
+  numero: z.number(),
+  anno: z.number(),
+  cbr: z.string(),
+  comuna: z.string(),
+  fechaEscritura: z.string(),
+  latitud: z.number(),
+  longitud: z.number(),
+  predio: z.string(),
+  vendedor: z.string(),
+  comprador: z.string(),
+  superficie: z.number(),
+  monto: z.number(),
+  rolAvaluo: z.string(),
+  observaciones: z.string().optional(),
 });
 
-const CreateReferencial = ReferencialSchema.omit({ id: true, date: true });
+const CreateReferencial = ReferencialSchema.omit({ id: true });
 
 export type State = {
   errors?: {
-    colaboradorId?: string[];
-    amount?: string[];
+    userId?: string[];
+    fojas?: string[];
+    numero?: string[];
+    anno?: string[];
+    cbr?: string[];
+    comuna?: string[];
+    fechaEscritura?: string[];
+    latitud?: string[];
+    longitud?: string[];
+    predio?: string[];
+    vendedor?: string[];
+    comprador?: string[];
+    superficie?: string[];
+    monto?: string[];
+    rolAvaluo?: string[];
+    observaciones?: string[];
   };
   message?: string | null;
 };
 
 export async function createReferencial(formData: FormData) {
   const validatedFields = CreateReferencial.safeParse({
-    colaboradorId: formData.get('colaboradorId'),
-    amount: formData.get('amount'),
+    userId: formData.get('userId'),
+    fojas: Number(formData.get('fojas')),
+    numero: Number(formData.get('numero')),
+    anno: Number(formData.get('anno')),
+    cbr: formData.get('cbr'),
+    comuna: formData.get('comuna'),
+    fechaEscritura: formData.get('fechaEscritura'),
+    latitud: Number(formData.get('latitud')),
+    longitud: Number(formData.get('longitud')),
+    predio: formData.get('predio'),
+    vendedor: formData.get('vendedor'),
+    comprador: formData.get('comprador'),
+    superficie: Number(formData.get('superficie')),
+    monto: Number(formData.get('monto')),
+    rolAvaluo: formData.get('rolAvaluo'),
+    observaciones: formData.get('observaciones') || undefined,
   });
 
   if (!validatedFields.success) {
@@ -42,17 +76,61 @@ export async function createReferencial(formData: FormData) {
     };
   }
 
-  // Revalidate the cache for the Referenciales page and redirect the user.
-  revalidatePath('/dashboard/referenciales');
-  redirect('/dashboard/referenciales');
+  const { userId, fojas, numero, anno, cbr, comuna, fechaEscritura, latitud, longitud, predio, vendedor, comprador, superficie, monto, rolAvaluo, observaciones } = validatedFields.data;
+
+  try {
+    await prisma.referenciales.create({
+      data: {
+        userId,
+        fojas,
+        numero,
+        anio: anno,
+        cbr,
+        comuna,
+        fechaescritura: new Date(fechaEscritura),
+        lat: latitud,
+        lng: longitud,
+        predio,
+        vendedor,
+        comprador,
+        superficie,
+        monto,
+        rol: rolAvaluo,
+        observaciones,
+      },
+    });
+
+    // Revalidate the cache for the Referenciales page and redirect the user.
+    revalidatePath('/dashboard/referenciales');
+    redirect('/dashboard/referenciales');
+  } catch (error) {
+    console.error('Database Error:', error);
+    return {
+      message: 'Database Error: Failed to Create Referencial.',
+    };
+  }
 }
 
-const UpdateReferencial = ReferencialSchema.omit({ id: true, date: true });
+const UpdateReferencial = ReferencialSchema.omit({ id: true });
 
 export async function updateReferencial(formData: FormData) {
   const validatedFields = UpdateReferencial.safeParse({
-    colaboradorId: formData.get('colaboradorId'),
-    amount: formData.get('amount'),
+    userId: formData.get('userId'),
+    fojas: Number(formData.get('fojas')),
+    numero: Number(formData.get('numero')),
+    anno: Number(formData.get('anno')),
+    cbr: formData.get('cbr'),
+    comuna: formData.get('comuna'),
+    fechaEscritura: formData.get('fechaEscritura'),
+    latitud: Number(formData.get('latitud')),
+    longitud: Number(formData.get('longitud')),
+    predio: formData.get('predio'),
+    vendedor: formData.get('vendedor'),
+    comprador: formData.get('comprador'),
+    superficie: Number(formData.get('superficie')),
+    monto: Number(formData.get('monto')),
+    rolAvaluo: formData.get('rolAvaluo'),
+    observaciones: formData.get('observaciones') || undefined,
   });
 
   if (!validatedFields.success) {
@@ -62,32 +140,38 @@ export async function updateReferencial(formData: FormData) {
     };
   }
 
-  const { userId, amount } = validatedFields.data;
-  const amountInCents = amount * 100;
+  const { userId, fojas, numero, anno, cbr, comuna, fechaEscritura, latitud, longitud, predio, vendedor, comprador, superficie, monto, rolAvaluo, observaciones } = validatedFields.data;
+
   try {
-    await prisma.referenciales.create({
+    await prisma.referenciales.update({
+      where: { id: formData.get('id') as string },
       data: {
-        userId: userId,
-        monto: amountInCents,
-        fechaescritura: new Date(),
-        lat: 0, // replace with actual value
-        lng: 0, // replace with actual value
-        fojas: 0, // replace with actual value
-        numero: 0, // replace with actual value
-        anio: 0, // replace with actual value
-        comuna: '', // replace with actual value
-        cbr: '', // replace with actual value
-        comprador: '', // replace with actual value
-        vendedor: '', // replace with actual value
-        predio: '', // replace with actual value
-        rol: '', // replace with actual value
-        superficie: 0, // replace with actual value
-        observaciones: '', // replace with actual value
+        userId,
+        fojas,
+        numero,
+        anio: anno,
+        cbr,
+        comuna,
+        fechaescritura: new Date(fechaEscritura),
+        lat: latitud,
+        lng: longitud,
+        predio,
+        vendedor,
+        comprador,
+        superficie,
+        monto,
+        rol: rolAvaluo,
+        observaciones,
       },
     });
+
+    // Revalidate the cache for the Referenciales page and redirect the user.
+    revalidatePath('/dashboard/referenciales');
+    redirect('/dashboard/referenciales');
   } catch (error) {
+    console.error('Database Error:', error);
     return {
-      message: 'Database Error: Failed to Create Referencial.',
+      message: 'Database Error: Failed to Update Referencial.',
     };
   }
 }
