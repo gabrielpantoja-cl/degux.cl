@@ -7,8 +7,8 @@ import { Button } from '@/components/ui/button';
 import { createReferencial } from '@/lib/actions';
 import { useSession, SessionProvider } from 'next-auth/react';
 import { validateReferencial } from '@/lib/validation';
+import { Input } from '@/components/ui/input'; // Importamos el componente Input
 import { ValidationResult } from '@/types/types';
-
 
 interface FormState {
   errors: {
@@ -20,63 +20,6 @@ interface FormState {
   isSubmitting: boolean;
 }
 
-const REQUIRED_FIELDS = [
-  'fojas',
-  'numero',
-  'anno',
-  'cbr',
-  'comuna',
-  'fechaEscritura',
-  'latitud',
-  'longitud',
-  'predio',
-  'vendedor',
-  'comprador',
-  'superficie',
-  'monto',
-  'rolAvaluo'
-];
-
-const InputField: React.FC<{
-  label: string;
-  id: string;
-  name: string;
-  type?: string;
-  placeholder: string;
-  error?: string[];
-  step?: string;
-  required?: boolean;
-  pattern?: string;
-}> = ({ label, id, name, type = "text", placeholder, error, step }) => (
-  <div className="mb-4">
-    <label htmlFor={id} className="mb-2 block text-sm font-medium">
-      {label}
-    </label>
-    <div className="relative mt-2 rounded-md">
-      <input
-        id={id}
-        name={name}
-        type={type}
-        step={step}
-        placeholder={placeholder}
-        className="peer block w-full rounded-md border border-gray-200 py-2 pl-3 text-sm outline-2 placeholder:text-gray-500"
-        aria-describedby={`${id}-error`}
-      />
-    </div>
-    {error && (
-      <div
-        id={`${id}-error`}
-        aria-live="polite"
-        className="mt-2 text-sm text-red-500"
-      >
-        {error.map((e) => (
-          <p key={e}>{e}</p>
-        ))}
-      </div>
-    )}
-  </div>
-);
-
 const Form = () => (
   <SessionProvider>
     <InnerForm />
@@ -86,10 +29,13 @@ const Form = () => (
 const InnerForm = () => {
   const router = useRouter();
   const { data: session } = useSession();
-
-
-  const [userId] = useState<string>('');
-
+  const [state, setState] = useState<FormState>({
+    message: null,
+    messageType: null,
+    errors: {},
+    invalidFields: new Set(),
+    isSubmitting: false
+  });
 
   useEffect(() => {
     if (session?.user?.email) {
@@ -100,64 +46,12 @@ const InnerForm = () => {
     }
   }, [session]);
 
-
-  console.log('Session completa:', session);
-  console.log('User ID:', session?.user?.id);
-
-  const initialState: FormState = {
-    message: null,
-    messageType: null,
-    errors: {},
-    invalidFields: new Set(),
-    isSubmitting: false
-  };
-
-  const [state, setState] = useState<FormState>(initialState);
-
-  const validateForm = (formData: FormData): boolean => {
-    const errors: { [key: string]: string[] } = {};
-    const userId = formData.get('userId');
-
-    console.log('Validando userId:', userId);
-    console.log('Session en validateForm:', session);
-
-    if (!userId) {
-      console.error('Usuario no autenticado. Session:', session);
-      errors['userId'] = ['Usuario no autenticado'];
-      setState(prev => ({
-        ...prev,
-        errors,
-        message: 'Se requiere autenticación',
-        messageType: 'error'
-      }));
-      return false;
-    }
-
-
-    REQUIRED_FIELDS.forEach(field => {
-      if (!formData.get(field)) {
-        errors[field] = ['Este campo es requerido'];
-      }
-    });
-
-    if (Object.keys(errors).length > 0) {
-      setState(prev => ({
-        ...prev,
-        errors,
-        message: 'Por favor complete todos los campos requeridos',
-        invalidFields: new Set(Object.keys(errors))
-      }));
-      return false;
-    }
-    return true;
-  };
-
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (!session?.user?.email) {
       setState({
-        ...initialState,
+        ...state,
         message: "Error: Usuario no autenticado",
         messageType: 'error',
         errors: { auth: ['Se requiere autenticación'] }
@@ -169,87 +63,25 @@ const InnerForm = () => {
 
     try {
       const formData = new FormData(e.currentTarget);
+      formData.set('userId', session?.user?.email || '');
 
-      if (!formData.get('userId')) {
-        formData.set('userId', session?.user?.email || '');
-      }
-      console.log('Datos a enviar:', {
-        userId: formData.get('userId'),
-        fojas: formData.get('fojas'),
-        numero: formData.get('numero'),
-        anno: formData.get('anno'),
-        // ... otros campos
-      });
+      const validationResult: ValidationResult = validateReferencial(formData);
 
-      console.log('Session:', session);
-      console.log('UserId:', formData.get('userId'));
-      console.log('Datos completos:', Object.fromEntries(formData));
-
-
-      if (!validateForm(formData)) {
+      if (!validationResult.isValid) {
         setState(prev => ({
           ...prev,
           isSubmitting: false,
-          message: "Por favor complete todos los campos requeridos",
-          messageType: 'error'
-        }));
-        return;
-      }
-
-      const latitud = parseFloat(formData.get('latitud') as string);
-      const longitud = parseFloat(formData.get('longitud') as string);
-      const superficie = parseFloat(formData.get('superficie') as string);
-      const monto = parseFloat(formData.get('monto') as string);
-
-      if (isNaN(latitud) || isNaN(longitud)) {
-        setState(prev => ({
-          ...prev,
-          isSubmitting: false,
-          message: "Las coordenadas deben ser números válidos",
+          errors: validationResult.errors,
+          message: validationResult.message || "Por favor complete todos los campos requeridos",
           messageType: 'error',
-          errors: {
-            ...prev.errors,
-            latitud: isNaN(latitud) ? ['Latitud inválida'] : [],
-            longitud: isNaN(longitud) ? ['Longitud inválida'] : []
-          }
+          invalidFields: new Set(Object.keys(validationResult.errors))
         }));
         return;
       }
 
-      if (isNaN(superficie) || superficie <= 0) {
-        setState(prev => ({
-          ...prev,
-          isSubmitting: false,
-          message: "La superficie debe ser un número positivo",
-          messageType: 'error',
-          errors: {
-            ...prev.errors,
-            superficie: ['Superficie inválida']
-          }
-        }));
-        return;
-      }
-
-      if (isNaN(monto) || monto <= 0) {
-        setState(prev => ({
-          ...prev,
-          isSubmitting: false,
-          message: "El monto debe ser un número positivo",
-          messageType: 'error',
-          errors: {
-            ...prev.errors,
-            monto: ['Monto inválido']
-          }
-        }));
-        return;
-      }
       const result = await createReferencial(formData);
 
-      console.log('Respuesta del servidor:', result);
-
-
       if (result?.errors) {
-        console.error('Errores del servidor:', result.errors);
         setState({
           errors: result.errors,
           message: "Error al crear el referencial: " + (result.message || Object.values(result.errors).flat().join(', ')),
@@ -262,7 +94,7 @@ const InnerForm = () => {
 
       if ('success' in result && result.success) {
         setState({
-          ...initialState,
+          ...state,
           message: result.message || "¡Referencial creado exitosamente!",
           messageType: 'success'
         });
@@ -274,14 +106,8 @@ const InnerForm = () => {
         throw new Error(result.message || 'Error desconocido al crear el referencial');
       }
     } catch (error) {
-      console.error('Error detallado:', {
-        name: error instanceof Error ? error.name : 'Unknown',
-        message: error instanceof Error ? error.message : String(error),
-        stack: error instanceof Error ? error.stack : undefined
-      });
-
       setState({
-        ...initialState,
+        ...state,
         message: error instanceof Error
           ? `Error al crear el referencial: ${error.message}`
           : "Error inesperado al procesar el formulario. Por favor, revise la consola para más detalles.",
@@ -306,14 +132,10 @@ const InnerForm = () => {
               value={session?.user?.email || ''}
               required
             />
-            {/* Debug info */}
-            <p className="text-xs text-gray-500">
-              Email (ID temporal): {userId}
-            </p>
           </div>
         )}
 
-        <InputField
+        <Input
           label="Fojas"
           id="fojas"
           name="fojas"
@@ -323,7 +145,7 @@ const InnerForm = () => {
           required={true}
         />
 
-        <InputField
+        <Input
           label="Número"
           id="numero"
           name="numero"
@@ -333,7 +155,7 @@ const InnerForm = () => {
           required={true}
         />
 
-        <InputField
+        <Input
           label="Año"
           id="anno"
           name="anno"
@@ -343,7 +165,7 @@ const InnerForm = () => {
           required={true}
         />
 
-        <InputField
+        <Input
           label="CBR"
           id="cbr"
           name="cbr"
@@ -352,7 +174,7 @@ const InnerForm = () => {
           required={true}
         />
 
-        <InputField
+        <Input
           label="Comuna"
           id="comuna"
           name="comuna"
@@ -361,7 +183,7 @@ const InnerForm = () => {
           required={true}
         />
 
-        <InputField
+        <Input
           label="Rol de Avalúo"
           id="rolAvaluo"
           name="rolAvaluo"
@@ -370,7 +192,7 @@ const InnerForm = () => {
           required={true}
         />
 
-        <InputField
+        <Input
           label="Predio"
           id="predio"
           name="predio"
@@ -379,7 +201,7 @@ const InnerForm = () => {
           required={true}
         />
 
-        <InputField
+        <Input
           label="Vendedor"
           id="vendedor"
           name="vendedor"
@@ -388,7 +210,7 @@ const InnerForm = () => {
           required={true}
         />
 
-        <InputField
+        <Input
           label="Comprador"
           id="comprador"
           name="comprador"
@@ -397,7 +219,7 @@ const InnerForm = () => {
           required={true}
         />
 
-        <InputField
+        <Input
           label="Superficie"
           id="superficie"
           name="superficie"
@@ -407,7 +229,7 @@ const InnerForm = () => {
           required={true}
         />
 
-        <InputField
+        <Input
           label="Monto"
           id="monto"
           name="monto"
@@ -417,7 +239,7 @@ const InnerForm = () => {
           required={true}
         />
 
-        <InputField
+        <Input
           label="Fecha de escritura"
           id="fechaEscritura"
           name="fechaEscritura"
@@ -428,7 +250,7 @@ const InnerForm = () => {
           required={true}
         />
 
-        <InputField
+        <Input
           label="Latitud"
           id="latitud"
           name="latitud"
@@ -439,7 +261,7 @@ const InnerForm = () => {
           required={true}
         />
 
-        <InputField
+        <Input
           label="Longitud"
           id="longitud"
           name="longitud"
@@ -450,7 +272,7 @@ const InnerForm = () => {
           required={true}
         />
 
-        <InputField
+        <Input
           label="Observaciones"
           id="observaciones"
           name="observaciones"
