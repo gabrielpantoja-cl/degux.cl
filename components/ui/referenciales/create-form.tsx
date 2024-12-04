@@ -1,8 +1,8 @@
 // components/ui/referenciales/create-form.tsx
 'use client';
-import React, { useState } from 'react';
+import React, { useState, ReactNode } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation'; // 🆕 Importar router
+import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { createReferencial } from '@/lib/actions';
 import { useSession, SessionProvider } from 'next-auth/react';
@@ -12,9 +12,17 @@ interface FormState {
     [key: string]: string[];
   };
   message: string | null;
+  messageType: 'error' | 'success' | null;
   invalidFields: Set<string>;
-  isSubmitting: boolean; // 🆕 Nuevo estado
+  isSubmitting: boolean;
+}
 
+interface CreateReferencialResponse {
+  success?: boolean;
+  errors?: {
+    [key: string]: string[];
+  };
+  message?: string;
 }
 
 const REQUIRED_FIELDS = [
@@ -80,16 +88,18 @@ const Form: React.FC = () => (
   </SessionProvider>
 );
 
-const InnerForm: React.FC = () => {
+const InnerForm: React.FC = (): ReactNode => {
   const router = useRouter();
   const { data: session } = useSession();
 
   const initialState: FormState = {
     message: null,
+    messageType: null,
     errors: {},
     invalidFields: new Set(),
     isSubmitting: false
   };
+
   const [state, setState] = useState<FormState>(initialState);
 
   const validateForm = (formData: FormData): boolean => {
@@ -112,13 +122,21 @@ const InnerForm: React.FC = () => {
     }
     return true;
   };
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setState(prev => ({ ...prev, isSubmitting: true }));
+
     try {
       const formData = new FormData(e.currentTarget);
 
       if (!validateForm(formData)) {
-        setState(prev => ({ ...prev, isSubmitting: false }));
+        setState(prev => ({
+          ...prev,
+          isSubmitting: false,
+          message: "Por favor complete todos los campos requeridos",
+          messageType: 'error'
+        }));
         return;
       }
 
@@ -128,18 +146,30 @@ const InnerForm: React.FC = () => {
         setState({
           errors: result.errors,
           message: "Por favor corrija los errores marcados",
+          messageType: 'error',
           invalidFields: new Set(Object.keys(result.errors)),
           isSubmitting: false
         });
-      } else {
+        return;
+      }
+
+      // Verificar el éxito basado en la presencia de success o message
+      if ('success' in result && result.success) {
         setState({
           ...initialState,
-          message: "¡Referencial creado exitosamente!"
+          message: result.message || "¡Referencial creado exitosamente!",
+          messageType: 'success'
         });
 
         setTimeout(() => {
           router.push('/dashboard/referenciales');
         }, 2000);
+      } else {
+        setState({
+          ...initialState,
+          message: result.message || "No se pudo crear el referencial. Por favor intente nuevamente.",
+          messageType: 'error'
+        });
       }
     } catch (error) {
       console.error('Error detallado:', error);
@@ -148,12 +178,12 @@ const InnerForm: React.FC = () => {
         message: error instanceof Error
           ? `Error: ${error.message}`
           : "Error inesperado al procesar el formulario",
+        messageType: 'error'
       });
     } finally {
       setState(prev => ({ ...prev, isSubmitting: false }));
     }
   };
-
 
   return (
     <form onSubmit={handleSubmit}>
@@ -223,7 +253,6 @@ const InnerForm: React.FC = () => {
           placeholder="Escribe el rol de avalúo de la propiedad"
           error={state.errors.rolAvaluo}
           required={true}
-
         />
 
         <InputField
@@ -233,7 +262,6 @@ const InnerForm: React.FC = () => {
           placeholder="Escribe el nombre del predio"
           error={state.errors.predio}
           required={true}
-
         />
 
         <InputField
@@ -243,7 +271,6 @@ const InnerForm: React.FC = () => {
           placeholder="Escribe el nombre del vendedor"
           error={state.errors.vendedor}
           required={true}
-
         />
 
         <InputField
@@ -253,7 +280,6 @@ const InnerForm: React.FC = () => {
           placeholder="Escribe el nombre del comprador"
           error={state.errors.comprador}
           required={true}
-
         />
 
         <InputField
@@ -264,7 +290,6 @@ const InnerForm: React.FC = () => {
           placeholder="Digita la superficie de la propiedad en m²"
           error={state.errors.superficie}
           required={true}
-
         />
 
         <InputField
@@ -275,19 +300,17 @@ const InnerForm: React.FC = () => {
           placeholder="Digita el monto de la transacción en CLP"
           error={state.errors.monto}
           required={true}
-
         />
 
         <InputField
           label="Fecha de escritura"
           id="fechaEscritura"
           name="fechaEscritura"
-          type="date" 
+          type="date"
           placeholder="dd-mm-aaaa"
-          pattern="\d{2}-\d{2}-\d{4}" 
+          pattern="\d{2}-\d{2}-\d{4}"
           error={state.errors.fechaEscritura}
           required={true}
-
         />
 
         <InputField
@@ -299,7 +322,6 @@ const InnerForm: React.FC = () => {
           step="any"
           error={state.errors.latitud}
           required={true}
-
         />
 
         <InputField
@@ -311,7 +333,6 @@ const InnerForm: React.FC = () => {
           step="any"
           error={state.errors.longitud}
           required={true}
-
         />
 
         <InputField
@@ -324,9 +345,12 @@ const InnerForm: React.FC = () => {
 
         {state.message && (
           <div
-            id="message-error"
+            id="message"
             aria-live="polite"
-            className="mt-2 text-sm text-red-500"
+            className={`mt-2 text-sm ${state.messageType === 'error'
+              ? 'text-red-500'
+              : 'text-green-500'
+              }`}
           >
             <p>{state.message}</p>
           </div>
@@ -344,7 +368,8 @@ const InnerForm: React.FC = () => {
           disabled={state.isSubmitting}
         >
           {state.isSubmitting ? 'Creando...' : 'Crear Referencial'}
-        </Button>      </div>
+        </Button>
+      </div>
     </form>
   );
 };
