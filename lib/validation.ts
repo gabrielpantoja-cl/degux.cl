@@ -1,4 +1,5 @@
-// src/lib/validation.ts
+// lib/validation.ts
+import { ValidationResult } from '../types/types';
 
 export const REQUIRED_FIELDS = [
   'fojas',
