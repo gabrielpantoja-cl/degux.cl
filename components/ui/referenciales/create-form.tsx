@@ -84,6 +84,10 @@ const InnerForm: React.FC = (): ReactNode => {
   const router = useRouter();
   const { data: session } = useSession();
 
+  // Debugging session
+  console.log('Session completa:', session);
+  console.log('User ID:', session?.user?.id);
+
   const initialState: FormState = {
     message: null,
     messageType: null,
@@ -94,11 +98,16 @@ const InnerForm: React.FC = (): ReactNode => {
 
   const [state, setState] = useState<FormState>(initialState);
 
+  // Modificar la función validateForm para mejor logging del userId
   const validateForm = (formData: FormData): boolean => {
     const errors: { [key: string]: string[] } = {};
+    const userId = formData.get('userId');
 
-    // Validar userId primero
-    if (!formData.get('userId')) {
+    console.log('Validando userId:', userId);
+    console.log('Session en validateForm:', session);
+
+    if (!userId) {
+      console.error('Usuario no autenticado. Session:', session);
       errors['userId'] = ['Usuario no autenticado'];
       setState(prev => ({
         ...prev,
