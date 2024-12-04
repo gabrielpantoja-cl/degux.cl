@@ -88,7 +88,7 @@ const InnerForm = () => {
 
 
   // 1. Crear un estado local para el userId
-  const [userId, setUserId] = useState<string>('');
+  const [userId] = useState<string>('');
 
 
   // Asegurar que tenemos el userId desde el inicio
