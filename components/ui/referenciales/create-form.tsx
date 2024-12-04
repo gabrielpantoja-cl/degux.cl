@@ -17,14 +17,6 @@ interface FormState {
   isSubmitting: boolean;
 }
 
-interface CreateReferencialResponse {
-  success?: boolean;
-  errors?: {
-    [key: string]: string[];
-  };
-  message?: string;
-}
-
 const REQUIRED_FIELDS = [
   'fojas',
   'numero',
