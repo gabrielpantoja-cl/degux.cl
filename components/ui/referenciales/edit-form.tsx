@@ -8,16 +8,14 @@ import {
 } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
+import { User } from 'lucide-react';
 
 type ReferencialForm = Prisma.referencialesUncheckedCreateInput;
-type ColaboradorField = Prisma.colaboradoresUncheckedCreateInput;
 
 export default function EditReferencialForm({
   referencial,
-  colaboradores,
 }: {
   referencial: ReferencialForm;
-  colaboradores: ColaboradorField[];
 }) {
   return (
     <form>
@@ -37,9 +35,9 @@ export default function EditReferencialForm({
               <option value="" disabled>
                 Select a colaborador
               </option>
-              {Array.isArray(colaboradores) && colaboradores.map((colaborador) => (
-                <option key={colaborador.id} value={colaborador.id}>
-                  {colaborador.name}
+              {Array.isArray(User) && User.map((user) => (
+                <option key={user.id} value={user.id}>
+                  {user.name}
                 </option>
               ))}
             </select>
