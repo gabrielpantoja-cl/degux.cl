@@ -3,15 +3,14 @@
 import Form from '@/components/ui/referenciales/edit-form';
 import Breadcrumbs from '@/components/ui/referenciales/breadcrumbs';
 import { fetchReferencialById } from '@/lib/referenciales';
-import { fetchColaboradores } from '@/lib/colaboradores';
+import { fetchUsers } from '@/lib/users';
 import { notFound } from 'next/navigation';
-import { User } from 'lucide-react';
 
 export default async function Page({ params }: { params: { id: string } }) {
 
     const id = params.id;
     const referencial: any = await fetchReferencialById(id);
-    const colaboradores: any = await fetchColaboradores();
+    const users: any = await fetchUsers(); // Actualiza la función para obtener usuarios
 
     if (!referencial) {
         notFound();
@@ -29,8 +28,8 @@ export default async function Page({ params }: { params: { id: string } }) {
                     },
                 ]}
             />
-            {/* Pasamos el primer usuario al componente Form */}
-            <Form referencial={referencial} user={colaboradores[0]} />
+            {/* Pasamos la lista de usuarios al componente Form */}
+            <Form referencial={referencial} users={users} />
         </main>
     );
 }

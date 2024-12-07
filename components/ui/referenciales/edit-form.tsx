@@ -1,22 +1,19 @@
-// app/ui/referenciales/edit-form.tsx
+// components/ui/referenciales/edit-form.tsx
 'use client';
 
 import { Prisma } from '@prisma/client';
-import {
-  UserCircleIcon,
-} from '@heroicons/react/24/outline';
+import { UserCircleIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { User } from 'lucide-react';
 
 type ReferencialForm = Prisma.referencialesUncheckedCreateInput;
 
 export default function EditReferencialForm({
   referencial,
-  user,
+  users,
 }: {
   referencial: ReferencialForm;
-  user: { id: string; name: string };
+  users: { id: string; name: string }[];
 }) {
   return (
     <form>
@@ -36,7 +33,7 @@ export default function EditReferencialForm({
               <option value="" disabled>
                 Select a user
               </option>
-              {Array.isArray(User) && User.map((user) => (
+              {users.map((user) => (
                 <option key={user.id} value={user.id}>
                   {user.name}
                 </option>
