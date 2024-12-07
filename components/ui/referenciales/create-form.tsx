@@ -29,7 +29,6 @@ const Form = () => (
 const InnerForm = () => {
   const router = useRouter();
   const { data: session } = useSession();
-  const [userId, setUserId] = useState<string | null>(null);
   const [state, setState] = useState<FormState>({
     message: null,
     messageType: null,
@@ -38,27 +37,7 @@ const InnerForm = () => {
     isSubmitting: false
   });
 
-  useEffect(() => {
-    if (session?.user?.email) {
-      // Obtener el userId real del usuario autenticado
-      const fetchUserId = async () => {
-        try {
-          const response = await fetch('/api/getUserId', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ email: session.user.email }),
-          });
-          const data = await response.json();
-          setUserId(data.userId);
-        } catch (error) {
-          console.error('Error al obtener el userId:', error);
-        }
-      };
-      fetchUserId();
-    }
-  }, [session]);
+  const userId = session?.user?.id;
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -142,7 +121,7 @@ const InnerForm = () => {
               Usuario: {session.user.name}
             </p>
             <p className="mb-2 text-sm font-medium">
-              ID: {session.user.email}
+              ID: {session.user.id}
             </p>
             <input
               type="hidden"
