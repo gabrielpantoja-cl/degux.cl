@@ -104,7 +104,8 @@ export async function createReferencial(formData: FormData) {
   } catch (error) {
     console.error('Database Error:', error);
     return {
-      message: 'Database Error: Failed to Create Referencial.',
+      message: `Database Error: Failed to Create Referencial. ${error instanceof Error ? error.message : 'Unknown error'}`,
+      details: error,
     };
   }
 }
@@ -167,7 +168,8 @@ export async function updateReferencial(formData: FormData) {
   } catch (error) {
     console.error('Database Error:', error);
     return {
-      message: 'Database Error: Failed to Update Referencial.',
+      message: `Database Error: Failed to Update Referencial. ${error instanceof Error ? error.message : 'Unknown error'}`,
+      details: error,
     };
   }
 }
