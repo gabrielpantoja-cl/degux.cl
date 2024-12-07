@@ -16,7 +16,7 @@ enum Role {
 
 model referenciales {
   id             String   @id @default(uuid())
-  userId         String // Cambiado de colaborador_id a userId
+  userId         String
   user           User     @relation(fields: [userId], references: [id])
   lat            Float
   lng            Float
@@ -42,11 +42,11 @@ model User {
   password      String?
   emailVerified DateTime?
   image         String?
-  role          Role      @default(superadmin) // Cambiado a superadmin por defecto
+  role          Role      @default(superadmin)
 
   accounts      Account[]
   sessions      Session[]
-  referenciales referenciales[] // Relación inversa
+  referenciales referenciales[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
