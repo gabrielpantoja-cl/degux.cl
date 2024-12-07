@@ -29,6 +29,7 @@ const Form = () => (
 const InnerForm = () => {
   const router = useRouter();
   const { data: session } = useSession();
+  const [userId, setUserId] = useState<string | null>(null);
   const [state, setState] = useState<FormState>({
     message: null,
     messageType: null,
@@ -39,17 +40,30 @@ const InnerForm = () => {
 
   useEffect(() => {
     if (session?.user?.email) {
-      console.log('Sesión detectada:', {
-        email: session.user.email,
-        name: session.user.name
-      });
+      // Obtener el userId real del usuario autenticado
+      const fetchUserId = async () => {
+        try {
+          const response = await fetch('/api/getUserId', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ email: session.user.email }),
+          });
+          const data = await response.json();
+          setUserId(data.userId);
+        } catch (error) {
+          console.error('Error al obtener el userId:', error);
+        }
+      };
+      fetchUserId();
     }
   }, [session]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (!session?.user?.email) {
+    if (!userId) {
       setState({
         ...state,
         message: "Error: Usuario no autenticado",
@@ -63,7 +77,7 @@ const InnerForm = () => {
 
     try {
       const formData = new FormData(e.currentTarget);
-      formData.set('userId', session?.user?.email || '');
+      formData.set('userId', userId);
 
       const validationResult: ValidationResult = validateReferencial(formData);
 
@@ -133,7 +147,7 @@ const InnerForm = () => {
             <input
               type="hidden"
               name="userId"
-              value={session?.user?.email || ''}
+              value={userId || ''}
               required
             />
           </div>
