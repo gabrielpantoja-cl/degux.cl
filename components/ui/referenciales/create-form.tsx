@@ -26,11 +26,11 @@ interface FormProps {
 
 const Form = ({ users }: FormProps) => (
   <SessionProvider>
-    <InnerForm users={users} />
+    <InnerForm />
   </SessionProvider>
 );
 
-const InnerForm = ({ users }: FormProps) => {
+const InnerForm = () => {
   const router = useRouter();
   const { data: session } = useSession();
   const [state, setState] = useState<FormState>({

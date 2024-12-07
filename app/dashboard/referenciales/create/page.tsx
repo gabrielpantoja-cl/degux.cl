@@ -2,11 +2,10 @@
 
 import Form from '@/components/ui/referenciales/create-form';
 import Breadcrumbs from '@/components/ui/referenciales/breadcrumbs';
-import { fetchUsers } from '@/lib/users'; // Actualiza la importación para obtener usuarios
+import { fetchUsers } from '@/lib/users';
 
 export default async function Page() {
-  const users = await fetchUsers(); // Utiliza fetchUsers si es necesario
-
+  const users = await fetchUsers();
   return (
     <main>
       <Breadcrumbs
