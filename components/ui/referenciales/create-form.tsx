@@ -1,6 +1,6 @@
 // components/ui/referenciales/create-form.tsx
 'use client';
-import React, { useState, } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
@@ -36,6 +36,15 @@ const InnerForm = () => {
     invalidFields: new Set(),
     isSubmitting: false
   });
+
+  useEffect(() => {
+    if (session?.user?.email) {
+      console.log('Sesión detectada:', {
+        email: session.user.email,
+        name: session.user.name
+      });
+    }
+  }, [session]);
 
   const userId = session?.user?.id;
 
