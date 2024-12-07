@@ -8,13 +8,6 @@ generator client {
   provider = "prisma-client-js"
 }
 
-enum Role {
-  user
-  editor
-  admin
-  superadmin
-}
-
 model referenciales {
   id             String   @id @default(uuid())
   userId         String
@@ -43,7 +36,7 @@ model User {
   password      String?
   emailVerified DateTime?
   image         String?
-  role          Role      @default(superadmin) // Ahora usar el nuevo valor
+  role          String    @default("user")
 
   accounts      Account[]
   sessions      Session[]
@@ -90,11 +83,4 @@ model VerificationToken {
   expires    DateTime
 
   @@id([identifier, token])
-}
-
-model colaboradores {
-  id        String @id @default(uuid())
-  name      String
-  email     String @unique
-  image_url String
 }
