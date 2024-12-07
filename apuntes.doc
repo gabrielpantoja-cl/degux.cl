@@ -1,7 +1,27 @@
 APUNTES...
-
-
 APUNTES 06 DE DICIEMBRE DE 2024:
+
+El error que estás viendo indica que hay un problema al pasar ciertos tipos de datos entre los componentes del servidor y del cliente en Next.js. Esto puede ocurrir si intentas pasar objetos que no son serializables, como instancias de clases o prototipos nulos.
+
+Para solucionar este problema, asegúrate de que los datos que estás pasando entre los componentes del servidor y del cliente sean objetos simples y serializables. Aquí hay algunos pasos que puedes seguir para depurar y solucionar este problema:
+
+Asegúrate de que los datos sean serializables: Verifica que los datos que estás pasando a los componentes del cliente sean objetos simples.
+
+Revisa la función createReferencial: Asegúrate de que la función createReferencial no esté devolviendo datos no serializables.
+
+Modifica el manejo de errores: Asegúrate de que los errores devueltos desde el servidor sean objetos simples.
+
+Paso 1: Asegúrate de que los datos sean serializables
+Verifica que los datos que estás pasando a los componentes del cliente sean objetos simples y serializables.
+
+Paso 2: Revisa la función createReferencial
+Modifica la función createReferencial para asegurarte de que los datos devueltos sean serializables:
+
+
+
+
+---.---.---.---.---.---.---.---.---.  
+
 
 Para obtener más detalles sobre el error y depurar el problema, podemos seguir estos pasos:
 
