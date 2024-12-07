@@ -5,6 +5,7 @@ import Breadcrumbs from '@/components/ui/referenciales/breadcrumbs';
 import { fetchReferencialById } from '@/lib/referenciales';
 import { fetchColaboradores } from '@/lib/colaboradores';
 import { notFound } from 'next/navigation';
+import { User } from 'lucide-react';
 
 export default async function Page({ params }: { params: { id: string } }) {
 
@@ -28,8 +29,8 @@ export default async function Page({ params }: { params: { id: string } }) {
                     },
                 ]}
             />
-            {/* Pasamos el primer colaborador al componente Form */}
-            <Form referencial={referencial} colaboradores={colaboradores[0]} />
+            {/* Pasamos el primer usuario al componente Form */}
+            <Form referencial={referencial} user={colaboradores[0]} />
         </main>
     );
 }

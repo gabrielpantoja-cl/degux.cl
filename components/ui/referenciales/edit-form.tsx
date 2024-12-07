@@ -3,7 +3,6 @@
 
 import { Prisma } from '@prisma/client';
 import {
-  //CurrencyDollarIcon,
   UserCircleIcon,
 } from '@heroicons/react/24/outline';
 import Link from 'next/link';
@@ -14,26 +13,28 @@ type ReferencialForm = Prisma.referencialesUncheckedCreateInput;
 
 export default function EditReferencialForm({
   referencial,
+  user,
 }: {
   referencial: ReferencialForm;
+  user: { id: string; name: string };
 }) {
   return (
     <form>
       <div className="rounded-md bg-gray-50 p-4 md:p-6">
-        {/* Colaborador Name */}
+        {/* Usuario Name */}
         <div className="mb-4">
-          <label htmlFor="colaborador" className="mb-2 block text-sm font-medium">
-            Elige colaborador
+          <label htmlFor="user" className="mb-2 block text-sm font-medium">
+            Elige usuario
           </label>
           <div className="relative">
             <select
-              id="colaborador"
-              name="colaboradorId"
+              id="user"
+              name="userId"
               className="peer block w-full cursor-pointer rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
               defaultValue={referencial.userId}
             >
               <option value="" disabled>
-                Select a colaborador
+                Select a user
               </option>
               {Array.isArray(User) && User.map((user) => (
                 <option key={user.id} value={user.id}>
@@ -45,7 +46,7 @@ export default function EditReferencialForm({
           </div>
         </div>
 
-        {/* Referencial Monto */}
+        {/* Referencial Fojas */}
         <div className="mb-4">
           <label htmlFor="fojas" className="mb-2 block text-sm font-medium">
             Fojas
@@ -56,7 +57,7 @@ export default function EditReferencialForm({
                 id="fojas"
                 name="fojas"
                 type="number"
-                defaultValue={referencial.fojas} // Asumiendo que 'referencial' es el objeto que contiene los datos actuales
+                defaultValue={referencial.fojas}
                 className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                 placeholder="Ingrese el número de fojas"
               />

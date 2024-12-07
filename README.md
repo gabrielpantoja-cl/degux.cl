@@ -75,8 +75,9 @@ Asegúrate de reemplazar usuario, contraseña y miBaseDeDatos con tus propios va
 ## Estructura de la base de datos:
 La base de datos está compuesta por varias tablas que almacenan la información necesaria para la aplicación. Las principales tablas son:
 
-colaboradores: Anteriormente conocida como "customers", esta tabla almacena la información de los colaboradores.
-referenciales: Anteriormente conocida como "invoices", esta tabla almacena la información de los referenciales.
+colausuarios: Usuarios autenticados con google, todos los usuarios pueden colaborar.
+referenciales: Esta tabla almacena la información de los referenciales.
+
 ORM Prisma
 Para interactuar con la base de datos, este proyecto utiliza Prisma como su ORM (Object-Relational Mapping). Prisma facilita la interacción con la base de datos al permitirnos trabajar con objetos y eventos en lugar de tablas y SQL. La configuración de Prisma se encuentra en el archivo prisma/schema.prisma.
 
