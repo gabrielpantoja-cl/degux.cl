@@ -1,0 +1,15 @@
+APUNTES...
+
+
+APUNTES 06 DE DICIEMBRE DE 2024
+  
+  Paso 1: Agregar más detalles al mensaje de error
+Modificamos el bloque catch en handleSubmit para incluir más detalles del error:
+
+Paso 2: Modularizar el código
+2.1 Crear un componente para los campos del formulario
+Creamos un nuevo archivo FormFields.tsx para los campos del formulario:
+
+2.2 Modificar create-form.tsx para usar el nuevo componente
+Actualizamos create-form.tsx para usar el componente FormFields:
+

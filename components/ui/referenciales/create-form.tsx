@@ -106,6 +106,7 @@ const InnerForm = () => {
         throw new Error(result.message || 'Error desconocido al crear el referencial');
       }
     } catch (error) {
+      console.error('Error al crear el referencial:', error);
       setState({
         ...state,
         message: error instanceof Error
