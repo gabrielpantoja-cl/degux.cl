@@ -20,13 +20,17 @@ interface FormState {
   isSubmitting: boolean;
 }
 
-const Form = () => (
+interface FormProps {
+  users: { id: string; name: string | null }[];
+}
+
+const Form = ({ users }: FormProps) => (
   <SessionProvider>
-    <InnerForm />
+    <InnerForm users={users} />
   </SessionProvider>
 );
 
-const InnerForm = () => {
+const InnerForm = ({ users }: FormProps) => {
   const router = useRouter();
   const { data: session } = useSession();
   const [state, setState] = useState<FormState>({

@@ -2,9 +2,11 @@
 
 import Form from '@/components/ui/referenciales/create-form';
 import Breadcrumbs from '@/components/ui/referenciales/breadcrumbs';
-// import { fetchColaboradores } from '@/app/lib/colaboradores';
+import { fetchUsers } from '@/lib/users'; // Actualiza la importación para obtener usuarios
 
-export default function Page() {
+export default async function Page() {
+  const users = await fetchUsers(); // Utiliza fetchUsers si es necesario
+
   return (
     <main>
       <Breadcrumbs
@@ -17,7 +19,7 @@ export default function Page() {
           },
         ]}
       />
-      <Form />
+      <Form users={users} /> {/* Pasamos la lista de usuarios al componente Form */}
     </main>
   );
 }
