@@ -127,6 +127,9 @@ const InnerForm = () => {
             <p className="mb-2 text-sm font-medium">
               Usuario: {session.user.name}
             </p>
+            <p className="mb-2 text-sm font-medium">
+              ID: {session.user.email}
+            </p>
             <input
               type="hidden"
               name="userId"
