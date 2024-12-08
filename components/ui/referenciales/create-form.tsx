@@ -37,7 +37,7 @@ const Form: React.FC<FormProps> = ({ users }) => (
 
 const InnerForm: React.FC<FormProps> = ({ users }) => {
   const router = useRouter();
-  const { data: session } = useSession();
+  const { data: session, status } = useSession(); // Asegúrate de obtener `status` aquí
   const [state, setState] = useState<FormState>({
     message: null,
     messageType: null,
@@ -171,6 +171,9 @@ const InnerForm: React.FC<FormProps> = ({ users }) => {
             {users.map(user => (
               <li key={user.id}>
                 {user.name} ({user.id})
+                {user.id === currentUser.id && (
+                  <span className="text-green-500"> - Sesión actual</span>
+                )}
               </li>
             ))}
           </ul>
