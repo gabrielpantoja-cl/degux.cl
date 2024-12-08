@@ -1,9 +1,9 @@
+// app/auth/login/page.tsx
 "use client";
 
-import { SessionProvider, useSession } from 'next-auth/react';
-import { signIn } from 'next-auth/react';
+import { SessionProvider, useSession, signIn } from 'next-auth/react';
 import React, { useState, useEffect, useCallback, useMemo, Suspense } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import {
@@ -15,7 +15,6 @@ import {
   CardFooter,
 } from "@/components/ui/card";
 import { LoaderCircle } from "lucide-react";
-import { useSearchParams } from "next/navigation";
 
 const LoginPageContent = () => {
   const { status } = useSession();
