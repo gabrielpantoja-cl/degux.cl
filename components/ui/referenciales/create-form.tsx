@@ -37,7 +37,7 @@ const Form: React.FC<FormProps> = ({ users }) => (
 
 const InnerForm: React.FC<FormProps> = ({ users }) => {
   const router = useRouter();
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const [state, setState] = useState<FormState>({
     message: null,
     messageType: null,
@@ -47,14 +47,16 @@ const InnerForm: React.FC<FormProps> = ({ users }) => {
   });
 
   useEffect(() => {
-    if (session?.user?.email) {
+    if (status === 'authenticated' && session?.user?.email) {
       console.log('Sesión detectada:', {
         email: session.user.email,
         name: session.user.name,
         id: session.user.id
       });
+    } else {
+      console.log('Sesión no detectada o no autenticada');
     }
-  }, [session]);
+  }, [session, status]);
 
   const userId = session?.user?.id;
 
