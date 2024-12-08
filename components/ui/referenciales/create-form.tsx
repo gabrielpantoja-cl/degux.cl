@@ -22,13 +22,13 @@ interface FormState {
 
 interface FormProps {}
 
-const Form = (props: FormProps) => (
+const Form = () => (
   <SessionProvider>
     <InnerForm />
   </SessionProvider>
 );
 
-const InnerForm = (props: FormProps) => {
+const InnerForm = () => {
   const router = useRouter();
   const { data: session } = useSession();
   const [state, setState] = useState<FormState>({
@@ -131,23 +131,6 @@ const InnerForm = (props: FormProps) => {
   return (
     <form onSubmit={handleSubmit}>
       <div className="rounded-md bg-gray-50 p-4 md:p-6">
-        {session?.user && (
-          <div className="mb-4">
-            <p className="mb-2 text-sm font-medium">
-              Usuario: {session.user.name}
-            </p>
-            <p className="mb-2 text-sm font-medium">
-              ID: {session.user.id}
-            </p>
-            <input
-              type="hidden"
-              name="userId"
-              value={userId || ''}
-              required
-            />
-          </div>
-        )}
-
         <FormFields state={state} currentUser={currentUser} />
 
         {state.message && (
