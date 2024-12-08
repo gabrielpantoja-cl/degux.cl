@@ -20,8 +20,6 @@ interface FormState {
   isSubmitting: boolean;
 }
 
-interface FormProps {}
-
 const Form = () => (
   <SessionProvider>
     <InnerForm />
