@@ -152,6 +152,18 @@ const InnerForm: React.FC<FormProps> = ({ users }) => {
             <p>{state.message}</p>
           </div>
         )}
+
+        {/* Ejemplo de uso de la propiedad users */}
+        <div className="mt-4">
+          <h3 className="text-lg font-medium">Lista de Usuarios</h3>
+          <ul>
+            {users.map(user => (
+              <li key={user.id}>
+                {user.name} ({user.id})
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
       <div className="mt-6 flex justify-end gap-4">
         <Link
