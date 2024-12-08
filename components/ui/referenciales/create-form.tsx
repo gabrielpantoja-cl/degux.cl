@@ -37,7 +37,7 @@ const Form: React.FC<FormProps> = ({ users }) => (
 
 const InnerForm: React.FC<FormProps> = ({ users }) => {
   const router = useRouter();
-  const { data: session, status } = useSession();
+  const { data: session } = useSession();
   const [state, setState] = useState<FormState>({
     message: null,
     messageType: null,
