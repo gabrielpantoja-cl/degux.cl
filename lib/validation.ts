@@ -54,6 +54,21 @@ export const validateReferencial = (formData: FormData): {
     }
   });
 
+  // Validación de fecha
+  const fechaEscritura = formData.get('fechaEscritura') as string;
+  if (fechaEscritura && isNaN(Date.parse(fechaEscritura))) {
+    errors['fechaEscritura'] = ['Fecha de escritura inválida'];
+  }
+
+  // Validación de campos de texto
+  const textFields = ['fojas', 'numero', 'anno', 'cbr', 'comuna', 'predio', 'vendedor', 'comprador', 'rolAvaluo'];
+  textFields.forEach(field => {
+    const value = formData.get(field) as string;
+    if (value && value.trim().length === 0) {
+      errors[field] = ['Este campo no puede estar vacío'];
+    }
+  });
+
   return {
     isValid: Object.keys(errors).length === 0,
     errors,
