@@ -33,11 +33,11 @@ export const authOptions: AuthOptions = {
       if (url.startsWith('/')) return `${baseUrl}${url}`;
       return baseUrl;
     },
-    async session({ session, user }) {
-      if (session?.user && user) {
-        session.user.id = user.id;
-        session.user.role = user.role || 'user';
-        console.log('Session callback - user.id:', user.id);
+    async session({ session, token }) {
+      if (session?.user && token?.id) {
+        session.user.id = token.id;
+        session.user.role = token.role || 'user';
+        console.log('Session callback - token.id:', token.id);
       }
       return session;
     },
