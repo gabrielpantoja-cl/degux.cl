@@ -24,13 +24,15 @@ interface FormFieldsProps {
 
 const FormFields: React.FC<FormFieldsProps> = ({ state, currentUser }) => (
   <>
-    <div className="mb-6 p-4 bg-gray-50 rounded-lg">
+    {/* Eliminar esta sección si no es necesaria */}
+    {/* <div className="mb-6 p-4 bg-gray-50 rounded-lg">
       <p className="text-sm text-gray-700">
         <span className="font-medium">Usuario:</span> {currentUser.name}
         <br />
         <span className="font-medium">ID:</span> {currentUser.id}
       </p>
-    </div>
+    </div> */}
+    
     <Input
       label="Fojas"
       id="fojas"
@@ -178,4 +180,4 @@ const FormFields: React.FC<FormFieldsProps> = ({ state, currentUser }) => (
   </>
 );
 
-export default FormFields;  
+export default FormFields;
