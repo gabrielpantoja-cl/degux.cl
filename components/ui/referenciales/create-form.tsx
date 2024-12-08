@@ -1,6 +1,6 @@
 // components/ui/referenciales/create-form.tsx
 'use client';
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
@@ -11,13 +11,12 @@ import FormFields from './FormFields';
 import { ValidationResult } from '@/types/types';
 
 interface FormState {
-  errors: {
-    [key: string]: string[];
-  };
+  errors: { [key: string]: string[] };
   message: string | null;
   messageType: 'error' | 'success' | null;
   invalidFields: Set<string>;
   isSubmitting: boolean;
+  redirecting: boolean;
 }
 
 interface User {
@@ -37,47 +36,46 @@ const Form: React.FC<FormProps> = ({ users }) => (
 
 const InnerForm: React.FC<FormProps> = ({ users }) => {
   const router = useRouter();
-  const { data: session, status } = useSession();
+  const { data: session } = useSession();
+  const mounted = useRef(true);
+  
   const [state, setState] = useState<FormState>({
     message: null,
     messageType: null,
     errors: {},
     invalidFields: new Set(),
-    isSubmitting: false
+    isSubmitting: false,
+    redirecting: false
   });
 
   useEffect(() => {
-    if (status === 'authenticated' && session?.user?.email) {
-      console.log('Sesión detectada:', {
-        email: session.user.email,
-        name: session.user.name,
-        id: session.user.id
-      });
-    } else {
-      console.log('Sesión no detectada o no autenticada');
-    }
-  }, [session, status]);
+    return () => {
+      mounted.current = false;
+    };
+  }, []);
 
   const userId = session?.user?.id;
-
-  useEffect(() => {
-    console.log('userId:', userId);
-  }, [userId]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (!userId) {
-      setState({
-        ...state,
+      setState(prev => ({
+        ...prev,
         message: "Error: Usuario no autenticado",
         messageType: 'error',
         errors: { auth: ['Se requiere autenticación'] }
-      });
+      }));
       return;
     }
 
-    setState(prev => ({ ...prev, isSubmitting: true, message: null }));
+    setState(prev => ({ 
+      ...prev, 
+      isSubmitting: true, 
+      message: null,
+      errors: {},
+      invalidFields: new Set()
+    }));
 
     try {
       const formData = new FormData(e.currentTarget);
@@ -99,41 +97,48 @@ const InnerForm: React.FC<FormProps> = ({ users }) => {
 
       const result = await createReferencial(formData);
 
+      if (!mounted.current) return;
+
       if (result?.errors) {
-        setState({
+        setState(prev => ({
+          ...prev,
           errors: result.errors,
           message: "Error al crear el referencial: " + (result.message || Object.values(result.errors).flat().join(', ')),
           messageType: 'error',
           invalidFields: new Set(Object.keys(result.errors)),
           isSubmitting: false
-        });
+        }));
         return;
       }
 
       if ('success' in result && result.success) {
-        setState({
-          ...state,
-          message: result.message || "¡Referencial creado exitosamente!",
-          messageType: 'success'
-        });
+        setState(prev => ({
+          ...prev,
+          message: "¡Referencial creado exitosamente!",
+          messageType: 'success',
+          isSubmitting: false,
+          redirecting: true
+        }));
 
-        setTimeout(() => {
+        await new Promise(resolve => setTimeout(resolve, 1500));
+        
+        if (mounted.current) {
           router.push('/dashboard/referenciales');
-        }, 2000);
+        }
       } else {
         throw new Error(result.message || 'Error desconocido al crear el referencial');
       }
     } catch (error) {
-      console.error('Error al crear el referencial:', error);
-      setState({
-        ...state,
-        message: error instanceof Error
-          ? `Error al crear el referencial: ${error.message}`
-          : "Error inesperado al procesar el formulario. Por favor, revise la consola para más detalles.",
-        messageType: 'error'
-      });
-    } finally {
-      setState(prev => ({ ...prev, isSubmitting: false }));
+      if (mounted.current) {
+        setState(prev => ({
+          ...prev,
+          message: error instanceof Error
+            ? `Error al crear el referencial: ${error.message}`
+            : "Error inesperado al procesar el formulario",
+          messageType: 'error',
+          isSubmitting: false
+        }));
+      }
     }
   };
 
@@ -141,10 +146,6 @@ const InnerForm: React.FC<FormProps> = ({ users }) => {
     id: session?.user?.id || '',
     name: session?.user?.name || ''
   }), [session?.user?.id, session?.user?.name]);
-
-  useEffect(() => {
-    console.log('currentUser:', currentUser);
-  }, [currentUser]);
 
   return (
     <form onSubmit={handleSubmit}>
@@ -155,10 +156,9 @@ const InnerForm: React.FC<FormProps> = ({ users }) => {
           <div
             id="message"
             aria-live="polite"
-            className={`mt-2 text-sm ${state.messageType === 'error'
-              ? 'text-red-500'
-              : 'text-green-500'
-              }`}
+            className={`mt-2 text-sm ${
+              state.messageType === 'error' ? 'text-red-500' : 'text-green-500'
+            }`}
           >
             <p>{state.message}</p>
           </div>
@@ -187,9 +187,14 @@ const InnerForm: React.FC<FormProps> = ({ users }) => {
         </Link>
         <Button
           type="submit"
-          disabled={state.isSubmitting}
+          disabled={state.isSubmitting || state.redirecting}
         >
-          {state.isSubmitting ? 'Creando...' : 'Crear Referencial'}
+          {state.isSubmitting 
+            ? 'Creando...' 
+            : state.redirecting 
+              ? 'Redirigiendo...' 
+              : 'Crear Referencial'
+          }
         </Button>
       </div>
     </form>
