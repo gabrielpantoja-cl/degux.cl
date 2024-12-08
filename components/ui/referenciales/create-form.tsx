@@ -145,7 +145,7 @@ const InnerForm = ({ users }: FormProps) => {
           </div>
         )}
 
-        <FormFields state={state} />
+        <FormFields state={state} users={users} />
 
         {state.message && (
           <div
