@@ -37,6 +37,7 @@ export const authOptions: AuthOptions = {
       if (session?.user && user) {
         session.user.id = user.id;
         session.user.role = user.role || 'user';
+        console.log('Session callback - user.id:', user.id);
       }
       return session;
     },
@@ -44,6 +45,7 @@ export const authOptions: AuthOptions = {
       if (user) {
         token.id = user.id;
         token.role = user.role;
+        console.log('JWT callback - user.id:', user.id);
       }
       return token;
     }
