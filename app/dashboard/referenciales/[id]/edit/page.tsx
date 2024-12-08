@@ -1,4 +1,4 @@
-// app/dashboard/referenciales/%5Bid%5D/edit/page.tsx
+// app/dashboard/referenciales/[id]/edit/page.tsx
 
 import Form from '@/components/ui/referenciales/edit-form';
 import Breadcrumbs from '@/components/ui/referenciales/breadcrumbs';
@@ -7,10 +7,9 @@ import { fetchUsers } from '@/lib/users';
 import { notFound } from 'next/navigation';
 
 export default async function Page({ params }: { params: { id: string } }) {
-
     const id = params.id;
     const referencial: any = await fetchReferencialById(id);
-    const users: any = await fetchUsers(); // Actualiza la función para obtener usuarios
+    const users: any = await fetchUsers(); 
 
     if (!referencial) {
         notFound();
