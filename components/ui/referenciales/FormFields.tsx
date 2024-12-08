@@ -14,11 +14,21 @@ interface FormState {
 
 interface FormFieldsProps {
   state: FormState;
-  users: { id: string; name: string | null }[];
+  currentUser: {
+    id: string;
+    name: string;
+  };
 }
 
-const FormFields: React.FC<FormFieldsProps> = ({ state, users }) => (
+const FormFields: React.FC<FormFieldsProps> = ({ state, currentUser }) => (
   <>
+    <div className="mb-6 p-4 bg-gray-50 rounded-lg">
+      <p className="text-sm text-gray-700">
+        <span className="font-medium">Usuario:</span> {currentUser.name}
+        <br />
+        <span className="font-medium">ID:</span> {currentUser.id}
+      </p>
+    </div>
     <Input
       label="Fojas"
       id="fojas"
@@ -163,28 +173,6 @@ const FormFields: React.FC<FormFieldsProps> = ({ state, users }) => (
       placeholder="Escribe observaciones como deslindes o número de plano"
       error={state.errors.observaciones}
     />
-
-    <div className="mb-4">
-      <label htmlFor="user" className="mb-2 block text-sm font-medium">
-        Elige usuario
-      </label>
-      <div className="relative">
-        <select
-          id="user"
-          name="userId"
-          className="peer block w-full cursor-pointer rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
-        >
-          <option value="" disabled>
-            Select a user
-          </option>
-          {users.map((user) => (
-            <option key={user.id} value={user.id}>
-              {user.name}
-            </option>
-          ))}
-        </select>
-      </div>
-    </div>
   </>
 );
 

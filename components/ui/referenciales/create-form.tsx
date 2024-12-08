@@ -20,17 +20,15 @@ interface FormState {
   isSubmitting: boolean;
 }
 
-interface FormProps {
-  users: { id: string; name: string | null }[];
-}
+interface FormProps {}
 
-const Form = ({ users }: FormProps) => (
+const Form = (props: FormProps) => (
   <SessionProvider>
-    <InnerForm users={users} />
+    <InnerForm />
   </SessionProvider>
 );
 
-const InnerForm = ({ users }: FormProps) => {
+const InnerForm = (props: FormProps) => {
   const router = useRouter();
   const { data: session } = useSession();
   const [state, setState] = useState<FormState>({
@@ -125,6 +123,11 @@ const InnerForm = ({ users }: FormProps) => {
     }
   };
 
+  const currentUser = {
+    id: session?.user?.id || '',
+    name: session?.user?.name || ''
+  };
+
   return (
     <form onSubmit={handleSubmit}>
       <div className="rounded-md bg-gray-50 p-4 md:p-6">
@@ -145,7 +148,7 @@ const InnerForm = ({ users }: FormProps) => {
           </div>
         )}
 
-        <FormFields state={state} users={users} />
+        <FormFields state={state} currentUser={currentUser} />
 
         {state.message && (
           <div
