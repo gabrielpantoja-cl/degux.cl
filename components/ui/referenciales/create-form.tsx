@@ -20,13 +20,22 @@ interface FormState {
   isSubmitting: boolean;
 }
 
-const Form = () => (
+interface User {
+  id: string;
+  name: string | null;
+}
+
+interface FormProps {
+  users: User[];
+}
+
+const Form: React.FC<FormProps> = ({ users }) => (
   <SessionProvider>
-    <InnerForm />
+    <InnerForm users={users} />
   </SessionProvider>
 );
 
-const InnerForm = () => {
+const InnerForm: React.FC<FormProps> = ({ users }) => {
   const router = useRouter();
   const { data: session } = useSession();
   const [state, setState] = useState<FormState>({
