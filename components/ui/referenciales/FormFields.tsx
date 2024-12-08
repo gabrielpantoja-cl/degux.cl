@@ -12,12 +12,14 @@ interface FormState {
   isSubmitting: boolean;
 }
 
+interface CurrentUser {
+  id: string;
+  name: string;
+}
+
 interface FormFieldsProps {
   state: FormState;
-  currentUser: {
-    id: string;
-    name: string;
-  };
+  currentUser: CurrentUser;
 }
 
 const FormFields: React.FC<FormFieldsProps> = ({ state, currentUser }) => (
