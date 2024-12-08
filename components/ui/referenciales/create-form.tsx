@@ -1,6 +1,6 @@
 // components/ui/referenciales/create-form.tsx
 'use client';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
@@ -37,7 +37,7 @@ const Form: React.FC<FormProps> = ({ users }) => (
 
 const InnerForm: React.FC<FormProps> = ({ users }) => {
   const router = useRouter();
-  const { data: session, status } = useSession(); // Asegúrate de obtener `status` aquí
+  const { data: session, status } = useSession();
   const [state, setState] = useState<FormState>({
     message: null,
     messageType: null,
@@ -137,10 +137,10 @@ const InnerForm: React.FC<FormProps> = ({ users }) => {
     }
   };
 
-  const currentUser = {
+  const currentUser = useMemo(() => ({
     id: session?.user?.id || '',
     name: session?.user?.name || ''
-  };
+  }), [session?.user?.id, session?.user?.name]);
 
   useEffect(() => {
     console.log('currentUser:', currentUser);
@@ -164,7 +164,6 @@ const InnerForm: React.FC<FormProps> = ({ users }) => {
           </div>
         )}
 
-        {/* Ejemplo de uso de la propiedad users */}
         <div className="mt-4">
           <h3 className="text-lg font-medium">Usuario conectado</h3>
           <ul>
