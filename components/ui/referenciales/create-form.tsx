@@ -175,7 +175,7 @@ const InnerForm: React.FC<FormProps> = ({ users }) => {
         </Link>
         <Button
           type="submit"
-          disabled={state.isSubmitting || !userId}
+          disabled={state.isSubmitting}
         >
           {state.isSubmitting ? 'Creando...' : 'Crear Referencial'}
         </Button>
