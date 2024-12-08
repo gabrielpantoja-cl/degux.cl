@@ -58,6 +58,10 @@ const InnerForm: React.FC<FormProps> = ({ users }) => {
 
   const userId = session?.user?.id;
 
+  useEffect(() => {
+    console.log('userId:', userId);
+  }, [userId]);
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -135,6 +139,10 @@ const InnerForm: React.FC<FormProps> = ({ users }) => {
     id: session?.user?.id || '',
     name: session?.user?.name || ''
   };
+
+  useEffect(() => {
+    console.log('currentUser:', currentUser);
+  }, [currentUser]);
 
   return (
     <form onSubmit={handleSubmit}>
