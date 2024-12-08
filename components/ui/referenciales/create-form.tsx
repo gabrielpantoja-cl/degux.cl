@@ -50,7 +50,8 @@ const InnerForm: React.FC<FormProps> = ({ users }) => {
     if (session?.user?.email) {
       console.log('Sesión detectada:', {
         email: session.user.email,
-        name: session.user.name
+        name: session.user.name,
+        id: session.user.id
       });
     }
   }, [session]);
