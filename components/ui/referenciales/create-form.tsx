@@ -155,7 +155,7 @@ const InnerForm: React.FC<FormProps> = ({ users }) => {
 
         {/* Ejemplo de uso de la propiedad users */}
         <div className="mt-4">
-          <h3 className="text-lg font-medium">Lista de Usuarios</h3>
+          <h3 className="text-lg font-medium">Usuario conectado</h3>
           <ul>
             {users.map(user => (
               <li key={user.id}>
@@ -174,7 +174,7 @@ const InnerForm: React.FC<FormProps> = ({ users }) => {
         </Link>
         <Button
           type="submit"
-          disabled={state.isSubmitting}
+          disabled={state.isSubmitting || !userId}
         >
           {state.isSubmitting ? 'Creando...' : 'Crear Referencial'}
         </Button>
