@@ -36,7 +36,7 @@ model User {
   password      String?
   emailVerified DateTime?
   image         String?
-  role          String    @default("user")
+  role          String    @default("USER") // Cambia a mayúsculas
 
   accounts      Account[]
   sessions      Session[]
