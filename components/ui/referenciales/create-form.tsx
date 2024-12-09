@@ -38,6 +38,7 @@ const InnerForm: React.FC<FormProps> = ({ users }) => {
   const router = useRouter();
   const { data: session } = useSession();
   const mounted = useRef(true);
+  const [isCreated, setIsCreated] = useState(false);
   
   const [state, setState] = useState<FormState>({
     message: null,
@@ -47,7 +48,6 @@ const InnerForm: React.FC<FormProps> = ({ users }) => {
     isSubmitting: false,
     redirecting: false
   });
-
   useEffect(() => {
     return () => {
       mounted.current = false;
@@ -72,7 +72,8 @@ const InnerForm: React.FC<FormProps> = ({ users }) => {
     setState(prev => ({ 
       ...prev, 
       isSubmitting: true, 
-      message: null,
+      message: "Procesando solicitud...",
+      messageType: 'success',
       errors: {},
       invalidFields: new Set()
     }));
@@ -112,19 +113,23 @@ const InnerForm: React.FC<FormProps> = ({ users }) => {
       }
 
       if ('success' in result && result.success) {
+        setIsCreated(true);
         setState(prev => ({
           ...prev,
-          message: "¡Referencial creado exitosamente!",
+          message: "¡Referencial creado exitosamente! Redirigiendo...",
           messageType: 'success',
           isSubmitting: false,
           redirecting: true
         }));
 
-        await new Promise(resolve => setTimeout(resolve, 1500));
-        
-        if (mounted.current) {
-          router.push('/dashboard/referenciales');
-        }
+        const redirectTimeout = setTimeout(() => {
+          if (mounted.current) {
+            router.push('/dashboard/referenciales');
+            router.refresh(); // Forzar actualización de la página
+          }
+        }, 2000);
+
+        return () => clearTimeout(redirectTimeout);
       } else {
         throw new Error(result.message || 'Error desconocido al crear el referencial');
       }
