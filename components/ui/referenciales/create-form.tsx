@@ -169,6 +169,12 @@ const InnerForm: React.FC<FormProps> = ({ users }) => {
           </div>
         )}
 
+        {isCreated && (
+          <div className="mt-2 text-sm text-green-500">
+            ¡Referencial creado exitosamente!
+          </div>
+        )}
+
         <div className="mt-4">
           <h3 className="text-lg font-medium">Usuario conectado</h3>
           <ul>
