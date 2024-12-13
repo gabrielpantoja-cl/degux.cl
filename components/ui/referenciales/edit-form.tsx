@@ -1,10 +1,13 @@
 // components/ui/referenciales/edit-form.tsx
 'use client';
 
+import React, { useState } from 'react';
 import { Prisma } from '@prisma/client';
-import { UserCircleIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
+import FormFields from './FormFields';
+import { updateReferencial } from '@/lib/actions'; // Asegúrate de tener esta función implementada
 
 type ReferencialForm = Prisma.referencialesUncheckedCreateInput;
 
@@ -15,8 +18,51 @@ export default function EditReferencialForm({
   referencial: ReferencialForm;
   users: { id: string; name: string }[];
 }) {
+  const router = useRouter();
+  const [formState, setFormState] = useState({
+    userId: referencial.userId,
+    fojas: referencial.fojas,
+    numero: referencial.numero,
+    anio: referencial.anio,
+    cbr: referencial.cbr,
+    comuna: referencial.comuna,
+    rol: referencial.rol,
+    predio: referencial.predio,
+    vendedor: referencial.vendedor,
+    comprador: referencial.comprador,
+    superficie: referencial.superficie,
+    monto: referencial.monto,
+    fechaescritura: referencial.fechaescritura,
+    lat: referencial.lat,
+    lng: referencial.lng,
+    observaciones: referencial.observaciones,
+  });
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setFormState(prevState => ({
+      ...prevState,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    try {
+      const formData = new FormData();
+      Object.entries(formState).forEach(([key, value]) => {
+        formData.append(key, value as string | Blob);
+      });
+      await updateReferencial(formData);
+      router.push('/dashboard/referenciales');
+      router.refresh(); // Forzar actualización de la página
+    } catch (error) {
+      console.error('Error al actualizar el referencial:', error);
+    }
+  };
+
   return (
-    <form>
+    <form onSubmit={handleSubmit}>
       <div className="rounded-md bg-gray-50 p-4 md:p-6">
         {/* Usuario Name */}
         <div className="mb-4">
@@ -28,7 +74,8 @@ export default function EditReferencialForm({
               id="user"
               name="userId"
               className="peer block w-full cursor-pointer rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
-              defaultValue={referencial.userId}
+              value={formState.userId}
+              onChange={handleChange}
             >
               <option value="" disabled>
                 Select a user
@@ -39,11 +86,13 @@ export default function EditReferencialForm({
                 </option>
               ))}
             </select>
-            <UserCircleIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
           </div>
         </div>
 
-        {/* Referencial Fojas */}
+        {/* Form Fields */}
+        <FormFields state={{ errors: {}, message: null, messageType: null, invalidFields: new Set(), isSubmitting: false }} currentUser={{ id: formState.userId, name: users.find(user => user.id === formState.userId)?.name || '' }} />
+
+        {/* Additional Fields */}
         <div className="mb-4">
           <label htmlFor="fojas" className="mb-2 block text-sm font-medium">
             Fojas
@@ -54,7 +103,8 @@ export default function EditReferencialForm({
                 id="fojas"
                 name="fojas"
                 type="number"
-                defaultValue={referencial.fojas}
+                value={formState.fojas}
+                onChange={handleChange}
                 className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                 placeholder="Ingrese el número de fojas"
               />
@@ -67,9 +117,9 @@ export default function EditReferencialForm({
           href="/dashboard/referenciales"
           className="flex h-10 items-center rounded-lg bg-gray-100 px-4 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-200"
         >
-          Cancel
+          Cancelar
         </Link>
-        <Button type="submit">Edit Referencial</Button>
+        <Button type="submit">Editar Referencial</Button>
       </div>
     </form>
   );
