@@ -1,6 +1,9 @@
 import { NextResponse, type NextRequest } from "next/server";
+import { getToken } from "next-auth/jwt";
 
-interface AuthenticatedNextRequest extends NextRequest {/*...*/ }
+interface AuthenticatedNextRequest extends NextRequest {
+  // Puedes agregar propiedades adicionales si es necesario
+}
 
 const publicRoutes = ["/", "/prices"];
 const authRoutes = ["/login", "/register"];
@@ -13,25 +16,30 @@ const oauthCallbacks = [
   "/api/auth/session"
 ];
 
-const isAuthenticated = (req: AuthenticatedNextRequest): boolean => {
+const isAuthenticated = async (req: AuthenticatedNextRequest): Promise<boolean> => {
   try {
-    // Comprobar tanto cookies seguras como no seguras
-    const isProd = process.env.NODE_ENV === 'production';
-    const sessionToken = isProd
-      ? req.cookies.get("__Secure-next-auth.session-token")
-      : req.cookies.get("next-auth.session-token");
-
-    return !!sessionToken;
+    const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
+    return !!token;
   } catch (error) {
     console.error("Error al verificar la autenticación:", error);
     return false;
   }
 };
 
-export default function middleware(req: AuthenticatedNextRequest) {
+const isAuthorizedUser = async (req: AuthenticatedNextRequest): Promise<boolean> => {
+  try {
+    const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
+    return token?.email === "gabrielpantojarivera@gmail.com";
+  } catch (error) {
+    console.error("Error al verificar el usuario autorizado:", error);
+    return false;
+  }
+};
+
+export default async function middleware(req: AuthenticatedNextRequest) {
   try {
     const { nextUrl } = req;
-    const isLoggedIn = isAuthenticated(req);
+    const isLoggedIn = await isAuthenticated(req);
 
     // Permitir todas las rutas de autenticación y callbacks
     if (
@@ -60,6 +68,16 @@ export default function middleware(req: AuthenticatedNextRequest) {
       const loginUrl = new URL("/login", nextUrl);
       loginUrl.searchParams.set("callbackUrl", nextUrl.pathname);
       return NextResponse.redirect(loginUrl);
+    }
+
+    // Verificar si el usuario está autorizado para acceder a la edición de la base de datos
+    const editReferencialPattern = /^\/dashboard\/referenciales\/[a-f0-9-]+\/edit$/;
+    if (editReferencialPattern.test(nextUrl.pathname)) {
+      const isAuthorized = await isAuthorizedUser(req);
+      if (!isAuthorized) {
+        const unauthorizedUrl = new URL("/unauthorized", nextUrl);
+        return NextResponse.redirect(unauthorizedUrl);
+      }
     }
 
     return NextResponse.next();
