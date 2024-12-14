@@ -1,5 +1,6 @@
 // components/ui/referenciales/create-form.tsx
 'use client';
+
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -48,6 +49,7 @@ const InnerForm: React.FC<FormProps> = ({ users }) => {
     isSubmitting: false,
     redirecting: false
   });
+
   useEffect(() => {
     return () => {
       mounted.current = false;
@@ -69,16 +71,16 @@ const InnerForm: React.FC<FormProps> = ({ users }) => {
       return;
     }
 
-    setState(prev => ({ 
-      ...prev, 
-      isSubmitting: true, 
-      message: "Procesando solicitud...",
-      messageType: 'success',
-      errors: {},
-      invalidFields: new Set()
-    }));
-
     try {
+      setState(prev => ({ 
+        ...prev, 
+        isSubmitting: true, 
+        message: "Procesando solicitud...",
+        messageType: 'success',
+        errors: {},
+        invalidFields: new Set()
+      }));
+
       const formData = new FormData(e.currentTarget);
       formData.set('userId', userId);
 
@@ -112,28 +114,23 @@ const InnerForm: React.FC<FormProps> = ({ users }) => {
         return;
       }
 
-      if ('success' in result && result.success) {
-        setIsCreated(true);
-        setState(prev => ({
-          ...prev,
-          message: "¡Referencial creado exitosamente! Redirigiendo...",
-          messageType: 'success',
-          isSubmitting: false,
-          redirecting: true
-        }));
+      // Si la creación fue exitosa
+      setIsCreated(true);
+      setState(prev => ({
+        ...prev,
+        message: "¡Referencial creado exitosamente!",
+        messageType: 'success',
+        isSubmitting: false,
+        redirecting: true
+      }));
 
-        const redirectTimeout = setTimeout(() => {
-          if (mounted.current) {
-            router.push('/dashboard/referenciales');
-            router.refresh(); // Forzar actualización de la página
-          }
-        }, 2000);
+      // Redirección inmediata
+      router.push('/dashboard/referenciales');
+      router.refresh();
 
-        return () => clearTimeout(redirectTimeout);
-      } else {
-        throw new Error(result.message || 'Error desconocido al crear el referencial');
-      }
     } catch (error) {
+      console.error('Error al crear referencial:', error);
+      
       if (mounted.current) {
         setState(prev => ({
           ...prev,
@@ -141,7 +138,8 @@ const InnerForm: React.FC<FormProps> = ({ users }) => {
             ? `Error al crear el referencial: ${error.message}`
             : "Error inesperado al procesar el formulario",
           messageType: 'error',
-          isSubmitting: false
+          isSubmitting: false,
+          redirecting: false
         }));
       }
     }
