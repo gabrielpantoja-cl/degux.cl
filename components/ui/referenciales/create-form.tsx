@@ -176,7 +176,10 @@ const InnerForm: React.FC<FormProps> = ({ users }) => {
         )}
 
         <div className="mt-4">
-          <h3 className="text-lg font-medium">Usuarios conectados</h3>
+          <h3 className="text-lg font-medium flex items-center">
+            <span className="inline-block w-2 h-2 mr-2 bg-green-500 rounded-full"></span>
+            Referenciales.cl
+          </h3>
           <p>{users.length} usuarios conectados</p>
         </div>
       </div>
