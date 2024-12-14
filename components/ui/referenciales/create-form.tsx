@@ -176,17 +176,8 @@ const InnerForm: React.FC<FormProps> = ({ users }) => {
         )}
 
         <div className="mt-4">
-          <h3 className="text-lg font-medium">Usuario conectado</h3>
-          <ul>
-            {users.map(user => (
-              <li key={user.id}>
-                {user.name} ({user.id})
-                {user.id === currentUser.id && (
-                  <span className="text-green-500"> - Sesión actual</span>
-                )}
-              </li>
-            ))}
-          </ul>
+          <h3 className="text-lg font-medium">Usuarios conectados</h3>
+          <p>{users.length} usuarios conectados</p>
         </div>
       </div>
       <div className="mt-6 flex justify-end gap-4">
