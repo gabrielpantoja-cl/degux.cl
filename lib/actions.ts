@@ -173,3 +173,21 @@ export async function updateReferencial(formData: FormData) {
     };
   }
 }
+
+export async function deleteReferencial(id: string) {
+  try {
+    await prisma.referenciales.delete({
+      where: { id },
+    });
+
+    // Revalidate the cache for the Referenciales page and redirect the user.
+    revalidatePath('/dashboard/referenciales');
+    redirect('/dashboard/referenciales');
+  } catch (error) {
+    console.error('Database Error:', error);
+    return {
+      message: `Database Error: Failed to Delete Referencial. ${error instanceof Error ? error.message : 'Unknown error'}`,
+      details: error instanceof Error ? { message: error.message, stack: error.stack } : { error },
+    };
+  }
+}

@@ -3,6 +3,7 @@
 import React from 'react';
 import '@/app/globals.css';
 import { Metadata } from 'next';
+import SessionProviderClient from '@/app/dashboard/SessionProviderClient';
 
 export const metadata: Metadata = {
   title: {
@@ -38,7 +39,9 @@ export default function RootLayout({
         {/* Aquí puedes agregar otras etiquetas de enlace o meta si es necesario */}
       </head>
       <body className="antialiased">
-        {children}
+        <SessionProviderClient>
+          {children}
+        </SessionProviderClient>
       </body>
     </html>
   );

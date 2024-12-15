@@ -7,9 +7,10 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import FormFields from './FormFields';
-import { updateReferencial } from '@/lib/actions'; // Asegúrate de tener esta función implementada
+import { updateReferencial, deleteReferencial } from '@/lib/actions'; // Asegúrate de tener esta función implementada
+import { useSession } from 'next-auth/react';
 
-type ReferencialForm = Prisma.referencialesUncheckedCreateInput;
+type ReferencialForm = Prisma.referencialesUncheckedCreateInput & { id: string };
 
 export default function EditReferencialForm({
   referencial,
@@ -19,6 +20,7 @@ export default function EditReferencialForm({
   users: { id: string; name: string }[];
 }) {
   const router = useRouter();
+  const { data: session } = useSession();
   const [formState, setFormState] = useState({
     userId: referencial.userId,
     fojas: referencial.fojas,
@@ -58,6 +60,24 @@ export default function EditReferencialForm({
       router.refresh(); // Forzar actualización de la página
     } catch (error) {
       console.error('Error al actualizar el referencial:', error);
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!confirm('¿Estás seguro de que deseas eliminar este referencial? Esta acción no se puede deshacer.')) {
+      return;
+    }
+
+    try {
+      if (referencial.id) {
+        await deleteReferencial(referencial.id);
+        router.push('/dashboard/referenciales');
+        router.refresh(); // Forzar actualización de la página
+      } else {
+        console.error('Error: Referencial ID is undefined');
+      }
+    } catch (error) {
+      console.error('Error al eliminar el referencial:', error);
     }
   };
 
@@ -112,14 +132,21 @@ export default function EditReferencialForm({
           </div>
         </div>
       </div>
-      <div className="mt-6 flex justify-end gap-4">
+      <div className="mt-6 flex justify-between gap-4">
         <Link
           href="/dashboard/referenciales"
           className="flex h-10 items-center rounded-lg bg-gray-100 px-4 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-200"
         >
           Cancelar
         </Link>
-        <Button type="submit">Editar Referencial</Button>
+        <div className="flex gap-4">
+          {session?.user?.email === 'gabrielpantojarivera@gmail.com' && (
+            <Button type="button" onClick={handleDelete} className="bg-red-500 hover:bg-red-600">
+              Eliminar Referencial
+            </Button>
+          )}
+          <Button type="submit">Editar Referencial</Button>
+        </div>
       </div>
     </form>
   );
