@@ -3,7 +3,7 @@
 // 1. Importar tipos desde Prisma schema
 import { referenciales } from '@prisma/client';
 import { UpdateReferencial } from '@/components/ui/referenciales/buttons';
-import { formatDateToLocal, formatCurrency } from '@/lib/utils';
+import { formatDateToLocal } from '@/lib/utils';
 import { fetchFilteredReferenciales } from '@/lib/referenciales';
 
 // 2. Definir interfaz basada en el modelo
@@ -24,13 +24,18 @@ const TABLE_HEADERS: { key: ReferencialKeys, label: string }[] = [
   { key: 'fechaescritura', label: 'Fecha de escritura' },
   { key: 'comuna', label: 'Comuna' },
   { key: 'rol', label: 'Rol' },
-  { key: 'monto', label: 'Monto' },
-  { key: 'superficie', label: 'Superficie' },
+  { key: 'monto', label: 'Monto ($)' }, // Actualizar el encabezado
+  { key: 'superficie', label: 'Superficie (m²)' }, // Actualizar el encabezado
   { key: 'predio', label: 'Predio' },
   { key: 'comprador', label: 'Comprador' },
-  { key: 'vendedor', label: 'Vendedor' }, // Agregar el campo "Vendedor"
-  { key: 'observaciones', label: 'Observaciones' }, // Mover esta línea al final
+  { key: 'vendedor', label: 'Vendedor' },
+  { key: 'observaciones', label: 'Observaciones' },
 ];
+
+// Función para formatear números con punto como separador de miles
+const formatNumber = (num: number) => {
+  return num.toLocaleString('es-CL');
+};
 
 export default async function ReferencialesTable({
   query,
@@ -55,8 +60,8 @@ export default async function ReferencialesTable({
                       <p key={key} className={key === 'cbr' ? 'font-medium' : ''}>
                         {label}: {
                           key === 'fechaescritura' ? formatDateToLocal(referencial[key].toISOString()) :
-                          key === 'monto' ? formatCurrency(referencial[key]) :
-                          key === 'superficie' ? `${referencial[key]} m²` :
+                          key === 'monto' ? `$${formatNumber(referencial[key])}` :
+                          key === 'superficie' ? `${formatNumber(referencial[key])} m²` :
                           referencial[key]
                         }
                       </p>
@@ -94,8 +99,8 @@ export default async function ReferencialesTable({
                     {TABLE_HEADERS.map(({ key }) => (
                       <td key={key} className="whitespace-nowrap px-3 py-3">
                         {key === 'fechaescritura' ? formatDateToLocal(referencial[key].toISOString()) :
-                         key === 'monto' ? formatCurrency(referencial[key]) :
-                         key === 'superficie' ? `${referencial[key]} m²` :
+                         key === 'monto' ? `$${formatNumber(referencial[key])}` :
+                         key === 'superficie' ? `${formatNumber(referencial[key])} m²` :
                          referencial[key]}
                       </td>
                     ))}
