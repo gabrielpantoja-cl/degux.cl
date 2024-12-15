@@ -1,12 +1,30 @@
 // app/page.tsx
+"use client";
+
+import { useState } from 'react';
 import AcmeLogo from '@/components/ui/acme-logo';
 import { lusitana } from '@/components/ui/fonts';
 import Image from 'next/image';
 import Link from 'next/link';
 
 export default function Page() {
+  const [showBanner, setShowBanner] = useState(true);
+
   return (
     <main className="flex min-h-screen flex-col p-6">
+      {showBanner && (
+        <div className="flex items-center justify-between bg-yellow-200 p-4 rounded-lg mb-4">
+          <p className="text-yellow-800">
+            Este proyecto está actualmente en fase de desarrollo y los datos presentados podrían ser inconsistentes.
+          </p>
+          <button
+            onClick={() => setShowBanner(false)}
+            className="ml-4 rounded bg-yellow-300 px-3 py-1 text-yellow-800 hover:bg-yellow-400"
+          >
+            Cerrar
+          </button>
+        </div>
+      )}
       <div className="flex h-20 shrink-0 items-end rounded-lg bg-blue-500 p-4 md:h-52">
         <AcmeLogo />
       </div>
