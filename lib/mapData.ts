@@ -23,7 +23,7 @@ export async function fetchReferencialesForMap() {
         superficie, 
         monto, 
         observaciones, 
-        user_id as "userId"
+        userId
       FROM referenciales 
       WHERE lat IS NOT NULL AND lng IS NOT NULL
     `;
