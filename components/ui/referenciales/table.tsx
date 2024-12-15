@@ -23,11 +23,12 @@ const TABLE_HEADERS: { key: ReferencialKeys, label: string }[] = [
   { key: 'anio', label: 'Año' },
   { key: 'fechaescritura', label: 'Fecha de escritura' },
   { key: 'comuna', label: 'Comuna' },
-  { key: 'rol', label: 'Rol' }, // Agregar el campo "Rol" después de "Comuna"
+  { key: 'rol', label: 'Rol' },
   { key: 'monto', label: 'Monto' },
   { key: 'superficie', label: 'Superficie' },
   { key: 'predio', label: 'Predio' },
   { key: 'comprador', label: 'Comprador' },
+  { key: 'vendedor', label: 'Vendedor' }, // Agregar el campo "Vendedor"
   { key: 'observaciones', label: 'Observaciones' }, // Mover esta línea al final
 ];
 
