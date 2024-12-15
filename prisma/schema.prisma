@@ -8,6 +8,12 @@ generator client {
   provider = "prisma-client-js"
 }
 
+enum Role {
+  USER
+  ADMIN
+  SUPERADMIN // Agregar el nuevo valor de enum
+}
+
 model referenciales {
   id             String   @id @default(uuid())
   userId         String
@@ -36,7 +42,7 @@ model User {
   password      String?
   emailVerified DateTime?
   image         String?
-  role          String    @default("USER") // Cambia a mayúsculas
+  role          Role      @default(SUPERADMIN) // Usar el nuevo valor de enum aquí
 
   accounts      Account[]
   sessions      Session[]
@@ -61,7 +67,7 @@ model Account {
   session_state     String?
 
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  updatedAt DateTime @default(now())
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 

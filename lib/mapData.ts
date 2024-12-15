@@ -8,7 +8,8 @@ export async function fetchReferencialesForMap() {
     const data = await prisma.$queryRaw`
       SELECT 
         id, 
-        ST_AsGeoJSON(geom) as geojson, 
+        lat, 
+        lng, 
         fojas, 
         numero, 
         anio, 
@@ -24,7 +25,7 @@ export async function fetchReferencialesForMap() {
         observaciones, 
         colaborador_id 
       FROM referenciales 
-      WHERE geom IS NOT NULL
+      WHERE lat IS NOT NULL AND lng IS NOT NULL
     `;
 
     if (!Array.isArray(data)) {
@@ -32,15 +33,11 @@ export async function fetchReferencialesForMap() {
     }
 
     const leafletData = data.map(item => {
-      const geojson = JSON.parse(item.geojson);
-      const [lng, lat] = geojson.coordinates;
-
       return {
         ...item,
-        latLng: [lat, lng] as [number, number],
-        geom: [lng, lat],
+        latLng: [item.lat, item.lng] as [number, number],
+        geom: [item.lng, item.lat],
         fechaescritura: item.fechaescritura ? new Date(item.fechaescritura).toISOString() : null,
-        geojson: undefined,
       };
     });
 

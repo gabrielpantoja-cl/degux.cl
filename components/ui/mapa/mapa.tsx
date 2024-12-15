@@ -11,7 +11,7 @@ type Point = {
     fojas?: string;
     numero?: string;
     anio: string;
-    [key: string]: any; // Permitir propiedades adicionales
+    [key: string]: any; 
 };
 
 const Mapa = () => {
