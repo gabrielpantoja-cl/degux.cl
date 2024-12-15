@@ -1,3 +1,4 @@
+// lib/prisma.ts
 import { PrismaClient } from '@prisma/client'
 
 // Prevenir múltiples instancias de Prisma Client en desarrollo

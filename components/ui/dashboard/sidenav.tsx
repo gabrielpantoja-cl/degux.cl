@@ -3,12 +3,13 @@
 import Link from 'next/link';
 import NavLinks from '@/components/ui/dashboard/nav-links';
 import AcmeLogo from '@/components/ui/acme-logo';
-import { PowerIcon } from '@heroicons/react/24/outline';
+import { PowerIcon, ExclamationTriangleIcon } from '@heroicons/react/24/outline';
 import { signOut } from 'next-auth/react';
 import { useState } from 'react';
 
 export default function SideNav() {
   const [isLoading, setIsLoading] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const handleSignOut = async () => {
     try {
@@ -21,6 +22,27 @@ export default function SideNav() {
       console.error('Error during sign out:', error);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    if (!confirm('¿Estás seguro de que deseas eliminar tu cuenta? Esta acción no se puede deshacer.')) {
+      return;
+    }
+
+    try {
+      setIsDeleting(true);
+      await fetch('/api/delete-account', {
+        method: 'DELETE',
+      });
+      await signOut({
+        callbackUrl: '/',
+        redirect: true
+      });
+    } catch (error) {
+      console.error('Error during account deletion:', error);
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -46,6 +68,16 @@ export default function SideNav() {
         >
           <PowerIcon className={`w-6 ${isLoading ? 'animate-pulse' : ''}`} />
           <div className="hidden md:block">{isLoading ? 'Saliendo...' : 'Cerrar Sesión'}</div>
+        </button>
+        <button
+          onClick={handleDeleteAccount}
+          disabled={isDeleting}
+          className={`flex h-[48px] grow items-center justify-center gap-2 rounded-md bg-red-50 p-3 text-sm font-medium 
+            ${isDeleting ? 'opacity-50 cursor-not-allowed' : 'hover:bg-red-100 hover:text-red-600'} 
+            md:flex-none md:justify-start md:p-2 md:px-3`}
+        >
+          <ExclamationTriangleIcon className={`w-6 ${isDeleting ? 'animate-pulse' : ''}`} />
+          <div className="hidden md:block">{isDeleting ? 'Eliminando...' : 'Eliminar Cuenta'}</div>
         </button>
       </div>
     </div>
