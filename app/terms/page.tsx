@@ -100,7 +100,7 @@ export default function TermsPage() {
 
         <footer className="mt-8 pt-4 border-t border-gray-200">
           <p className="text-sm text-gray-600 text-center">
-            Para consultas y soporte: Comunidad WhatsApp +56912345678
+            Para consultas y soporte: Comunidad WhatsApp +56 9 3176 9472
           </p>
         </footer>
       </div>
