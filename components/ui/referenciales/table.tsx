@@ -1,96 +1,113 @@
 // app/ui/referenciales/table.tsx
+
+// 1. Importar tipos desde Prisma schema
+import { referenciales } from '@prisma/client';
 import { UpdateReferencial } from '@/components/ui/referenciales/buttons';
-import { formatDateToLocal } from '@/lib/utils';
+import { formatDateToLocal, formatCurrency } from '@/lib/utils';
 import { fetchFilteredReferenciales } from '@/lib/referenciales';
+
+// 2. Definir interfaz basada en el modelo
+interface ReferencialTableProps {
+  query: string;
+  currentPage: number;
+}
+
+// 3. Definir tipo de claves del objeto referencial
+type ReferencialKeys = keyof referenciales;
+
+// 4. Campos alineados con schema.prisma
+const TABLE_HEADERS: { key: ReferencialKeys, label: string }[] = [
+  { key: 'cbr', label: 'CBR' },
+  { key: 'fojas', label: 'Fojas' },
+  { key: 'numero', label: 'Número' },
+  { key: 'anio', label: 'Año' },
+  { key: 'fechaescritura', label: 'Fecha de escritura' },
+  { key: 'comuna', label: 'Comuna' },
+  { key: 'rol', label: 'Rol' }, // Agregar el campo "Rol" después de "Comuna"
+  { key: 'monto', label: 'Monto' },
+  { key: 'superficie', label: 'Superficie' },
+  { key: 'predio', label: 'Predio' },
+  { key: 'comprador', label: 'Comprador' },
+  { key: 'observaciones', label: 'Observaciones' }, // Mover esta línea al final
+];
 
 export default async function ReferencialesTable({
   query,
   currentPage,
-}: {
-  query: string;
-  currentPage: number;
-}) {
+}: ReferencialTableProps) {
   const referenciales = await fetchFilteredReferenciales(query, currentPage);
 
   return (
     <div className="mt-6 flow-root">
       <div className="inline-block min-w-full align-middle">
         <div className="rounded-lg bg-gray-50 p-2 md:pt-0">
-          {/* Mobile view starts here */}
+          {/* Vista móvil */}
           <div className="md:hidden">
-            {referenciales?.map((referencial: any) => (
+            {referenciales?.map((referencial: referenciales) => (
               <div
                 key={referencial.id}
                 className="mb-2 w-full rounded-md bg-white p-4"
               >
                 <div className="flex items-center justify-between border-b pb-4">
                   <div>
-                    <p>{referencial.fojas}</p>
-                    <p className="text-sm text-gray-500">{referencial.numero}</p>
+                    {TABLE_HEADERS.map(({ key, label }) => (
+                      <p key={key} className={key === 'cbr' ? 'font-medium' : ''}>
+                        {label}: {
+                          key === 'fechaescritura' ? formatDateToLocal(referencial[key].toISOString()) :
+                          key === 'monto' ? formatCurrency(referencial[key]) :
+                          key === 'superficie' ? `${referencial[key]} m²` :
+                          referencial[key]
+                        }
+                      </p>
+                    ))}
                   </div>
                 </div>
-                <div className="flex w-full items-center justify-between pt-4">
-                  <div>
-                    <p className="text-xl font-medium">
-                      {referencial.anio}
-                    </p>
-                    <p>{referencial.date ? formatDateToLocal(referencial.date) : 'N/A'}</p>                  </div>
-                  <div className="flex justify-end gap-2">
-                    <UpdateReferencial id={referencial.id} />
-                  </div>
+                <div className="flex justify-end gap-2 pt-4">
+                  <UpdateReferencial id={referencial.id} />
                 </div>
               </div>
             ))}
           </div>
-          {/* Mobile view ends here */}
-          {/* Desktop view starts here */}
-          <table className="hidden min-w-full text-gray-900 md:table">
-            <thead className="rounded-lg text-left text-sm font-normal">
-              <tr>
-                <th scope="col" className="px-4 py-5 font-medium sm:pl-6">
-                  Fojas
-                </th>
-                <th scope="col" className="px-3 py-5 font-medium">
-                  Número
-                </th>
-                <th scope="col" className="px-3 py-5 font-medium">
-                  Año
-                </th>
-                <th scope="col" className="px-3 py-5 font-medium">
-                  Fecha de escritura
-                </th>
-                <th scope="col" className="relative py-3 pl-6 pr-3">
-                  <span className="sr-only">Edit</span>
-                </th>
-              </tr>
-            </thead>
-            <tbody className="bg-white">
-              {referenciales?.map((referencial: any) => (
-                <tr
-                  key={referencial.id}
-                  className="w-full border-b py-3 text-sm last-of-type:border-none [&:first-child>td:first-child]:rounded-tl-lg [&:first-child>td:last-child]:rounded-tr-lg [&:last-child>td:first-child]:rounded-bl-lg [&:last-child>td:last-child]:rounded-br-lg"
-                >
-                  <td className="whitespace-nowrap py-3 pl-6 pr-3">
-                    <p>{referencial.fojas}</p>
-                  </td>
-                  <td className="whitespace-nowrap px-3 py-3">
-                    {referencial.numero}
-                  </td>
-                  <td className="whitespace-nowrap px-3 py-3">
-                    {referencial.anio}
-                  </td>
-                  <td className="whitespace-nowrap px-3 py-3">
-                    <p>{referencial.date ? formatDateToLocal(referencial.date) : 'N/A'}</p>                  </td>
-                  <td className="whitespace-nowrap py-3 pl-6 pr-3">
-                    <div className="flex justify-end gap-3">
-                      <UpdateReferencial id={referencial.id} />
-                    </div>
-                  </td>
+
+          {/* Vista desktop */}
+          <div className="hidden md:block overflow-x-auto">
+            <table className="min-w-full text-gray-900">
+              <thead className="rounded-lg text-left text-sm font-normal">
+                <tr>
+                  {TABLE_HEADERS.map(({ key, label }) => (
+                    <th key={key} scope="col" className="px-3 py-5 font-medium">
+                      {label}
+                    </th>
+                  ))}
+                  <th scope="col" className="relative py-3 pl-6 pr-3">
+                    <span className="sr-only">Editar</span>
+                  </th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-          {/* Desktop view ends here */}
+              </thead>
+              <tbody className="bg-white">
+                {referenciales?.map((referencial: referenciales) => (
+                  <tr
+                    key={referencial.id}
+                    className="w-full border-b py-3 text-sm last-of-type:border-none [&:first-child>td:first-child]:rounded-tl-lg [&:first-child>td:last-child]:rounded-tr-lg [&:last-child>td:first-child]:rounded-bl-lg [&:last-child>td:last-child]:rounded-br-lg"
+                  >
+                    {TABLE_HEADERS.map(({ key }) => (
+                      <td key={key} className="whitespace-nowrap px-3 py-3">
+                        {key === 'fechaescritura' ? formatDateToLocal(referencial[key].toISOString()) :
+                         key === 'monto' ? formatCurrency(referencial[key]) :
+                         key === 'superficie' ? `${referencial[key]} m²` :
+                         referencial[key]}
+                      </td>
+                    ))}
+                    <td className="whitespace-nowrap py-3 pl-6 pr-3">
+                      <div className="flex justify-end gap-3">
+                        <UpdateReferencial id={referencial.id} />
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>
