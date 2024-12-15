@@ -61,7 +61,7 @@ export default async function ReferencialesTable({
                         {label}: {
                           key === 'fechaescritura' ? formatDateToLocal(referencial[key].toISOString()) :
                           key === 'monto' ? `$${formatNumber(referencial[key])}` :
-                          key === 'superficie' ? `${formatNumber(referencial[key])} m²` :
+                          key === 'superficie' ? formatNumber(referencial[key]) :
                           referencial[key]
                         }
                       </p>
@@ -100,7 +100,7 @@ export default async function ReferencialesTable({
                       <td key={key} className="whitespace-nowrap px-3 py-3">
                         {key === 'fechaescritura' ? formatDateToLocal(referencial[key].toISOString()) :
                          key === 'monto' ? `$${formatNumber(referencial[key])}` :
-                         key === 'superficie' ? `${formatNumber(referencial[key])} m²` :
+                         key === 'superficie' ? formatNumber(referencial[key]) :
                          referencial[key]}
                       </td>
                     ))}
