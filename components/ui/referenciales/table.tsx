@@ -60,7 +60,7 @@ export default async function ReferencialesTable({
                       <p key={key} className={key === 'cbr' ? 'font-medium' : ''}>
                         {label}: {
                           key === 'fechaescritura' ? formatDateToLocal(referencial[key].toISOString()) :
-                          key === 'monto' ? `$${formatNumber(referencial[key])}` :
+                          key === 'monto' ? formatNumber(referencial[key]) :
                           key === 'superficie' ? formatNumber(referencial[key]) :
                           referencial[key]
                         }
@@ -99,7 +99,7 @@ export default async function ReferencialesTable({
                     {TABLE_HEADERS.map(({ key }) => (
                       <td key={key} className="whitespace-nowrap px-3 py-3">
                         {key === 'fechaescritura' ? formatDateToLocal(referencial[key].toISOString()) :
-                         key === 'monto' ? `$${formatNumber(referencial[key])}` :
+                         key === 'monto' ? formatNumber(referencial[key]) :
                          key === 'superficie' ? formatNumber(referencial[key]) :
                          referencial[key]}
                       </td>
