@@ -88,3 +88,9 @@ model spatial_ref_sys {
   srtext    String? @db.VarChar(2048)
   proj4text String? @db.VarChar(2048)
 }
+
+enum Role {
+  user
+  admin
+  superadmin
+}

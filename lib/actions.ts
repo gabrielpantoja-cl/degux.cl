@@ -80,7 +80,7 @@ export async function createReferencial(formData: FormData) {
     await prisma.referenciales.create({
       data: {
         userId,
-        fojas: parseInt(fojas.replace(/[a-zA-Z]/g, '')), // Extraer el número de fojas
+        fojas, // Mantener fojas como string
         numero,
         anio: anno,
         cbr,
@@ -144,7 +144,7 @@ export async function updateReferencial(formData: FormData) {
       where: { id: formData.get('id') as string },
       data: {
         userId,
-        fojas: parseInt(fojas.replace(/[a-zA-Z]/g, '')), // Extraer el número de fojas
+        fojas, // Mantener fojas como string
         numero,
         anio: anno,
         cbr,
