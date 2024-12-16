@@ -40,6 +40,12 @@ export const validateReferencial = (formData: FormData): {
     }
   });
 
+  // Validación de fojas
+  const fojas = formData.get('fojas') as string;
+  if (fojas && !/^\d+[vV]?$/.test(fojas)) {
+    errors['fojas'] = ['El campo fojas debe ser un número seguido opcionalmente de "v" o "V"'];
+  }
+
   // Validación de números
   const numericalValidations = {
     latitud: { value: parseFloat(formData.get('latitud') as string), message: 'Latitud inválida' },
@@ -61,7 +67,7 @@ export const validateReferencial = (formData: FormData): {
   }
 
   // Validación de campos de texto
-  const textFields = ['fojas', 'numero', 'anno', 'cbr', 'comuna', 'predio', 'vendedor', 'comprador', 'rolAvaluo'];
+  const textFields = ['cbr', 'comuna', 'predio', 'vendedor', 'comprador', 'rolAvaluo'];
   textFields.forEach(field => {
     const value = formData.get(field) as string;
     if (value && value.trim().length === 0) {
