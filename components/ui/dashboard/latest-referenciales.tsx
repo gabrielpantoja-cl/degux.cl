@@ -9,27 +9,38 @@ type LatestReferencial = {
   userId: string;
   lat: number;
   lng: number;
-  fojas: string;  // Cambiado a string para aceptar valores como "157v"
+  fojas: string;
   numero: number;
   anio: number;
   cbr: string;
   monto: number;
+  amount: string;
   user: {
     id: string;
     name: string | null;
     email: string;
+    password: string | null;
+    emailVerified: Date | null;
+    image: string | null;
+    role: string;
+    createdAt: Date;
+    updatedAt: Date;
   };
 };
 
 export default async function LatestReferenciales() {
-  const latestReferenciales = await fetchLatestReferenciales();
+  const data = await fetchLatestReferenciales();
+  const latestReferenciales = data.map(ref => ({
+    ...ref,
+    fojas: ref.fojas.toString()
+  })) as LatestReferencial[];
+
   return (
     <div className="flex w-full flex-col md:col-span-4 lg:col-span-4">
       <h2 className={`${lusitana.className} mb-4 text-xl md:text-2xl`}>
         Últimos agregados a la base de datos:
       </h2>
       <div className="flex grow flex-col justify-between rounded-xl bg-gray-50 p-4">
-
         <div className="bg-white px-6">
           {latestReferenciales.map((referencial, i) => {
             return (
