@@ -9,20 +9,20 @@ type LatestReferencial = {
   userId: string;
   lat: number;
   lng: number;
-  fojas: number;
+  fojas: string;  // Cambiado a string para aceptar valores como "157v"
   numero: number;
   anio: number;
   cbr: string;
   monto: number;
   user: {
     id: string;
-    name: string | null; // Permitir que name sea string o null
+    name: string | null;
     email: string;
   };
 };
 
 export default async function LatestReferenciales() {
-  const latestReferenciales: LatestReferencial[] = await fetchLatestReferenciales();
+  const latestReferenciales = await fetchLatestReferenciales();
   return (
     <div className="flex w-full flex-col md:col-span-4 lg:col-span-4">
       <h2 className={`${lusitana.className} mb-4 text-xl md:text-2xl`}>
