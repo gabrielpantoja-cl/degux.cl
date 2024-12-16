@@ -20,7 +20,7 @@ model referenciales {
   user           User     @relation(fields: [userId], references: [id])
   lat            Float
   lng            Float
-  fojas          Int
+  fojas          String   // Cambiar el tipo de Int a String
   numero         Int
   anio           Int
   cbr            String
@@ -42,7 +42,7 @@ model User {
   password      String?
   emailVerified DateTime?
   image         String?
-  role          Role      @default(SUPERADMIN) // Usar el nuevo valor de enum aquí
+  role          Role      @default(SUPERADMIN) 
 
   accounts      Account[]
   sessions      Session[]
