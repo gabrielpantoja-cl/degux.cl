@@ -39,3 +39,8 @@ next-env.d.ts
 
 # Prisma
 prisma/migrations/
+
+# Scripts locales
+*.sh
+migrate.sql
+start-db.sh
