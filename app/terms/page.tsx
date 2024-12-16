@@ -56,11 +56,57 @@ export default function TermsPage() {
           </section>
 
           <section className="mb-8">
-            <h2 className="text-2xl font-semibold mb-4 text-gray-800">5. Protección de Datos</h2>
-            <p className="mb-4 text-gray-700">
-              La plataforma cumple con la Ley N° 19.628, garantizando la protección de datos personales y el derecho a solicitar modificación o eliminación de información personal.
-            </p>
-          </section>
+  <h2 className="text-2xl font-semibold mb-4 text-gray-800">5. Protección de Datos</h2>
+  <p className="mb-4 text-gray-700">
+    Referenciales.cl se compromete a cumplir con la Ley N° 19.628 sobre Protección de Datos Personales, 
+    asegurando que todos los datos personales recolectados y procesados en la plataforma sean tratados 
+    de manera segura y conforme a la ley. Esto incluye, pero no se limita a, los siguientes aspectos:
+  </p>
+  <ul className="list-disc pl-6 mb-4 text-gray-700 space-y-2">
+    <li>
+      <span className="font-medium">Derecho de Acceso:</span> Los usuarios tienen el derecho a acceder 
+      a sus datos personales almacenados en la plataforma.
+    </li>
+    <li>
+      <span className="font-medium">Derecho de Rectificación:</span> Los usuarios pueden solicitar la 
+      corrección de sus datos personales si estos son inexactos o están desactualizados.
+    </li>
+    <li>
+      <span className="font-medium">Derecho de Cancelación:</span> Los usuarios tienen el derecho a 
+      solicitar la eliminación de sus datos personales cuando estos ya no sean necesarios para los 
+      fines para los que fueron recolectados, o cuando el usuario retire su consentimiento.
+    </li>
+    <li>
+      <span className="font-medium">Derecho de Oposición:</span> En casos específicos, los usuarios 
+      pueden oponerse al tratamiento de sus datos personales.
+    </li>
+  </ul>
+  <div className="bg-gray-50 p-4 rounded-lg mb-4">
+    <h3 className="text-lg font-medium mb-2 text-gray-800">Proceso de Reclamación</h3>
+    <p className="text-gray-700">
+  Para ejercer cualquiera de estos derechos o realizar consultas, los usuarios pueden unirse a 
+  nuestro canal oficial de soporte en:{' '}
+  <a 
+    href="https://t.me/+UgVwqg2dbiE4MDAx" 
+    target="_blank" 
+    rel="noopener noreferrer" 
+    className="text-blue-600 hover:text-blue-800 inline-flex items-center"
+  >
+    Grupo de Telegram
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 ml-1">
+      <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 2v.511l-8 6.223-8-6.222V6h16zM4 18V9.044l7.386 5.745a.994.994 0 0 0 1.228 0L20 9.044 20.002 18H4z"/>
+    </svg>
+  </a>
+</p>
+  </div>
+  <div className="bg-gray-50 p-4 rounded-lg">
+    <h3 className="text-lg font-medium mb-2 text-gray-800">Medidas de Seguridad</h3>
+    <p className="text-gray-700">
+      Referenciales.cl implementa medidas técnicas y organizativas adecuadas para proteger los datos 
+      personales contra el acceso no autorizado, la divulgación, la alteración o la destrucción.
+    </p>
+  </div>
+</section>
 
           <section className="mb-8">
             <h2 className="text-2xl font-semibold mb-4 text-gray-800">6. Responsabilidades</h2>
