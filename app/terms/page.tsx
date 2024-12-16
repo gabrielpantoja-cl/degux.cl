@@ -16,7 +16,7 @@ export default function TermsPage() {
           <section className="mb-8">
             <h2 className="text-2xl font-semibold mb-4 text-gray-800">1. Introducción</h2>
             <p className="mb-4 text-gray-700">
-              Referenciales.cl es una aplicación web diseñada para proporcionar una base de datos colaborativa relacionada con transacciones de suelo en Chile, basada en información recolectada por peritos voluntarios. Esta información incluye datos de compraventa de propiedades obtenidos en Conservadores de Bienes Raíces (CBR).
+              Referenciales.cl es una aplicación web diseñada para proporcionar una base de datos colaborativa relacionada con transacciones de suelo en Chile, basada en información recolectada por personas voluntarias. Esta información incluye datos de compraventa de propiedades obtenidos en Conservadores de Bienes Raíces (CBR).
             </p>
             <p className="mb-4 text-gray-700 font-semibold">
               Importante: Referenciales.cl no garantiza la exactitud, completitud o actualidad de los datos, ni se responsabiliza por el uso que los usuarios hagan de esta información.
@@ -40,7 +40,12 @@ export default function TermsPage() {
           <section className="mb-8">
             <h2 className="text-2xl font-semibold mb-4 text-gray-800">3. Autenticación y Uso de Servicios de Terceros</h2>
             <p className="mb-4 text-gray-700">
-              Referenciales.cl utiliza exclusivamente los servicios de autenticación de Google para verificar la identidad de los usuarios. Al acceder a la plataforma, los usuarios deben iniciar sesión a través de su cuenta de Google. Este proceso asegura que la autenticación sea manejada por Google, transfiriendo implícitamente ciertas responsabilidades de seguridad y manejo de datos a Google, conforme a sus términos de servicio y políticas de privacidad. Referenciales.cl no almacena las contraseñas de los usuarios y se adhiere a las mejores prácticas de seguridad para proteger la información de autenticación.
+                            
+            Referenciales.cl utiliza Google como único autenticador.
+            Los usuarios deben iniciar sesión con su cuenta de Google,
+            delegando la gestión de seguridad y datos a Google según sus términos y políticas.
+            Referenciales.cl no almacena contraseñas y sigue las mejores prácticas de seguridad.
+            
             </p>
           </section>
 
