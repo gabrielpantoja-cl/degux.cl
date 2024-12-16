@@ -8,7 +8,7 @@ import { prisma } from '@/lib/prisma';
 
 const ReferencialSchema = z.object({
   userId: z.string(),
-  fojas: z.number(),
+  fojas: z.string().min(1, "Fojas es requerido").regex(/^[0-9]+[a-zA-Z]?$/, "Formato inválido - debe ser número seguido opcionalmente de letra"), // Acepta "157" o "157v"
   numero: z.number(),
   anno: z.number(),
   cbr: z.string(),
@@ -50,7 +50,7 @@ export type State = {
 export async function createReferencial(formData: FormData) {
   const validatedFields = ReferencialSchema.safeParse({
     userId: formData.get('userId'),
-    fojas: Number(formData.get('fojas')),
+    fojas: formData.get('fojas'),
     numero: Number(formData.get('numero')),
     anno: Number(formData.get('anno')),
     cbr: formData.get('cbr'),
@@ -80,7 +80,7 @@ export async function createReferencial(formData: FormData) {
     await prisma.referenciales.create({
       data: {
         userId,
-        fojas,
+        fojas: parseInt(fojas.replace(/[a-zA-Z]/g, '')), // Extraer el número de fojas
         numero,
         anio: anno,
         cbr,
@@ -113,7 +113,7 @@ export async function createReferencial(formData: FormData) {
 export async function updateReferencial(formData: FormData) {
   const validatedFields = ReferencialSchema.safeParse({
     userId: formData.get('userId'),
-    fojas: Number(formData.get('fojas')),
+    fojas: formData.get('fojas'),
     numero: Number(formData.get('numero')),
     anno: Number(formData.get('anno')),
     cbr: formData.get('cbr'),
@@ -144,7 +144,7 @@ export async function updateReferencial(formData: FormData) {
       where: { id: formData.get('id') as string },
       data: {
         userId,
-        fojas,
+        fojas: parseInt(fojas.replace(/[a-zA-Z]/g, '')), // Extraer el número de fojas
         numero,
         anio: anno,
         cbr,
