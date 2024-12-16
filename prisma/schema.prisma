@@ -1,26 +1,17 @@
-// schema.prisma
+generator client {
+  provider = "prisma-client-js"
+}
+
 datasource db {
   provider = "postgresql"
   url      = env("POSTGRES_PRISMA_URL")
 }
 
-generator client {
-  provider = "prisma-client-js"
-}
-
-enum Role {
-  USER
-  ADMIN
-  SUPERADMIN // Agregar el nuevo valor de enum
-}
-
 model referenciales {
-  id             String   @id @default(uuid())
-  userId         String
-  user           User     @relation(fields: [userId], references: [id])
+  id             String                   @id @default(uuid())
   lat            Float
   lng            Float
-  fojas          String   // Cambiar el tipo de Int a String
+  fojas          String
   numero         Int
   anio           Int
   cbr            String
@@ -33,27 +24,27 @@ model referenciales {
   superficie     Float
   monto          Int
   observaciones  String?
+  userId         String
+  geom           Unsupported("geometry")?
+  user           User                     @relation(fields: [userId], references: [id])
 }
 
 model User {
-  id            String    @id @default(cuid())
+  id            String          @id @default(cuid())
   name          String?
-  email         String    @unique
+  email         String          @unique
   password      String?
   emailVerified DateTime?
   image         String?
-  role          Role      @default(SUPERADMIN) 
-
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  role          String          @default("USER")
   accounts      Account[]
   sessions      Session[]
   referenciales referenciales[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
 }
 
 model Account {
-  id                String  @id @default(cuid())
   userId            String
   type              String
   provider          String
@@ -65,11 +56,10 @@ model Account {
   scope             String?
   id_token          String?
   session_state     String?
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime
+  id                String   @id @default(cuid())
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
 }
@@ -79,8 +69,7 @@ model Session {
   sessionToken String   @unique
   userId       String
   expires      DateTime
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model VerificationToken {
@@ -89,4 +78,13 @@ model VerificationToken {
   expires    DateTime
 
   @@id([identifier, token])
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model spatial_ref_sys {
+  srid      Int     @id
+  auth_name String? @db.VarChar(256)
+  auth_srid Int?
+  srtext    String? @db.VarChar(2048)
+  proj4text String? @db.VarChar(2048)
 }
