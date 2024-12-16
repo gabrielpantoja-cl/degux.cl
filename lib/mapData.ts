@@ -21,7 +21,7 @@ export async function fetchReferencialesForMap() {
         rol, 
         fechaescritura, 
         superficie, 
-        monto, 
+        monto,      
         observaciones, 
         userId
       FROM referenciales 
