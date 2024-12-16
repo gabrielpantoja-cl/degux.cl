@@ -42,7 +42,9 @@ const FormFields: React.FC<FormFieldsProps> = ({ state, currentUser }) => (
         className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm ${
           state.invalidFields.has('fojas') ? 'border-red-500' : ''
         }`}
-        placeholder="Escribe las fojas de la inscripción (e.g., 157v)"
+        placeholder="Ejemplos: 157v, 1586 v, 1838 vuelta"
+        pattern="^[0-9]+(\s?[vV](?:uelta)?)?$"
+        title="Ingrese un número seguido opcionalmente de 'v', 'V' o 'vuelta'"
         required
       />
       {state.errors.fojas && (

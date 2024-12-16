@@ -43,7 +43,7 @@ export const validateReferencial = (formData: FormData): {
   // Validación de fojas
   const fojas = formData.get('fojas') as string;
   if (fojas && !/^\d+[vV]?$/.test(fojas)) {
-    errors['fojas'] = ['El campo fojas debe ser un número seguido opcionalmente de "v" o "V"'];
+    errors['fojas'] = ['El campo fojas debe ser un número, un número seguido de "v" o "V" (con o sin espacio), o los tipos "vta" y "vuelta"'];
   }
 
   // Validación de números
