@@ -99,10 +99,18 @@ export default function TermsPage() {
         </div>
 
         <footer className="mt-8 pt-4 border-t border-gray-200">
-          <p className="text-sm text-gray-600 text-center">
-            Para consultas y soporte: Comunidad WhatsApp +56 9 3176 9472
-          </p>
-        </footer>
+  <p className="text-sm text-gray-600 text-center">
+    Para consultas y soporte: {" "}
+    <a 
+      href="https://t.me/+UgVwqg2dbiE4MDAx" 
+      target="_blank" 
+      rel="noopener noreferrer"
+      className="text-blue-600 hover:text-blue-800 underline"
+    >
+      Grupo de Telegram
+    </a>
+  </p>
+</footer>
       </div>
     </main>
   );
