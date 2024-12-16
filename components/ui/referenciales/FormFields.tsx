@@ -42,7 +42,7 @@ const FormFields: React.FC<FormFieldsProps> = ({ state, currentUser }) => (
         className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm ${
         state.invalidFields.has('fojas') ? 'border-red-500' : ''
         }`}
-        placeholder="Ejemplos: 157v, 1586 v, 1838 vuelta, 123 vta"  
+        placeholder="Escribe las fojas de la inscripción"  
         pattern="^[0-9]+(\s?([vV](?:uelta)?|[vV]ta)?)?$"
         title="Ingrese un número seguido opcionalmente de 'v', 'V', 'vta' o 'vuelta' (con o sin espacio)"
         required
@@ -127,7 +127,7 @@ const FormFields: React.FC<FormFieldsProps> = ({ state, currentUser }) => (
     />
 
     <Input
-      label="Superficie"
+      label="Superficie (m2)"
       id="superficie"
       name="superficie"
       type="number"
@@ -137,11 +137,11 @@ const FormFields: React.FC<FormFieldsProps> = ({ state, currentUser }) => (
     />
 
     <Input
-      label="Monto"
+      label="Monto ($)"
       id="monto"
       name="monto"
       type="number"
-      placeholder="Digita el monto de la transacción en CLP"
+      placeholder="Digita el monto de la transacción en pesos chilenos"
       error={state.errors.monto}
       required={true}
     />
