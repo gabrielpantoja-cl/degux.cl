@@ -15,7 +15,8 @@ export default function Page() {
       {showBanner && (
         <div className="flex items-center justify-between bg-yellow-200 p-4 rounded-lg mb-4">
           <p className="text-yellow-800">
-            Este proyecto está actualmente en fase de desarrollo y los datos presentados podrían ser inconsistentes.
+            🚧 Bienvenido a Referenciales.cl: Estamos en fase de desarrollo,
+            por lo que algunos datos podrían ser temporales. ¡Explora y ayúdanos a mejorar! 📊
           </p>
           <button
             onClick={() => setShowBanner(false)}
