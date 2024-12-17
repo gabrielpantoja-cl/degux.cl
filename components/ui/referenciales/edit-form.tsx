@@ -34,7 +34,7 @@ export default function EditReferencialForm({
   users: User[];
 }) {
   const router = useRouter();
-  const { data: session } = useSession();
+  const { status } = useSession(); // Cambiado para usar solo el status
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { canEdit, canDelete } = usePermissions();
