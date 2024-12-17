@@ -1,6 +1,20 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { getToken } from "next-auth/jwt";
 
+// Validación de variables de entorno
+const REQUIRED_ENV_VARS = [
+  'NEXTAUTH_URL',
+  'GOOGLE_CLIENT_ID',
+  'GOOGLE_CLIENT_SECRET',
+  'NEXTAUTH_SECRET'
+];
+
+REQUIRED_ENV_VARS.forEach(envVar => {
+  if (!process.env[envVar]) {
+    throw new Error(`Missing required environment variable: ${envVar}`);
+  }
+});
+
 interface AuthenticatedRequest extends NextRequest {
   auth?: {
     token: any;
@@ -8,8 +22,9 @@ interface AuthenticatedRequest extends NextRequest {
   };
 }
 
+// Configuración de rutas mejorada
 const publicRoutes = ["/", "/prices", "/terms", "/about", "/contact"];
-const authRoutes = ["/login", "/register"];
+const authRoutes = ["/login", "/register", "/auth/error"];
 const apiAuthPrefix = "/api/auth";
 const oauthCallbacks = [
   "/api/auth/callback",
@@ -18,7 +33,8 @@ const oauthCallbacks = [
   "/api/auth/signin",
   "/api/auth/session",
   "/api/auth/providers",
-  "/api/auth/error"
+  "/api/auth/error",
+  "/api/auth/csrf"
 ];
 const staticRoutes = [
   "/_next",
@@ -28,11 +44,15 @@ const staticRoutes = [
   "/public"
 ];
 
+const isProd = process.env.NODE_ENV === 'production';
+
 async function getAuthToken(req: AuthenticatedRequest) {
   try {
     return await getToken({ 
       req, 
-      secret: process.env.NEXTAUTH_SECRET 
+      secret: process.env.NEXTAUTH_SECRET,
+      secureCookie: isProd,
+      cookieName: isProd ? '__Secure-next-auth.session-token' : 'next-auth.session-token'
     });
   } catch (error) {
     console.error("[Auth Error]:", error);
@@ -54,42 +74,55 @@ export default async function middleware(req: AuthenticatedRequest) {
     const { nextUrl } = req;
     const pathname = nextUrl.pathname;
 
-    // Debug
-    console.log("[Middleware Debug]: Processing path:", pathname);
+    // Debug mejorado
+    console.log("[Middleware Debug]:", {
+      path: pathname,
+      isProd,
+      host: req.headers.get('host'),
+      referer: req.headers.get('referer')
+    });
 
-    // Static assets check
+    // Static assets y health checks
     if (staticRoutes.some(route => pathname.startsWith(route))) {
       return NextResponse.next();
     }
 
-    // OAuth routes check
-    if (pathname.startsWith(apiAuthPrefix) || oauthCallbacks.includes(pathname)) {
-      console.log("[OAuth Debug]: Processing OAuth route:", pathname);
+    // Manejo mejorado de rutas OAuth
+    if (pathname.startsWith(apiAuthPrefix)) {
+      if (oauthCallbacks.includes(pathname)) {
+        console.log("[OAuth Debug]: Processing callback:", pathname);
+        const response = NextResponse.next();
+        if (isProd) {
+          response.headers.set('Set-Cookie', 'SameSite=Lax; Secure');
+        }
+        return response;
+      }
       return NextResponse.next();
     }
 
-    // Public routes check
+    // Rutas públicas
     if (publicRoutes.includes(pathname)) {
       return NextResponse.next();
     }
 
-    // Authentication check
+    // Verificación de autenticación
     const isLoggedIn = await isAuthenticated(req);
 
-    // Redirect authenticated users away from auth routes
+    // Redirigir usuarios autenticados
     if (isLoggedIn && authRoutes.includes(pathname)) {
       return NextResponse.redirect(new URL("/dashboard", nextUrl));
     }
 
-    // Redirect unauthenticated users to login
+    // Redirigir usuarios no autenticados
     if (!isLoggedIn && !authRoutes.includes(pathname)) {
       const loginUrl = new URL("/login", nextUrl);
-      loginUrl.searchParams.set("callbackUrl", pathname);
-      console.log("[Auth Debug]: Redirecting to login, callbackUrl:", pathname);
+      const callbackUrl = encodeURIComponent(pathname);
+      loginUrl.searchParams.set("callbackUrl", callbackUrl);
+      console.log("[Auth Debug]: Redirecting to login:", loginUrl.toString());
       return NextResponse.redirect(loginUrl);
     }
 
-    // Check referencial edit permissions
+    // Verificación de permisos para referenciales
     const editReferencialPattern = /^\/dashboard\/referenciales\/[a-f0-9-]+\/edit$/;
     if (editReferencialPattern.test(pathname)) {
       const token = await getAuthToken(req);
