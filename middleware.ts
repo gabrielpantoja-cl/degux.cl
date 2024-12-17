@@ -15,6 +15,19 @@ REQUIRED_ENV_VARS.forEach(envVar => {
   }
 });
 
+// CSP Headers
+const CSP_HEADERS = {
+  'Content-Security-Policy': [
+    "default-src 'self'",
+    "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://accounts.google.com",
+    "style-src 'self' 'unsafe-inline'",
+    "img-src 'self' data: https:",
+    "frame-src 'self' https://accounts.google.com",
+    "connect-src 'self' https://accounts.google.com",
+    "font-src 'self'",
+  ].join('; ')
+};
+
 interface AuthenticatedRequest extends NextRequest {
   auth?: {
     token: any;
