@@ -1,7 +1,7 @@
 // components/ui/referenciales/edit-form.tsx
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Prisma } from '@prisma/client';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -34,31 +34,39 @@ export default function EditReferencialForm({
   users: User[];
 }) {
   const router = useRouter();
-  const { status } = useSession(); // Cambiado para usar solo el status
+  const { status, data: session } = useSession();
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { canEdit, canDelete } = usePermissions();
 
- // Estado del formulario actualizado
-const [formState, setFormState] = useState<FormState>({
-  id: referencial.id, // Agregamos el id del referencial
-  userId: referencial.userId,
-  fojas: referencial.fojas,
-  numero: referencial.numero,
-  anio: referencial.anio,
-  cbr: referencial.cbr,
-  comuna: referencial.comuna,
-  rol: referencial.rol,
-  predio: referencial.predio,
-  vendedor: referencial.vendedor,
-  comprador: referencial.comprador,
-  superficie: referencial.superficie,
-  monto: referencial.monto,
-  fechaescritura: referencial.fechaescritura,
-  lat: referencial.lat,
-  lng: referencial.lng,
-  observaciones: referencial.observaciones,
-});
+  // Estado del formulario actualizado
+  const [formState, setFormState] = useState<FormState>({
+    id: referencial.id, // Agregamos el id del referencial
+    userId: referencial.userId,
+    fojas: referencial.fojas,
+    numero: referencial.numero,
+    anio: referencial.anio,
+    cbr: referencial.cbr,
+    comuna: referencial.comuna,
+    rol: referencial.rol,
+    predio: referencial.predio,
+    vendedor: referencial.vendedor,
+    comprador: referencial.comprador,
+    superficie: referencial.superficie,
+    monto: referencial.monto,
+    fechaescritura: referencial.fechaescritura,
+    lat: referencial.lat,
+    lng: referencial.lng,
+    observaciones: referencial.observaciones,
+  });
+
+  useEffect(() => {
+    if (status === 'unauthenticated') {
+      toast.error('No estás autenticado');
+      router.push('/login');
+    }
+  }, [status, router]);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormState(prevState => ({
@@ -79,7 +87,7 @@ const [formState, setFormState] = useState<FormState>({
       const formData = new FormData();
       const csrfToken = await fetch('/api/csrf').then(res => res.json());
       formData.append('csrf_token', csrfToken);
-      
+
       Object.entries(formState).forEach(([key, value]) => {
         formData.append(key, value as string | Blob);
       });
