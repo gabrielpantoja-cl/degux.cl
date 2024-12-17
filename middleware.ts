@@ -41,34 +41,36 @@ const isProd = process.env.NODE_ENV === 'production';
 const ALLOWED_HOSTS = ['localhost:3000', 'referenciales.cl'];
 
 function setSecurityHeaders(response: NextResponse): NextResponse {
-  // CSP Headers aplicados
+  // CSP Headers mejorados para Google OAuth
   response.headers.set('Content-Security-Policy', [
     "default-src 'self'",
-    "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://accounts.google.com",
-    "style-src 'self' 'unsafe-inline'",
-    "img-src 'self' data: https:",
+    "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://accounts.google.com https://*.googleusercontent.com",
+    "style-src 'self' 'unsafe-inline' https://accounts.google.com",
+    "img-src 'self' data: blob: https: https://*.googleusercontent.com",
     "frame-src 'self' https://accounts.google.com",
-    "connect-src 'self' https://accounts.google.com",
-    "font-src 'self'"
+    "connect-src 'self' https://accounts.google.com https://*.google.com",
+    "font-src 'self' data: https://fonts.gstatic.com",
+    "form-action 'self' https://accounts.google.com",
   ].join('; '));
 
-  // Headers adicionales de seguridad
   response.headers.set('X-Content-Type-Options', 'nosniff');
-  response.headers.set('X-Frame-Options', 'DENY');
+  response.headers.set('X-Frame-Options', 'SAMEORIGIN');
   response.headers.set('X-XSS-Protection', '1; mode=block');
+  response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
   
   return response;
 }
 
 function setCookieHeaders(response: NextResponse): NextResponse {
-  if (isProd) {
-    response.headers.set('Set-Cookie', [
-      'SameSite=None',
-      'Secure',
-      'Path=/',
-      `Domain=${isProd ? '.referenciales.cl' : 'localhost'}`
-    ].join('; '));
-  }
+  const cookieOptions = [
+    'SameSite=Lax',
+    isProd ? 'Secure' : '',
+    'Path=/',
+    `Domain=${isProd ? '.referenciales.cl' : 'localhost'}`,
+    'HttpOnly'
+  ].filter(Boolean);
+
+  response.headers.set('Set-Cookie', cookieOptions.join('; '));
   return setSecurityHeaders(response);
 }
 
@@ -77,18 +79,13 @@ async function getAuthToken(req: AuthenticatedRequest) {
     return await getToken({ 
       req, 
       secret: process.env.NEXTAUTH_SECRET,
-      secureCookie: true,
+      secureCookie: isProd,
       cookieName: isProd ? '__Secure-next-auth.session-token' : 'next-auth.session-token'
     });
   } catch (error) {
     console.error("[Auth Error]:", error);
     return null;
   }
-}
-
-async function isAuthenticated(req: AuthenticatedRequest): Promise<boolean> {
-  const token = await getAuthToken(req);
-  return !!token;
 }
 
 interface AuthenticatedRequest extends NextRequest {
@@ -98,64 +95,60 @@ interface AuthenticatedRequest extends NextRequest {
   };
 }
 
+async function isAuthenticated(req: AuthenticatedRequest): Promise<boolean> {
+  const token = await getAuthToken(req);
+  return !!token;
+}
+
 export default async function middleware(req: AuthenticatedRequest) {
   try {
     const { nextUrl } = req;
     const pathname = nextUrl.pathname;
     const host = req.headers.get('host');
 
-    // Validación de host
-    if (!ALLOWED_HOSTS.includes(host || '')) {
-      console.error("[Security Error]: Invalid host", host);
-      const response = NextResponse.redirect(new URL("/auth/error", nextUrl));
-      return setSecurityHeaders(response);
-    }
-
     // Debug mejorado
     console.log("[Middleware Debug]:", {
       path: pathname,
       isProd,
       host,
-      referer: req.headers.get('referer')
+      referer: req.headers.get('referer'),
+      cookies: req.cookies.getAll()
     });
 
-    // Static assets
-    if (staticRoutes.some(route => pathname.startsWith(route))) {
+    // Validación de host
+    if (!ALLOWED_HOSTS.includes(host || '')) {
+      console.error("[Security Error]: Invalid host", host);
+      return NextResponse.redirect(new URL("/auth/error", nextUrl));
+    }
+
+    // Static assets y rutas públicas
+    if (staticRoutes.some(route => pathname.startsWith(route)) || 
+        publicRoutes.includes(pathname)) {
       return NextResponse.next();
     }
 
-    // OAuth routes
+    // Manejo especial de rutas OAuth
     if (pathname.startsWith(apiAuthPrefix)) {
       if (oauthCallbacks.includes(pathname)) {
         console.log("[OAuth Debug]: Processing callback:", pathname);
         const response = NextResponse.next();
         return setCookieHeaders(response);
       }
-      const response = NextResponse.next();
-      return setSecurityHeaders(response);
+      return NextResponse.next();
     }
 
-    // Rutas públicas
-    if (publicRoutes.includes(pathname)) {
-      const response = NextResponse.next();
-      return setSecurityHeaders(response);
-    }
-
-    // Autenticación
+    // Verificación de autenticación
     const isLoggedIn = await isAuthenticated(req);
 
-    // Redirigir usuarios autenticados
+    // Redireccionamiento basado en autenticación
     if (isLoggedIn && authRoutes.includes(pathname)) {
-      const response = NextResponse.redirect(new URL("/dashboard", nextUrl));
-      return setCookieHeaders(response);
+      return NextResponse.redirect(new URL("/dashboard", nextUrl));
     }
 
-    // Redirigir usuarios no autenticados
     if (!isLoggedIn && !authRoutes.includes(pathname)) {
       const loginUrl = new URL("/login", nextUrl);
       loginUrl.searchParams.set("callbackUrl", encodeURIComponent(pathname));
-      const response = NextResponse.redirect(loginUrl);
-      return setCookieHeaders(response);
+      return NextResponse.redirect(loginUrl);
     }
 
     const response = NextResponse.next();
@@ -164,9 +157,10 @@ export default async function middleware(req: AuthenticatedRequest) {
   } catch (error) {
     console.error("[Middleware Error]:", error);
     const errorUrl = new URL("/auth/error", req.url);
-    errorUrl.searchParams.set("error", error instanceof Error ? error.message : "middleware_error");
-    const response = NextResponse.redirect(errorUrl);
-    return setSecurityHeaders(response);
+    errorUrl.searchParams.set("error", 
+      error instanceof Error ? error.message : "middleware_error"
+    );
+    return NextResponse.redirect(errorUrl);
   }
 }
 
