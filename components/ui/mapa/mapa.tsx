@@ -8,10 +8,24 @@ import { fetchReferencialesForMap } from '@/lib/mapData';
 type Point = {
     id: string;
     latLng: [number, number];
+    lat: number;
+    lng: number;
+    userId: string;
+    geom: [number, number];
     fojas?: string;
     numero?: string;
     anio: string;
-    [key: string]: any; 
+    cbr?: string;
+    comprador?: string;
+    vendedor?: string;
+    predio?: string;
+    comuna?: string;
+    rol?: string;
+    fechaescritura?: Date;
+    superficie?: number;
+    monto?: number;
+    observaciones?: string;
+    [key: string]: any;
 };
 
 const Mapa = () => {
@@ -20,20 +34,19 @@ const Mapa = () => {
     useEffect(() => {
         fetchReferencialesForMap()
             .then(response => {
-                console.log('Datos recibidos del backend:', response); // Verificar la respuesta del backend
-                const points = response.map(point => {
-                    if (!point.geom) {
-                        console.error('Error: point.geom is undefined for point', point);
-                        return null; // O manejar el error de otra manera
-                    }
-                    // Asumiendo que el backend no proporciona un ID, usamos el índice como fallback
-                    const uniqueId = point.id || `point-${point.geom.join('-')}`;
-                    return {
+                console.log('Datos recibidos del backend:', response);
+                const points = response
+                    .filter(point => point?.geom && Array.isArray(point.geom) && point.geom.length === 2)
+                    .map(point => ({
                         ...point,
-                        id: uniqueId,
-                        latLng: [point.geom[1], point.geom[0]] // Invertir las coordenadas y asignar a latLng
-                    };
-                }).filter(point => point !== null); // Filtrar puntos nulos
+                        id: point.id,
+                        latLng: [point.geom[1], point.geom[0]] as [number, number],
+                        anio: point.anio?.toString() || '',
+                        lat: point.lat,
+                        lng: point.lng,
+                        geom: point.geom
+                    } as Point));
+                
                 setData(points);
             })
             .catch(error => {
@@ -49,8 +62,8 @@ const Mapa = () => {
             />
             {data.map(point => (
                 <CircleMarker
-                    key={point.id} // Usar el ID único como clave
-                    center={point.latLng} // Usar latLng en lugar de geom
+                    key={point.id}
+                    center={point.latLng}
                     radius={20}
                 >
                     <Popup>
