@@ -23,7 +23,7 @@ export function sanitizeInput(value: string | number | undefined | null): string
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#039;')
     // Eliminar caracteres de control y unicode no imprimibles
-    .replace(/[\x00-\x1F\x7F-\x9F]/g, '')
+    .replace(/[\u0000-\u001F\u007F-\u009F]/g, '')
     // Trim espacios en blanco
     .trim();
 }
