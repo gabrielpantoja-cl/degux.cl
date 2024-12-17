@@ -66,15 +66,37 @@ const Mapa = () => {
                     center={point.latLng}
                     radius={20}
                 >
-                    <Popup>
-                        <div>
-                            {Object.entries(point).map(([key, value]) => (
-                                key !== 'id' && key !== 'latLng' && (
-                                    <p key={key}><strong>{key}:</strong> {value}</p>
-                                )
-                            ))}
-                        </div>
-                    </Popup>
+                   <Popup>
+                     <div>
+                         {Object.entries(point).map(([key, value]) => {
+                            // Ignorar campos específicos que no queremos mostrar
+                            if (key === 'id' || key === 'latLng' || key === 'geom' || key === 'userId') {
+                                return null;
+                            }
+            
+                            // Formatear fecha si el valor es una instancia de Date
+                            if (value instanceof Date) {
+                             return (
+                                <p key={key}>
+                                    <strong>{key}:</strong> {value.toLocaleDateString('es-CL')}
+                                 </p>
+                              );
+                            }
+
+                            // Solo mostrar valores que pueden renderizarse
+                            if (typeof value === 'string' || typeof value === 'number') {
+                                return (
+                                    <p key={key}>
+                                        <strong>{key}:</strong> {value}
+                                        </p>
+                                );
+                            }
+
+                       return null;
+                      })}
+                     </div>
+                </Popup>
+
                 </CircleMarker>
             ))}
         </MapContainer>
