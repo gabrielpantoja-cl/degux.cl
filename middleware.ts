@@ -8,13 +8,8 @@ interface AuthenticatedNextRequest extends NextRequest {
   };
 }
 
-// Rutas públicas que no requieren autenticación
 const publicRoutes = ["/", "/prices", "/terms", "/about", "/contact"];
-
-// Rutas relacionadas con autenticación
 const authRoutes = ["/login", "/register"];
-
-// Prefijos y rutas de autenticación OAuth
 const apiAuthPrefix = "/api/auth";
 const oauthCallbacks = [
   "/api/auth/callback",
@@ -23,10 +18,8 @@ const oauthCallbacks = [
   "/api/auth/signin",
   "/api/auth/session",
   "/api/auth/providers",
-  "/api/auth/error"  // Agregada ruta de error
+  "/api/auth/error"
 ];
-
-// Rutas de assets y recursos estáticos
 const staticRoutes = [
   "/_next",
   "/favicon.ico",
@@ -42,7 +35,6 @@ const isAuthenticated = async (req: AuthenticatedNextRequest): Promise<boolean> 
       secret: process.env.NEXTAUTH_SECRET 
     });
 
-    // Log para diagnóstico
     if (!token) {
       console.log("[Auth Debug]: No token found");
     }
@@ -60,21 +52,9 @@ const isAuthorizedUser = async (req: AuthenticatedNextRequest): Promise<boolean>
       req, 
       secret: process.env.NEXTAUTH_SECRET 
     });
-    
-    // Lista de correos autorizados
-    const authorizedEmails = [
-      "gabrielpantojarivera@gmail.com"
-      // Agregar más correos si es necesario
-    ];
-    
-    const isAuthorized = authorizedEmails.includes(token?.email as string);
-    
-    // Log para diagnóstico
-    if (!isAuthorized) {
-      console.log("[Auth Debug]: Usuario no autorizado:", token?.email);
-    }
 
-    return isAuthorized;
+    // Eliminamos la verificación de correos autorizados
+    return true;
   } catch (error) {
     console.error("[Authorization Error]:", error);
     return false;
@@ -86,43 +66,34 @@ export default async function middleware(req: AuthenticatedNextRequest) {
     const { nextUrl } = req;
     const pathname = nextUrl.pathname;
 
-    // Debug log
     console.log("[Middleware Debug]: Processing path:", pathname);
 
-    // Permitir recursos estáticos
     if (staticRoutes.some(route => pathname.startsWith(route))) {
       return NextResponse.next();
     }
 
-    // Permitir rutas de autenticación OAuth y manejo de errores
     if (pathname.startsWith(apiAuthPrefix) || oauthCallbacks.includes(pathname)) {
-      // Log específico para OAuth
       console.log("[OAuth Debug]: Procesando ruta OAuth:", pathname);
       return NextResponse.next();
     }
 
-    // Permitir rutas públicas
     if (publicRoutes.includes(pathname)) {
       return NextResponse.next();
     }
 
     const isLoggedIn = await isAuthenticated(req);
 
-    // Redirigir usuarios autenticados que intentan acceder a rutas de auth
     if (isLoggedIn && authRoutes.includes(pathname)) {
       return NextResponse.redirect(new URL("/dashboard", nextUrl));
     }
 
-    // Proteger rutas privadas con mejor manejo de errores
     if (!isLoggedIn && !authRoutes.includes(pathname)) {
       const loginUrl = new URL("/login", nextUrl);
       loginUrl.searchParams.set("callbackUrl", pathname);
-      // Log para debugging
       console.log("[Auth Debug]: Redirigiendo a login, callbackUrl:", pathname);
       return NextResponse.redirect(loginUrl);
     }
 
-    // Verificar autorización para edición
     const editReferencialPattern = /^\/dashboard\/referenciales\/[a-f0-9-]+\/edit$/;
     if (editReferencialPattern.test(pathname)) {
       const isAuthorized = await isAuthorizedUser(req);
@@ -135,7 +106,6 @@ export default async function middleware(req: AuthenticatedNextRequest) {
 
   } catch (error) {
     console.error("[Middleware Error]:", error);
-    // Mejorar el manejo de errores para OAuth
     const errorUrl = new URL("/auth/error", req.url);
     errorUrl.searchParams.set("error", error instanceof Error ? error.message : "middleware_error");
     return NextResponse.redirect(errorUrl);
