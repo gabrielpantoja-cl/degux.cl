@@ -17,9 +17,7 @@ interface DialogProps {
 }
 
 export function Dialog({ open, onClose, title, description, buttons }: DialogProps) {
-  if (!open) return null;
-
-  // Cerrar con Escape
+  // Hook movido fuera de la verificación condicional
   React.useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose();
@@ -28,16 +26,22 @@ export function Dialog({ open, onClose, title, description, buttons }: DialogPro
     return () => document.removeEventListener('keydown', handleEscape);
   }, [onClose]);
 
+  if (!open) return null;
+
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center"
       role="dialog"
       aria-modal="true"
     >
-      {/* Overlay */}
+      {/* Overlay con manejo de teclado */}
       <div 
         className="fixed inset-0 bg-black/50 transition-opacity" 
         onClick={onClose}
+        onKeyDown={(e) => e.key === 'Escape' && onClose()}
+        role="button"
+        tabIndex={0}
+        aria-label="Cerrar diálogo"
       />
       
       {/* Modal */}
