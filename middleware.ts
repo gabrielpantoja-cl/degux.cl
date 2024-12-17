@@ -41,25 +41,33 @@ const isProd = process.env.NODE_ENV === 'production';
 const ALLOWED_HOSTS = ['localhost:3000', 'referenciales.cl'];
 
 function setSecurityHeaders(response: NextResponse): NextResponse {
-  // CSP Headers mejorados para Google OAuth
   response.headers.set('Content-Security-Policy', [
     "default-src 'self'",
-    "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://accounts.google.com https://*.googleusercontent.com",
+    "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://accounts.google.com https://*.googleusercontent.com https://*.google.com",
     "style-src 'self' 'unsafe-inline' https://accounts.google.com",
-    "img-src 'self' data: blob: https: https://*.googleusercontent.com",
+    "img-src 'self' data: blob: https: https://*.googleusercontent.com https://*.google.com",
     "frame-src 'self' https://accounts.google.com",
     "connect-src 'self' https://accounts.google.com https://*.google.com",
     "font-src 'self' data: https://fonts.gstatic.com",
     "form-action 'self' https://accounts.google.com",
+    // Agregar permisos para diagnósticos
+    "worker-src 'self' blob:",
+    "manifest-src 'self'",
+    "media-src 'self'"
   ].join('; '));
 
   response.headers.set('X-Content-Type-Options', 'nosniff');
   response.headers.set('X-Frame-Options', 'SAMEORIGIN');
   response.headers.set('X-XSS-Protection', '1; mode=block');
   response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
-  
+  response.headers.set('Referrer-Policy', 'origin-when-cross-origin');
+
+
+
   return response;
 }
+
+
 
 function setCookieHeaders(response: NextResponse): NextResponse {
   const cookieOptions = [
