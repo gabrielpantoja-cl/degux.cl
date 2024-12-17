@@ -3,6 +3,7 @@
 import React from 'react';
 import '@/app/globals.css';
 import { Metadata } from 'next';
+import { Toaster } from 'react-hot-toast';
 import SessionProviderClient from '@/app/dashboard/SessionProviderClient';
 
 export const metadata: Metadata = {
@@ -41,6 +42,28 @@ export default function RootLayout({
       <body className="antialiased">
         <SessionProviderClient>
           {children}
+          <Toaster 
+            position="top-right"
+            toastOptions={{
+              duration: 3000,
+              style: {
+                background: '#363636',
+                color: '#fff',
+              },
+              success: {
+                duration: 3000,
+                style: {
+                  background: '#22c55e',
+                },
+              },
+              error: {
+                duration: 3000,
+                style: {
+                  background: '#ef4444',
+                },
+              },
+            }}
+          />
         </SessionProviderClient>
       </body>
     </html>
