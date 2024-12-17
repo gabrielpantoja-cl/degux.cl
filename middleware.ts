@@ -1,7 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { getToken } from "next-auth/jwt";
 
-interface AuthenticatedNextRequest extends NextRequest {
+interface AuthenticatedRequest extends NextRequest {
   auth?: {
     token: any;
     user: any;
@@ -28,76 +28,72 @@ const staticRoutes = [
   "/public"
 ];
 
-const isAuthenticated = async (req: AuthenticatedNextRequest): Promise<boolean> => {
+async function getAuthToken(req: AuthenticatedRequest) {
   try {
-    const token = await getToken({ 
+    return await getToken({ 
       req, 
       secret: process.env.NEXTAUTH_SECRET 
     });
-
-    if (!token) {
-      console.log("[Auth Debug]: No token found");
-    }
-
-    return !!token;
   } catch (error) {
     console.error("[Auth Error]:", error);
+    return null;
+  }
+}
+
+async function isAuthenticated(req: AuthenticatedRequest): Promise<boolean> {
+  const token = await getAuthToken(req);
+  if (!token) {
+    console.log("[Auth Debug]: No token found");
     return false;
   }
-};
+  return true;
+}
 
-const isAuthorizedUser = async (req: AuthenticatedNextRequest): Promise<boolean> => {
-  try {
-    const token = await getToken({ 
-      req, 
-      secret: process.env.NEXTAUTH_SECRET 
-    });
-
-    // Eliminamos la verificación de correos autorizados
-    return true;
-  } catch (error) {
-    console.error("[Authorization Error]:", error);
-    return false;
-  }
-};
-
-export default async function middleware(req: AuthenticatedNextRequest) {
+export default async function middleware(req: AuthenticatedRequest) {
   try {
     const { nextUrl } = req;
     const pathname = nextUrl.pathname;
 
+    // Debug
     console.log("[Middleware Debug]: Processing path:", pathname);
 
+    // Static assets check
     if (staticRoutes.some(route => pathname.startsWith(route))) {
       return NextResponse.next();
     }
 
+    // OAuth routes check
     if (pathname.startsWith(apiAuthPrefix) || oauthCallbacks.includes(pathname)) {
-      console.log("[OAuth Debug]: Procesando ruta OAuth:", pathname);
+      console.log("[OAuth Debug]: Processing OAuth route:", pathname);
       return NextResponse.next();
     }
 
+    // Public routes check
     if (publicRoutes.includes(pathname)) {
       return NextResponse.next();
     }
 
+    // Authentication check
     const isLoggedIn = await isAuthenticated(req);
 
+    // Redirect authenticated users away from auth routes
     if (isLoggedIn && authRoutes.includes(pathname)) {
       return NextResponse.redirect(new URL("/dashboard", nextUrl));
     }
 
+    // Redirect unauthenticated users to login
     if (!isLoggedIn && !authRoutes.includes(pathname)) {
       const loginUrl = new URL("/login", nextUrl);
       loginUrl.searchParams.set("callbackUrl", pathname);
-      console.log("[Auth Debug]: Redirigiendo a login, callbackUrl:", pathname);
+      console.log("[Auth Debug]: Redirecting to login, callbackUrl:", pathname);
       return NextResponse.redirect(loginUrl);
     }
 
+    // Check referencial edit permissions
     const editReferencialPattern = /^\/dashboard\/referenciales\/[a-f0-9-]+\/edit$/;
     if (editReferencialPattern.test(pathname)) {
-      const isAuthorized = await isAuthorizedUser(req);
-      if (!isAuthorized) {
+      const token = await getAuthToken(req);
+      if (!token) {
         return NextResponse.redirect(new URL("/unauthorized", nextUrl));
       }
     }
