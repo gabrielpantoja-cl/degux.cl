@@ -1,3 +1,4 @@
+// lib/auth.ts
 import NextAuth, { AuthOptions } from 'next-auth';
 import GoogleProvider from 'next-auth/providers/google';
 import { PrismaAdapter } from '@auth/prisma-adapter';
@@ -18,6 +19,7 @@ export const authOptions: AuthOptions = {
     GoogleProvider({
       clientId: googleClientId,
       clientSecret: googleClientSecret,
+      allowDangerousEmailAccountLinking: true, // Permite vincular cuentas con el mismo email
       authorization: {
         params: {
           prompt: "select_account",
@@ -29,25 +31,48 @@ export const authOptions: AuthOptions = {
   ],
   callbacks: {
     async redirect({ url, baseUrl }) {
-      if (url.startsWith(baseUrl)) return url;
-      if (url.startsWith('/')) return `${baseUrl}${url}`;
-      return baseUrl;
+      try {
+        if (url.startsWith(baseUrl)) return url;
+        if (url.startsWith('/')) return `${baseUrl}${url}`;
+        return baseUrl;
+      } catch (error) {
+        console.error('[Auth Error] Redirect callback:', error);
+        return baseUrl;
+      }
     },
     async session({ session, token }) {
-      if (session?.user && token?.id) {
-        session.user.id = token.id;
-        session.user.role = token.role || 'user';
-        console.log('Session callback - token.id:', token.id);
+      try {
+        if (session?.user && token?.id) {
+          session.user.id = token.id;
+          session.user.role = token.role || 'user';
+          console.log('[Auth Debug] Session callback - User:', {
+            id: token.id,
+            email: session.user.email,
+            role: session.user.role
+          });
+        }
+        return session;
+      } catch (error) {
+        console.error('[Auth Error] Session callback:', error);
+        return session;
       }
-      return session;
     },
     async jwt({ token, user }) {
-      if (user) {
-        token.id = user.id;
-        token.role = user.role;
-        console.log('JWT callback - user.id:', user.id);
+      try {
+        if (user) {
+          token.id = user.id;
+          token.role = user.role;
+          console.log('[Auth Debug] JWT callback - Token:', {
+            id: token.id,
+            email: token.email,
+            role: token.role
+          });
+        }
+        return token;
+      } catch (error) {
+        console.error('[Auth Error] JWT callback:', error);
+        return token;
       }
-      return token;
     }
   },
   pages: {
