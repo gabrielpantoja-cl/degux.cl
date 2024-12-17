@@ -15,26 +15,6 @@ REQUIRED_ENV_VARS.forEach(envVar => {
   }
 });
 
-// CSP Headers
-const CSP_HEADERS = {
-  'Content-Security-Policy': [
-    "default-src 'self'",
-    "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://accounts.google.com",
-    "style-src 'self' 'unsafe-inline'",
-    "img-src 'self' data: https:",
-    "frame-src 'self' https://accounts.google.com",
-    "connect-src 'self' https://accounts.google.com",
-    "font-src 'self'",
-  ].join('; ')
-};
-
-interface AuthenticatedRequest extends NextRequest {
-  auth?: {
-    token: any;
-    user: any;
-  };
-}
-
 // Configuración de rutas mejorada
 const publicRoutes = ["/", "/prices", "/terms", "/about", "/contact"];
 const authRoutes = ["/login", "/register", "/auth/error"];
@@ -60,6 +40,38 @@ const staticRoutes = [
 const isProd = process.env.NODE_ENV === 'production';
 const ALLOWED_HOSTS = ['localhost:3000', 'referenciales.cl'];
 
+function setSecurityHeaders(response: NextResponse): NextResponse {
+  // CSP Headers aplicados
+  response.headers.set('Content-Security-Policy', [
+    "default-src 'self'",
+    "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://accounts.google.com",
+    "style-src 'self' 'unsafe-inline'",
+    "img-src 'self' data: https:",
+    "frame-src 'self' https://accounts.google.com",
+    "connect-src 'self' https://accounts.google.com",
+    "font-src 'self'"
+  ].join('; '));
+
+  // Headers adicionales de seguridad
+  response.headers.set('X-Content-Type-Options', 'nosniff');
+  response.headers.set('X-Frame-Options', 'DENY');
+  response.headers.set('X-XSS-Protection', '1; mode=block');
+  
+  return response;
+}
+
+function setCookieHeaders(response: NextResponse): NextResponse {
+  if (isProd) {
+    response.headers.set('Set-Cookie', [
+      'SameSite=None',
+      'Secure',
+      'Path=/',
+      `Domain=${isProd ? '.referenciales.cl' : 'localhost'}`
+    ].join('; '));
+  }
+  return setSecurityHeaders(response);
+}
+
 async function getAuthToken(req: AuthenticatedRequest) {
   try {
     return await getToken({ 
@@ -79,15 +91,11 @@ async function isAuthenticated(req: AuthenticatedRequest): Promise<boolean> {
   return !!token;
 }
 
-function setCookieHeaders(response: NextResponse): NextResponse {
-  if (isProd) {
-    response.headers.set('Set-Cookie', [
-      'SameSite=None; Secure',
-      'Path=/',
-      `Domain=${isProd ? '.referenciales.cl' : 'localhost'}`
-    ].join(';'));
-  }
-  return response;
+interface AuthenticatedRequest extends NextRequest {
+  auth?: {
+    token: any;
+    user: any;
+  };
 }
 
 export default async function middleware(req: AuthenticatedRequest) {
@@ -99,7 +107,8 @@ export default async function middleware(req: AuthenticatedRequest) {
     // Validación de host
     if (!ALLOWED_HOSTS.includes(host || '')) {
       console.error("[Security Error]: Invalid host", host);
-      return NextResponse.redirect(new URL("/auth/error", nextUrl));
+      const response = NextResponse.redirect(new URL("/auth/error", nextUrl));
+      return setSecurityHeaders(response);
     }
 
     // Debug mejorado
@@ -122,12 +131,14 @@ export default async function middleware(req: AuthenticatedRequest) {
         const response = NextResponse.next();
         return setCookieHeaders(response);
       }
-      return NextResponse.next();
+      const response = NextResponse.next();
+      return setSecurityHeaders(response);
     }
 
     // Rutas públicas
     if (publicRoutes.includes(pathname)) {
-      return NextResponse.next();
+      const response = NextResponse.next();
+      return setSecurityHeaders(response);
     }
 
     // Autenticación
@@ -147,14 +158,6 @@ export default async function middleware(req: AuthenticatedRequest) {
       return setCookieHeaders(response);
     }
 
-    // Permisos para referenciales
-    if (/^\/dashboard\/referenciales\/[a-f0-9-]+\/edit$/.test(pathname)) {
-      const token = await getAuthToken(req);
-      if (!token) {
-        return NextResponse.redirect(new URL("/unauthorized", nextUrl));
-      }
-    }
-
     const response = NextResponse.next();
     return setCookieHeaders(response);
 
@@ -162,7 +165,8 @@ export default async function middleware(req: AuthenticatedRequest) {
     console.error("[Middleware Error]:", error);
     const errorUrl = new URL("/auth/error", req.url);
     errorUrl.searchParams.set("error", error instanceof Error ? error.message : "middleware_error");
-    return NextResponse.redirect(errorUrl);
+    const response = NextResponse.redirect(errorUrl);
+    return setSecurityHeaders(response);
   }
 }
 
