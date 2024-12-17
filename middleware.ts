@@ -22,7 +22,8 @@ const oauthCallbacks = [
   "/api/auth/signout",
   "/api/auth/signin",
   "/api/auth/session",
-  "/api/auth/providers"
+  "/api/auth/providers",
+  "/api/auth/error"  // Agregada ruta de error
 ];
 
 // Rutas de assets y recursos estáticos
@@ -40,6 +41,12 @@ const isAuthenticated = async (req: AuthenticatedNextRequest): Promise<boolean> 
       req, 
       secret: process.env.NEXTAUTH_SECRET 
     });
+
+    // Log para diagnóstico
+    if (!token) {
+      console.log("[Auth Debug]: No token found");
+    }
+
     return !!token;
   } catch (error) {
     console.error("[Auth Error]:", error);
@@ -60,7 +67,14 @@ const isAuthorizedUser = async (req: AuthenticatedNextRequest): Promise<boolean>
       // Agregar más correos si es necesario
     ];
     
-    return authorizedEmails.includes(token?.email as string);
+    const isAuthorized = authorizedEmails.includes(token?.email as string);
+    
+    // Log para diagnóstico
+    if (!isAuthorized) {
+      console.log("[Auth Debug]: Usuario no autorizado:", token?.email);
+    }
+
+    return isAuthorized;
   } catch (error) {
     console.error("[Authorization Error]:", error);
     return false;
@@ -72,13 +86,18 @@ export default async function middleware(req: AuthenticatedNextRequest) {
     const { nextUrl } = req;
     const pathname = nextUrl.pathname;
 
+    // Debug log
+    console.log("[Middleware Debug]: Processing path:", pathname);
+
     // Permitir recursos estáticos
     if (staticRoutes.some(route => pathname.startsWith(route))) {
       return NextResponse.next();
     }
 
-    // Permitir rutas de autenticación OAuth
+    // Permitir rutas de autenticación OAuth y manejo de errores
     if (pathname.startsWith(apiAuthPrefix) || oauthCallbacks.includes(pathname)) {
+      // Log específico para OAuth
+      console.log("[OAuth Debug]: Procesando ruta OAuth:", pathname);
       return NextResponse.next();
     }
 
@@ -94,10 +113,12 @@ export default async function middleware(req: AuthenticatedNextRequest) {
       return NextResponse.redirect(new URL("/dashboard", nextUrl));
     }
 
-    // Proteger rutas privadas
+    // Proteger rutas privadas con mejor manejo de errores
     if (!isLoggedIn && !authRoutes.includes(pathname)) {
       const loginUrl = new URL("/login", nextUrl);
       loginUrl.searchParams.set("callbackUrl", pathname);
+      // Log para debugging
+      console.log("[Auth Debug]: Redirigiendo a login, callbackUrl:", pathname);
       return NextResponse.redirect(loginUrl);
     }
 
@@ -114,9 +135,10 @@ export default async function middleware(req: AuthenticatedNextRequest) {
 
   } catch (error) {
     console.error("[Middleware Error]:", error);
-    return NextResponse.redirect(
-      new URL(`/auth/error?error=middleware_error`, req.url)
-    );
+    // Mejorar el manejo de errores para OAuth
+    const errorUrl = new URL("/auth/error", req.url);
+    errorUrl.searchParams.set("error", error instanceof Error ? error.message : "middleware_error");
+    return NextResponse.redirect(errorUrl);
   }
 }
 
