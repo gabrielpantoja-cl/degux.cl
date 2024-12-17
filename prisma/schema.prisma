@@ -7,6 +7,15 @@ datasource db {
   url      = env("POSTGRES_PRISMA_URL")
 }
 
+model AuditLog {
+  id        String   @id @default(cuid())
+  userId    String
+  action    String
+  metadata  Json?
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id])
+}
+
 model referenciales {
   id             String                   @id @default(uuid())
   lat            Float
@@ -42,6 +51,7 @@ model User {
   accounts      Account[]
   sessions      Session[]
   referenciales referenciales[]
+  auditLogs     AuditLog[]     // Agregamos la relación inversa aquí
 }
 
 model Account {

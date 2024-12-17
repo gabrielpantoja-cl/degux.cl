@@ -1,10 +1,25 @@
 // lib/auth.ts
-import NextAuth, { AuthOptions } from 'next-auth';
+import NextAuth, { AuthOptions, Session, User } from 'next-auth';
 import GoogleProvider from 'next-auth/providers/google';
 import { PrismaAdapter } from '@auth/prisma-adapter';
 import { prisma } from '@/lib/prisma';
 
-// Validación de variables de entorno
+// Tipos personalizados
+interface ExtendedSession extends Session {
+  user: {
+    id: string;
+    role: string;
+    email: string;
+    name?: string;
+    image?: string;
+  }
+}
+
+interface ExtendedUser extends User {
+  id: string;
+  role: string;
+}
+
 const googleClientId = process.env.GOOGLE_CLIENT_ID;
 const googleClientSecret = process.env.GOOGLE_CLIENT_SECRET;
 const isProd = process.env.NODE_ENV === 'production';
@@ -19,7 +34,7 @@ export const authOptions: AuthOptions = {
     GoogleProvider({
       clientId: googleClientId,
       clientSecret: googleClientSecret,
-      allowDangerousEmailAccountLinking: true, // Permite vincular cuentas con el mismo email
+      allowDangerousEmailAccountLinking: true,
       authorization: {
         params: {
           prompt: "select_account",
@@ -32,7 +47,8 @@ export const authOptions: AuthOptions = {
   callbacks: {
     async redirect({ url, baseUrl }) {
       try {
-        if (url.startsWith(baseUrl)) return url;
+        const urlObj = new URL(url, baseUrl);
+        if (urlObj.origin === baseUrl) return url;
         if (url.startsWith('/')) return `${baseUrl}${url}`;
         return baseUrl;
       } catch (error) {
@@ -40,39 +56,58 @@ export const authOptions: AuthOptions = {
         return baseUrl;
       }
     },
-    async session({ session, token }) {
+    async session({ session, token }): Promise<ExtendedSession> {
       try {
         if (session?.user && token?.id) {
-          session.user.id = token.id;
-          session.user.role = token.role || 'user';
-          console.log('[Auth Debug] Session callback - User:', {
-            id: token.id,
-            email: session.user.email,
-            role: session.user.role
-          });
+          session.user.id = token.id as string;
+          session.user.role = (token.role as string) || 'user';
+          
+          // Auditoría de sesión
+          await prisma.auditLog.create({
+            data: {
+              userId: token.id as string,
+              action: 'session.created',
+              metadata: { email: session.user.email }
+            }
+          }).catch(error => console.error('[Audit Error]:', error));
         }
-        return session;
+        return session as ExtendedSession;
       } catch (error) {
         console.error('[Auth Error] Session callback:', error);
-        return session;
+        return session as ExtendedSession;
       }
     },
     async jwt({ token, user }) {
       try {
         if (user) {
-          token.id = user.id;
-          token.role = user.role;
-          console.log('[Auth Debug] JWT callback - Token:', {
-            id: token.id,
-            email: token.email,
-            role: token.role
-          });
+          const extendedUser = user as ExtendedUser;
+          token.id = extendedUser.id;
+          token.role = extendedUser.role;
+          
+          if (!isProd) {
+            console.log('[Auth Debug] JWT callback:', { 
+              id: token.id,
+              email: token.email,
+              role: token.role 
+            });
+          }
         }
         return token;
       } catch (error) {
         console.error('[Auth Error] JWT callback:', error);
         return token;
       }
+    }
+  },
+  events: {
+    async signIn({ user }) {
+      await prisma.auditLog.create({
+        data: {
+          userId: user.id,
+          action: 'signIn',
+          metadata: { email: user.email }
+        }
+      }).catch(error => console.error('[Audit Error]:', error));
     }
   },
   pages: {
