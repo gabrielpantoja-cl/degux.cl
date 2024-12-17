@@ -45,13 +45,14 @@ const staticRoutes = [
 ];
 
 const isProd = process.env.NODE_ENV === 'production';
+const ALLOWED_HOSTS = ['localhost:3000', 'referenciales.cl'];
 
 async function getAuthToken(req: AuthenticatedRequest) {
   try {
     return await getToken({ 
       req, 
       secret: process.env.NEXTAUTH_SECRET,
-      secureCookie: isProd,
+      secureCookie: true,
       cookieName: isProd ? '__Secure-next-auth.session-token' : 'next-auth.session-token'
     });
   } catch (error) {
@@ -62,40 +63,51 @@ async function getAuthToken(req: AuthenticatedRequest) {
 
 async function isAuthenticated(req: AuthenticatedRequest): Promise<boolean> {
   const token = await getAuthToken(req);
-  if (!token) {
-    console.log("[Auth Debug]: No token found");
-    return false;
+  return !!token;
+}
+
+function setCookieHeaders(response: NextResponse): NextResponse {
+  if (isProd) {
+    response.headers.set('Set-Cookie', [
+      'SameSite=None; Secure',
+      'Path=/',
+      `Domain=${isProd ? '.referenciales.cl' : 'localhost'}`
+    ].join(';'));
   }
-  return true;
+  return response;
 }
 
 export default async function middleware(req: AuthenticatedRequest) {
   try {
     const { nextUrl } = req;
     const pathname = nextUrl.pathname;
+    const host = req.headers.get('host');
+
+    // Validación de host
+    if (!ALLOWED_HOSTS.includes(host || '')) {
+      console.error("[Security Error]: Invalid host", host);
+      return NextResponse.redirect(new URL("/auth/error", nextUrl));
+    }
 
     // Debug mejorado
     console.log("[Middleware Debug]:", {
       path: pathname,
       isProd,
-      host: req.headers.get('host'),
+      host,
       referer: req.headers.get('referer')
     });
 
-    // Static assets y health checks
+    // Static assets
     if (staticRoutes.some(route => pathname.startsWith(route))) {
       return NextResponse.next();
     }
 
-    // Manejo mejorado de rutas OAuth
+    // OAuth routes
     if (pathname.startsWith(apiAuthPrefix)) {
       if (oauthCallbacks.includes(pathname)) {
         console.log("[OAuth Debug]: Processing callback:", pathname);
         const response = NextResponse.next();
-        if (isProd) {
-          response.headers.set('Set-Cookie', 'SameSite=Lax; Secure');
-        }
-        return response;
+        return setCookieHeaders(response);
       }
       return NextResponse.next();
     }
@@ -105,33 +117,33 @@ export default async function middleware(req: AuthenticatedRequest) {
       return NextResponse.next();
     }
 
-    // Verificación de autenticación
+    // Autenticación
     const isLoggedIn = await isAuthenticated(req);
 
     // Redirigir usuarios autenticados
     if (isLoggedIn && authRoutes.includes(pathname)) {
-      return NextResponse.redirect(new URL("/dashboard", nextUrl));
+      const response = NextResponse.redirect(new URL("/dashboard", nextUrl));
+      return setCookieHeaders(response);
     }
 
     // Redirigir usuarios no autenticados
     if (!isLoggedIn && !authRoutes.includes(pathname)) {
       const loginUrl = new URL("/login", nextUrl);
-      const callbackUrl = encodeURIComponent(pathname);
-      loginUrl.searchParams.set("callbackUrl", callbackUrl);
-      console.log("[Auth Debug]: Redirecting to login:", loginUrl.toString());
-      return NextResponse.redirect(loginUrl);
+      loginUrl.searchParams.set("callbackUrl", encodeURIComponent(pathname));
+      const response = NextResponse.redirect(loginUrl);
+      return setCookieHeaders(response);
     }
 
-    // Verificación de permisos para referenciales
-    const editReferencialPattern = /^\/dashboard\/referenciales\/[a-f0-9-]+\/edit$/;
-    if (editReferencialPattern.test(pathname)) {
+    // Permisos para referenciales
+    if (/^\/dashboard\/referenciales\/[a-f0-9-]+\/edit$/.test(pathname)) {
       const token = await getAuthToken(req);
       if (!token) {
         return NextResponse.redirect(new URL("/unauthorized", nextUrl));
       }
     }
 
-    return NextResponse.next();
+    const response = NextResponse.next();
+    return setCookieHeaders(response);
 
   } catch (error) {
     console.error("[Middleware Error]:", error);
