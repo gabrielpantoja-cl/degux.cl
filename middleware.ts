@@ -78,21 +78,6 @@ function setSecurityHeaders(response: NextResponse): NextResponse {
   return response;
 }
 
-// Configuración de cookies mejorada
-function setCookieHeaders(response: NextResponse): NextResponse {
-  const cookieOptions = [
-    'SameSite=Lax',
-    isProd ? 'Secure' : '',
-    'Path=/',
-    `Domain=${isProd ? '.referenciales.cl' : 'localhost'}`,
-    'HttpOnly',
-    'Max-Age=86400'
-  ].filter(Boolean);
-
-  response.headers.set('Set-Cookie', cookieOptions.join('; '));
-  return setSecurityHeaders(response);
-}
-
 async function getAuthToken(req: AuthenticatedRequest) {
   try {
     return await getToken({ 
@@ -149,7 +134,7 @@ export default async function middleware(req: AuthenticatedRequest) {
       if (oauthCallbacks.includes(pathname)) {
         console.log("[OAuth Debug]: Processing callback:", pathname);
         const response = NextResponse.next();
-        return setCookieHeaders(response);
+        return setSecurityHeaders(response);
       }
       const response = NextResponse.next();
       return setSecurityHeaders(response);
@@ -160,18 +145,18 @@ export default async function middleware(req: AuthenticatedRequest) {
 
     if (isLoggedIn && authRoutes.includes(pathname)) {
       const response = NextResponse.redirect(new URL("/dashboard", nextUrl));
-      return setCookieHeaders(response);
+      return setSecurityHeaders(response);
     }
 
     if (!isLoggedIn && !authRoutes.includes(pathname)) {
       const loginUrl = new URL("/login", nextUrl);
       loginUrl.searchParams.set("callbackUrl", encodeURIComponent(pathname));
       const response = NextResponse.redirect(loginUrl);
-      return setCookieHeaders(response);
+      return setSecurityHeaders(response);
     }
 
     const response = NextResponse.next();
-    return setCookieHeaders(response);
+    return setSecurityHeaders(response);
 
   } catch (error) {
     console.error("[Middleware Error]:", error);
