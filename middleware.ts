@@ -24,10 +24,12 @@ const oauthCallbacks = [
   "/api/auth/callback/google",
   "/api/auth/signout",
   "/api/auth/signin",
+  "/api/auth/signin/google", // Agregar ruta específica
   "/api/auth/session",
   "/api/auth/providers",
   "/api/auth/error",
-  "/api/auth/csrf"
+  "/api/auth/csrf",
+  "/api/auth/callback/credentials"
 ];
 const staticRoutes = [
   "/_next",
@@ -103,72 +105,62 @@ export default async function middleware(req: AuthenticatedRequest) {
     const pathname = nextUrl.pathname;
     const host = req.headers.get('host');
 
-    // Debug mejorado
-    console.log("[Middleware Debug]:", {
+    // Mejorar logging para debugging
+    console.log("[Middleware Detailed Debug]:", {
       path: pathname,
       isProd,
       host,
-      referer: req.headers.get('referer')
+      referer: req.headers.get('referer'),
+      isCallback: pathname.includes('/callback'),
+      isAuthRoute: pathname.startsWith(apiAuthPrefix)
     });
+
+    // Permitir todas las rutas OAuth sin restricciones
+    if (pathname.startsWith(apiAuthPrefix)) {
+      console.log("[OAuth Flow]:", pathname);
+      const response = NextResponse.next();
+      return setSecurityHeaders(response);
+    }
 
     // Validación de host
     if (!ALLOWED_HOSTS.includes(host || '')) {
       console.error("[Security Error]: Invalid host", host);
-      const response = NextResponse.redirect(new URL("/auth/error", nextUrl));
-      return setSecurityHeaders(response);
+      return NextResponse.redirect(new URL("/auth/error", nextUrl));
     }
 
-    // Static assets y diagnósticos
+    // Assets estáticos
     if (staticRoutes.some(route => pathname.startsWith(route))) {
       return NextResponse.next();
     }
 
     // Rutas públicas
     if (publicRoutes.includes(pathname)) {
-      const response = NextResponse.next();
-      return setSecurityHeaders(response);
+      return setSecurityHeaders(NextResponse.next());
     }
 
-    // Manejo OAuth mejorado
-    if (pathname.startsWith(apiAuthPrefix)) {
-      if (oauthCallbacks.includes(pathname)) {
-        console.log("[OAuth Debug]: Processing callback:", pathname);
-        const response = NextResponse.next();
-        return setSecurityHeaders(response);
-      }
-      const response = NextResponse.next();
-      return setSecurityHeaders(response);
-    }
-
-    // Autenticación y redirecciones
+    // Autenticación
     const isLoggedIn = await isAuthenticated(req);
 
-    if (isLoggedIn && authRoutes.includes(pathname)) {
-      const response = NextResponse.redirect(new URL("/dashboard", nextUrl));
-      return setSecurityHeaders(response);
-    }
-
+    // Manejo de rutas autenticadas
     if (!isLoggedIn && !authRoutes.includes(pathname)) {
       const loginUrl = new URL("/login", nextUrl);
-      loginUrl.searchParams.set("callbackUrl", encodeURIComponent(pathname));
-      const response = NextResponse.redirect(loginUrl);
-      return setSecurityHeaders(response);
+      if (pathname !== '/login') {
+        loginUrl.searchParams.set("callbackUrl", pathname);
+      }
+      return setSecurityHeaders(NextResponse.redirect(loginUrl));
     }
 
-    const response = NextResponse.next();
-    return setSecurityHeaders(response);
+    return setSecurityHeaders(NextResponse.next());
 
   } catch (error) {
-    console.error("[Middleware Error]:", error);
-    const errorUrl = new URL("/auth/error", req.url);
-    errorUrl.searchParams.set("error", 
-      error instanceof Error ? error.message : "middleware_error"
+    console.error("[Middleware Critical Error]:", error);
+    return setSecurityHeaders(
+      NextResponse.redirect(new URL("/auth/error", req.url))
     );
-    const response = NextResponse.redirect(errorUrl);
-    return setSecurityHeaders(response);
   }
 }
 
+// Ajustar matcher para permitir todas las rutas de auth
 export const config = {
   matcher: [
     "/((?!_next/static|_next/image|favicon.ico|public/|assets/).*)",
