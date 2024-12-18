@@ -39,7 +39,8 @@ export const authOptions: AuthOptions = {
         params: {
           prompt: "select_account",
           access_type: "offline",
-          response_type: "code"
+          response_type: "code",
+          scope: "openid email profile" // Solicita los alcances mínimos necesarios
         }
       }
     }),
