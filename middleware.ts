@@ -19,18 +19,6 @@ REQUIRED_ENV_VARS.forEach(envVar => {
 const publicRoutes = ["/", "/prices", "/terms", "/about", "/contact"];
 const authRoutes = ["/login", "/register", "/auth/error"];
 const apiAuthPrefix = "/api/auth";
-const oauthCallbacks = [
-  "/api/auth/callback",
-  "/api/auth/callback/google",
-  "/api/auth/signout",
-  "/api/auth/signin",
-  "/api/auth/signin/google", // Agregar ruta específica
-  "/api/auth/session",
-  "/api/auth/providers",
-  "/api/auth/error",
-  "/api/auth/csrf",
-  "/api/auth/callback/credentials"
-];
 const staticRoutes = [
   "/_next",
   "/favicon.ico",
@@ -85,7 +73,7 @@ async function getAuthToken(req: AuthenticatedRequest) {
     return await getToken({ 
       req, 
       secret: process.env.NEXTAUTH_SECRET,
-      secureCookie: true,
+      secureCookie: isProd,
       cookieName: isProd ? '__Secure-next-auth.session-token' : 'next-auth.session-token'
     });
   } catch (error) {
@@ -115,11 +103,10 @@ export default async function middleware(req: AuthenticatedRequest) {
       isAuthRoute: pathname.startsWith(apiAuthPrefix)
     });
 
-    // Permitir todas las rutas OAuth sin restricciones
+    // Permitir todas las rutas OAuth y de API sin restricciones
     if (pathname.startsWith(apiAuthPrefix)) {
       console.log("[OAuth Flow]:", pathname);
-      const response = NextResponse.next();
-      return setSecurityHeaders(response);
+      return NextResponse.next();
     }
 
     // Validación de host
@@ -160,7 +147,6 @@ export default async function middleware(req: AuthenticatedRequest) {
   }
 }
 
-// Ajustar matcher para permitir todas las rutas de auth
 export const config = {
   matcher: [
     "/((?!_next/static|_next/image|favicon.ico|public/|assets/).*)",
