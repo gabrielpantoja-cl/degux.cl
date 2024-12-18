@@ -28,7 +28,6 @@ const nextConfig = {
     };
     return config;
   },
-  // Configuración de seguridad mejorada
   async headers() {
     return [
       {
@@ -98,12 +97,6 @@ const nextConfig = {
         ]
       }
     ];
-  },
-  // Configuración adicional para cookies seguras
-  cookies: {
-    sameSite: 'lax',
-    secure: process.env.NODE_ENV === 'production',
-    path: '/'
   }
 };
 
