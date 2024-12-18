@@ -122,7 +122,7 @@ export const authOptions: AuthOptions = {
       name: isProd ? '__Secure-next-auth.session-token' : 'next-auth.session-token',
       options: {
         httpOnly: true,
-        sameSite: 'none', // Permitir el uso en contextos de terceros
+        sameSite: 'lax', // Ajuste para cumplir con las mejores prácticas de seguridad
         path: '/',
         secure: isProd,
         domain: isProd ? '.referenciales.cl' : 'localhost'
@@ -131,7 +131,7 @@ export const authOptions: AuthOptions = {
     callbackUrl: {
       name: isProd ? '__Secure-next-auth.callback-url' : 'next-auth.callback-url',
       options: {
-        sameSite: 'none', // Permitir el uso en contextos de terceros
+        sameSite: 'lax', // Ajuste para cumplir con las mejores prácticas de seguridad
         path: '/',
         secure: isProd
       }
@@ -139,8 +139,8 @@ export const authOptions: AuthOptions = {
   },
   session: {
     strategy: "jwt",
-    maxAge: 365 * 24 * 60 * 60,
-    updateAge: 24 * 60 * 60
+    maxAge: 365 * 24 * 60 * 60, // 1 año
+    updateAge: 24 * 60 * 60 // 1 día
   }
 };
 
