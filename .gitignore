@@ -44,3 +44,6 @@ prisma/migrations/
 *.sh
 migrate.sql
 start-db.sh
+
+# Ignore scripts folder
+/scripts/
