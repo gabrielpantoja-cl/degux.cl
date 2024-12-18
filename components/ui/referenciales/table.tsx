@@ -2,7 +2,6 @@
 
 // 1. Importar tipos desde Prisma schema
 import { referenciales } from '@prisma/client';
-import { UpdateReferencial } from '@/components/ui/referenciales/buttons';
 import { formatDateToLocal } from '@/lib/utils';
 import { fetchFilteredReferenciales } from '@/lib/referenciales';
 
@@ -24,8 +23,8 @@ const TABLE_HEADERS: { key: ReferencialKeys, label: string }[] = [
   { key: 'fechaescritura', label: 'Fecha de escritura' },
   { key: 'comuna', label: 'Comuna' },
   { key: 'rol', label: 'Rol' },
-  { key: 'monto', label: 'Monto ($)' }, // Actualizar el encabezado
-  { key: 'superficie', label: 'Superficie (m²)' }, // Actualizar el encabezado
+  { key: 'monto', label: 'Monto ($)' },
+  { key: 'superficie', label: 'Superficie (m²)' },
   { key: 'predio', label: 'Predio' },
   { key: 'comprador', label: 'Comprador' },
   { key: 'vendedor', label: 'Vendedor' },
@@ -68,9 +67,6 @@ export default async function ReferencialesTable({
                     ))}
                   </div>
                 </div>
-                <div className="flex justify-end gap-2 pt-4">
-                  <UpdateReferencial id={referencial.id} />
-                </div>
               </div>
             ))}
           </div>
@@ -85,9 +81,6 @@ export default async function ReferencialesTable({
                       {label}
                     </th>
                   ))}
-                  <th scope="col" className="relative py-3 pl-6 pr-3">
-                    <span className="sr-only">Editar</span>
-                  </th>
                 </tr>
               </thead>
               <tbody className="bg-white">
@@ -104,11 +97,6 @@ export default async function ReferencialesTable({
                          referencial[key]}
                       </td>
                     ))}
-                    <td className="whitespace-nowrap py-3 pl-6 pr-3">
-                      <div className="flex justify-end gap-3">
-                        <UpdateReferencial id={referencial.id} />
-                      </div>
-                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -118,4 +106,4 @@ export default async function ReferencialesTable({
       </div>
     </div>
   );
-}
+}   
