@@ -122,7 +122,7 @@ export const authOptions: AuthOptions = {
       name: isProd ? '__Secure-next-auth.session-token' : 'next-auth.session-token',
       options: {
         httpOnly: true,
-        sameSite: 'lax',
+        sameSite: 'none', // Cambiado a 'none' para permitir el uso en contextos de terceros
         path: '/',
         secure: isProd,
         domain: isProd ? '.referenciales.cl' : 'localhost'
@@ -131,7 +131,7 @@ export const authOptions: AuthOptions = {
     callbackUrl: {
       name: isProd ? '__Secure-next-auth.callback-url' : 'next-auth.callback-url',
       options: {
-        sameSite: 'lax',
+        sameSite: 'none', // Cambiado a 'none' para permitir el uso en contextos de terceros
         path: '/',
         secure: isProd
       }
