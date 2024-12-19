@@ -98,7 +98,7 @@ export default function TermsPage() {
                   rel="noopener noreferrer" 
                   className="text-green-600 hover:text-green-800 inline-flex items-center"
                 >
-                  +56 9 9317 6947
+                  +56 9 3176 9472
                   <svg 
                     xmlns="http://www.w3.org/2000/svg" 
                     viewBox="0 0 24 24" 
