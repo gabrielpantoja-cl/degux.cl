@@ -70,9 +70,16 @@ const Mapa = () => {
                      <div>
                          {Object.entries(point).map(([key, value]) => {
                             // Ignorar campos específicos que no queremos mostrar
-                            if (key === 'id' || key === 'latLng' || key === 'geom' || key === 'userId') {
-                                return null;
-                            }
+                            if (
+                            key === 'id' || 
+                            key === 'latLng' || 
+                            key === 'geom' || 
+                             key === 'userId' ||
+                             key === 'lat' ||
+                             key === 'lng'
+                         ) {
+                        return null;
+                        }
             
                             // Formatear fecha si el valor es una instancia de Date
                             if (value instanceof Date) {
