@@ -15,10 +15,10 @@ export default function TermsPage() {
           <section className="mb-8">
             <h2 className="text-2xl font-semibold mb-4 text-gray-800">1. Introducción</h2>
             <p className="mb-4 text-gray-700">
-              Referenciales.cl es una aplicación web diseñada para proporcionar una base de datos colaborativa relacionada con transacciones de suelo en Chile, basada en información recolectada por personas voluntarias. Esta información incluye datos de compraventa de propiedades obtenidos en Conservadores de Bienes Raíces (CBR).
+              Referenciales.cl es una aplicación web diseñada para proporcionar una base de datos colaborativa relacionada con transacciones de suelo en Chile, basada en información recolectada por personas voluntarias. Esta información incluye datos de compraventas de propiedades obtenidos en Conservadores de Bienes Raíces (CBR).
             </p>
-            <p className="mb-4 text-gray-700 font-semibold">
-              Importante: Referenciales.cl no garantiza la exactitud, completitud o actualidad de los datos, ni se responsabiliza por el uso que los usuarios hagan de esta información.
+            <p className="mb-4 text-gray-700">
+            Referenciales.cl es una iniciativa sin fines de lucro que busca contribuir al acceso libre de información. No garantizamos la exactitud, completitud o actualidad de los datos, ni nos responsabilizamos por el uso que los usuarios hagan de esta información. Nuestro objetivo es facilitar el acceso a datos de referencia para beneficio de la comunidad.
             </p>
           </section>
 
