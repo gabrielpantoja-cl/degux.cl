@@ -159,7 +159,7 @@ export default function TermsPage() {
         <footer className="mt-8 pt-4 border-t border-gray-200">
           <div className="flex items-center justify-center space-x-2">
            <p className="text-sm text-gray-600 text-center">
-              Para consultas públicas sobre el proyecto, puedes unirte a nuestro grupo de WhatsApp{' '}
+              Para consultas públicas sobre el proyecto, puedes unirte al grupo de WhatsApp{' '}
               <a 
                 href="https://chat.whatsapp.com/K9ez4VsZ8O51X8Qsk3MxzV" 
                 target="_blank" 
