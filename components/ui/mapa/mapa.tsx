@@ -5,6 +5,28 @@ import { MapContainer, TileLayer, CircleMarker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import { fetchReferencialesForMap } from '@/lib/mapData';
 
+// Función para formatear números con separador de miles
+const formatNumber = (num: number) => {
+    return num.toLocaleString('es-CL');
+  };
+  
+  // Mapeo de nombres de campos
+  const fieldNames: { [key: string]: string } = {
+    fojas: 'Fojas',
+    numero: 'Número',
+    anio: 'Año',
+    cbr: 'CBR',
+    comprador: 'Comprador',
+    vendedor: 'Vendedor',
+    predio: 'Predio',
+    comuna: 'Comuna',
+    rol: 'Rol',
+    fechaescritura: 'Fecha Escritura',
+    superficie: 'Superficie (m²)',
+    monto: 'Monto ($)',
+    observaciones: 'Observaciones'
+  };
+
 type Point = {
     id: string;
     latLng: [number, number];
@@ -67,42 +89,54 @@ const Mapa = () => {
                     radius={20}
                 >
                    <Popup>
-                     <div>
-                         {Object.entries(point).map(([key, value]) => {
-                            // Ignorar campos específicos que no queremos mostrar
-                            if (
-                            key === 'id' || 
-                            key === 'latLng' || 
-                            key === 'geom' || 
-                             key === 'userId' ||
-                             key === 'lat' ||
-                             key === 'lng'
-                         ) {
-                        return null;
-                        }
-            
-                            // Formatear fecha si el valor es una instancia de Date
-                            if (value instanceof Date) {
-                             return (
-                                <p key={key}>
-                                    <strong>{key}:</strong> {value.toLocaleDateString('es-CL')}
-                                 </p>
-                              );
-                            }
+                        <div className="popup-content">
+                            {Object.entries(point).map(([key, value]) => {
+                                // Ignorar campos específicos
+                                if (
+                                    key === 'id' || 
+                                    key === 'latLng' || 
+                                    key === 'geom' || 
+                                    key === 'userId' ||
+                                    key === 'lat' ||
+                                    key === 'lng'
+                                ) {
+                                    return null;
+                                }
 
-                            // Solo mostrar valores que pueden renderizarse
-                            if (typeof value === 'string' || typeof value === 'number') {
-                                return (
-                                    <p key={key}>
-                                        <strong>{key}:</strong> {value}
+                                // Formatear fecha
+                                if (value instanceof Date) {
+                                    return (
+                                        <p key={key}>
+                                            <strong>{fieldNames[key] || key}:</strong>{' '}
+                                            {value.toLocaleDateString('es-CL')}
                                         </p>
-                                );
-                            }
+                                    );
+                                }
 
-                       return null;
-                      })}
-                     </div>
-                </Popup>
+                                // Formatear números (monto y superficie)
+                                if ((key === 'monto' || key === 'superficie') && typeof value === 'number') {
+                                    return (
+                                        <p key={key}>
+                                            <strong>{fieldNames[key]}:</strong>{' '}
+                                            {formatNumber(value)}
+                                        </p>
+                                    );
+                                }
+
+                                // Resto de campos
+                                if (typeof value === 'string' || typeof value === 'number') {
+                                    return (
+                                        <p key={key}>
+                                            <strong>{fieldNames[key] || key}:</strong>{' '}
+                                            {value}
+                                        </p>
+                                    );
+                                }
+
+                                return null;
+                            })}
+                        </div>
+                    </Popup>
 
                 </CircleMarker>
             ))}
