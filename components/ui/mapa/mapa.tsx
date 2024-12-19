@@ -155,7 +155,7 @@ const Mapa = () => {
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         maxZoom={19}
-        minZoom={10}
+        minZoom={5}      // Cambiado de 10 a 5 para permitir más zoom out
         tileSize={256}
         keepBuffer={2}
         updateWhenZooming={false}
