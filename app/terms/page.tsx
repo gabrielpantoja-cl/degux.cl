@@ -93,7 +93,7 @@ export default function TermsPage() {
               <p className="text-gray-700">
                 Para ejercer cualquiera de estos derechos o realizar consultas privadas, contáctanos directamente al número oficial de WhatsApp:{' '}
                 <a 
-                  href="https://wa.me/569931769472" 
+                  href="https://wa.me/56931769472" 
                   target="_blank" 
                   rel="noopener noreferrer" 
                   className="text-green-600 hover:text-green-800 inline-flex items-center"
