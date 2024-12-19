@@ -140,11 +140,28 @@ const Mapa = () => {
     };
 
     return (
-        <MapContainer center={[-39.8142, -73.2459]} zoom={13} style={{ height: "100vh", width: "100vw" }}>
-            <TileLayer
-                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-            />
+<MapContainer 
+        center={[-39.8142, -73.2459]} 
+        zoom={13} 
+        style={{ 
+            height: "70vh",    // Reducido aún más para mejor visualización
+            width: "90%",      // Reducido para mejor ajuste en pantalla
+            margin: "auto",    // Mantener centrado
+            borderRadius: "8px" // Mantener bordes redondeados
+        }}
+    >          
+    
+    <TileLayer
+        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        maxZoom={19}
+        minZoom={10}
+        tileSize={256}
+        keepBuffer={2}
+        updateWhenZooming={false}
+        updateWhenIdle={true}
+    />  
+
             {data.map(point => (
                 <CircleMarker
                     key={point.id}
