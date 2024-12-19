@@ -8,14 +8,14 @@ import { fetchReferencialesForMap } from '@/lib/mapData';
 // Función para formatear números con separador de miles
 const formatNumber = (num: number) => {
     return num.toLocaleString('es-CL');
-  };
+};
   
-  // Mapeo de nombres de campos
-  const fieldNames: { [key: string]: string } = {
+// Mapeo de nombres de campos
+const fieldNames: { [key: string]: string } = {
+    cbr: 'CBR',
     fojas: 'Fojas',
     numero: 'Número',
     anio: 'Año',
-    cbr: 'CBR',
     comprador: 'Comprador',
     vendedor: 'Vendedor',
     predio: 'Predio',
@@ -25,7 +25,7 @@ const formatNumber = (num: number) => {
     superficie: 'Superficie (m²)',
     monto: 'Monto ($)',
     observaciones: 'Observaciones'
-  };
+};
 
 type Point = {
     id: string;
@@ -49,6 +49,23 @@ type Point = {
     observaciones?: string;
     [key: string]: any;
 };
+
+// Orden deseado de los campos
+const fieldOrder = [
+    'cbr',
+    'fojas',
+    'numero',
+    'anio',
+    'comprador',
+    'vendedor',
+    'predio',
+    'comuna',
+    'rol',
+    'fechaescritura',
+    'monto',
+    'superficie',
+    'observaciones'
+];
 
 const Mapa = () => {
     const [data, setData] = useState<Point[]>([]);
@@ -76,6 +93,52 @@ const Mapa = () => {
             });
     }, []);
 
+    const renderField = (key: string, value: any) => {
+        // Ignorar campos específicos
+        if ([
+            'id',
+            'latLng',
+            'geom',
+            'userId',
+            'lat',
+            'lng'
+        ].includes(key)) {
+            return null;
+        }
+
+        // Formatear fecha
+        if (value instanceof Date) {
+            return (
+                <p key={key}>
+                    <strong>{fieldNames[key] || key}:</strong>{' '}
+                    {value.toLocaleDateString('es-CL')}
+                </p>
+            );
+        }
+
+        // Formatear números (monto y superficie)
+        if ((key === 'monto' || key === 'superficie') && typeof value === 'number') {
+            return (
+                <p key={key}>
+                    <strong>{fieldNames[key]}:</strong>{' '}
+                    {formatNumber(value)}
+                </p>
+            );
+        }
+
+        // Resto de campos
+        if (typeof value === 'string' || typeof value === 'number') {
+            return (
+                <p key={key}>
+                    <strong>{fieldNames[key] || key}:</strong>{' '}
+                    {value}
+                </p>
+            );
+        }
+
+        return null;
+    };
+
     return (
         <MapContainer center={[-39.8142, -73.2459]} zoom={13} style={{ height: "100vh", width: "100vw" }}>
             <TileLayer
@@ -88,56 +151,11 @@ const Mapa = () => {
                     center={point.latLng}
                     radius={20}
                 >
-                   <Popup>
+                    <Popup>
                         <div className="popup-content">
-                            {Object.entries(point).map(([key, value]) => {
-                                // Ignorar campos específicos
-                                if (
-                                    key === 'id' || 
-                                    key === 'latLng' || 
-                                    key === 'geom' || 
-                                    key === 'userId' ||
-                                    key === 'lat' ||
-                                    key === 'lng'
-                                ) {
-                                    return null;
-                                }
-
-                                // Formatear fecha
-                                if (value instanceof Date) {
-                                    return (
-                                        <p key={key}>
-                                            <strong>{fieldNames[key] || key}:</strong>{' '}
-                                            {value.toLocaleDateString('es-CL')}
-                                        </p>
-                                    );
-                                }
-
-                                // Formatear números (monto y superficie)
-                                if ((key === 'monto' || key === 'superficie') && typeof value === 'number') {
-                                    return (
-                                        <p key={key}>
-                                            <strong>{fieldNames[key]}:</strong>{' '}
-                                            {formatNumber(value)}
-                                        </p>
-                                    );
-                                }
-
-                                // Resto de campos
-                                if (typeof value === 'string' || typeof value === 'number') {
-                                    return (
-                                        <p key={key}>
-                                            <strong>{fieldNames[key] || key}:</strong>{' '}
-                                            {value}
-                                        </p>
-                                    );
-                                }
-
-                                return null;
-                            })}
+                            {fieldOrder.map(key => renderField(key, point[key]))}
                         </div>
                     </Popup>
-
                 </CircleMarker>
             ))}
         </MapContainer>
