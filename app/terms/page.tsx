@@ -87,23 +87,31 @@ export default function TermsPage() {
                 <span className="font-medium">Derecho de Oposición:</span> En casos específicos, los usuarios pueden oponerse al tratamiento de sus datos personales.
               </li>
             </ul>
+            
             <div className="bg-gray-50 p-4 rounded-lg mb-4">
               <h3 className="text-lg font-medium mb-2 text-gray-800">Proceso de Reclamación</h3>
               <p className="text-gray-700">
-                Para ejercer cualquiera de estos derechos o realizar consultas, los usuarios pueden unirse a nuestro canal oficial de soporte en:{' '}
+                Para ejercer cualquiera de estos derechos o realizar consultas privadas, contáctanos directamente al número oficial de WhatsApp:{' '}
                 <a 
-                  href="https://t.me/+UgVwqg2dbiE4MDAx" 
+                  href="https://wa.me/569931769472" 
                   target="_blank" 
                   rel="noopener noreferrer" 
-                  className="text-blue-600 hover:text-blue-800 inline-flex items-center"
+                  className="text-green-600 hover:text-green-800 inline-flex items-center"
                 >
-                  Grupo de Telegram
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 ml-1">
-                    <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 2v.511l-8 6.223-8-6.222V6h16zM4 18V9.044l7.386 5.745a.994.994 0 0 0 1.228 0L20 9.044 20.002 18H4z"/>
-                  </svg>
-                </a>
-              </p>
-            </div>
+                  +56 9 9317 6947
+                  <svg 
+                    xmlns="http://www.w3.org/2000/svg" 
+                    viewBox="0 0 24 24" 
+                    fill="currentColor" 
+                    className="w-4 h-4 ml-1"
+                  >
+                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+                     <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm0 22c-5.523 0-10-4.477-10-10S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/>
+                    </svg>
+                    </a>
+                  </p>
+              </div>
+
             <div className="bg-gray-50 p-4 rounded-lg">
               <h3 className="text-lg font-medium mb-2 text-gray-800">Medidas de Seguridad</h3>
               <p className="text-gray-700">
@@ -149,17 +157,27 @@ export default function TermsPage() {
         </div>
 
         <footer className="mt-8 pt-4 border-t border-gray-200">
-          <p className="text-sm text-gray-600 text-center">
-            Para consultas y soporte: {" "}
-            <a 
-              href="https://t.me/+UgVwqg2dbiE4MDAx" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="text-blue-600 hover:text-blue-800 underline"
-            >
-              Grupo de Telegram
-            </a>
-          </p>
+          <div className="flex items-center justify-center space-x-2">
+           <p className="text-sm text-gray-600 text-center">
+              Para consultas públicas sobre el proyecto, puedes unirte a nuestro grupo de WhatsApp{' '}
+              <a 
+                href="https://chat.whatsapp.com/K9ez4VsZ8O51X8Qsk3MxzV" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-green-600 hover:text-green-700 inline-flex items-center"
+              >
+                haciendo clic aquí
+                <svg 
+                  xmlns="http://www.w3.org/2000/svg" 
+                  viewBox="0 0 24 24" 
+                  fill="currentColor" 
+                  className="w-4 h-4 ml-1"
+                >
+                  <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+               </svg>
+               </a>
+              </p>
+           </div>
         </footer>
       </div>
     </main>
