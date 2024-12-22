@@ -15,7 +15,7 @@ export default function Page() {
       {showBanner && (
         <div className="flex items-center justify-between bg-yellow-200 p-4 rounded-lg mb-4">
           <p className="text-yellow-800">
-            ✨ ¡Bienvenido! Estamos trabajando cada día para ofrecer un mejor servicio. Tu feedback es valioso.
+          🏗️ Estamos en fase beta. Agradecemos tu paciencia y feedback mientras mejoramos nuestro servicio.
           </p>
           <button
             onClick={() => setShowBanner(false)}
