@@ -6,7 +6,6 @@ Proyecto desarrollado con Next.js 14 App Router
 
 ### Actualmente Trabajando en:
 - Robustecimiento del sistema de autenticación con Google
-- Corrección de problemas en el flujo de login durante la creación de datos
 - Optimización del formulario de ingreso de referenciales
 
 ## Descripción
@@ -48,7 +47,8 @@ Sistema de gestión de referenciales para tasación inmobiliaria con:
     ```
 
 ## Problemas Conocidos
-- El flujo de autenticación puede fallar al crear nuevos referenciales.
+- En vista mobil next image no optimiza adecuada la imagen del inicio
+- Al crea nuevo referencial, sale mensaje exitoso duplicadp
 - La redirección post-login requiere optimización.
 - El formulario de creación necesita validación mejorada.
 
