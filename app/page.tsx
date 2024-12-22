@@ -15,7 +15,7 @@ export default function Page() {
       {showBanner && (
         <div className="flex items-center justify-between bg-yellow-200 p-4 rounded-lg mb-4">
           <p className="text-yellow-800">
-          ✨ ¡Bienvenido! Estamos trabajando cada día para ofrecer un mejor servicio. Tu feedback es valioso.
+            ✨ ¡Bienvenido! Estamos trabajando cada día para ofrecer un mejor servicio. Tu feedback es valioso.
           </p>
           <button
             onClick={() => setShowBanner(false)}
@@ -51,20 +51,28 @@ export default function Page() {
           </div>
         </div>
         <div className="flex items-center justify-center p-6 md:w-3/5 md:px-28 md:py-12">
-          <Image
-            src="/hero-desktop.png"
-            width={1000}
-            height={760}
-            className="hidden md:block"
-            alt="Screenshots of the dashboard project showing desktop and mobile versions"
-          />
-          <Image
-            src="/hero-mobile.png"
-            width={560}
-            height={620}
-            className="block md:hidden"
-            alt="Screenshot of the dashboard project showing mobile version"
-          />
+          <div className="relative w-full">
+            <div className="relative hidden md:block aspect-[1000/760]">
+              <Image
+                src="/hero-desktop.png"
+                alt="Screenshots of the dashboard project showing desktop version"
+                fill
+                style={{ objectFit: 'contain' }}
+                priority
+                sizes="(min-width: 768px) 1000px, 100vw"
+              />
+            </div>
+            <div className="relative block md:hidden aspect-[560/620]">
+              <Image
+                src="/hero-mobile.png"
+                alt="Screenshot of the dashboard project showing mobile version"
+                fill
+                style={{ objectFit: 'contain' }}
+                priority
+                sizes="(max-width: 768px) 560px, 100vw"
+              />
+            </div>
+          </div>
         </div>
       </div>
     </main>
