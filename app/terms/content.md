@@ -18,8 +18,8 @@ Facilitar el acceso a datos de referencia para beneficio de la comunidad.
 
 ### 2.2. Prohibiciones
 ⚠️ Las siguientes acciones están estrictamente prohibidas:
-* 🚫 Utilizar la información para acoso, fraude, o cualquier actividad contraria a la ley
-* 🚫 Recolección masiva de datos desde la plataforma (scraping)
+* 🚫 Utilizar la información para acoso, fraude, o cualquier actividad contraria a la ley.
+* 🚫 Recolección masiva de datos desde la plataforma (scraping).
 
 ---
 
@@ -38,26 +38,16 @@ Facilitar el acceso a datos de referencia para beneficio de la comunidad.
 El acceso y uso del sitio web se rige íntegramente por las leyes de la República de Chile:
 
 📜 **Marco Normativo:**
-* **Ley N° 19.628** - Protección de Datos Personales
-* **Ley N° 19.496** - Derechos del Consumidor
-* **Ley N° 20.285** - Acceso a la Información Pública
-* **Código Civil** de Chile
+* **Ley N° 19.628** - Protección de Datos Personales.
+* **Ley N° 19.496** - Derechos del Consumidor.
+* **Ley N° 20.285** - Acceso a la Información Pública.
+* **Código Civil** de Chile.
 
 ---
 
-## 5. Derechos del Usuario
-
-Los usuarios gozan de todos los derechos reconocidos por la legislación de protección al consumidor vigente en Chile:
-* ✅ Derecho a la información
-* ✅ Derecho de rectificación
-* ✅ Derecho de cancelación de datos personales
-
----
-
-## 6. Protección de Datos
+## 5. Derechos y Protección de Datos
 
 Referenciales.cl se compromete a cumplir con la **Ley N° 19.628** sobre Protección de Datos Personales, asegurando que todos los datos personales recolectados y procesados en la plataforma sean tratados de manera segura y conforme a la ley. Esto incluye, pero no se limita a, los siguientes aspectos:
-
 
 ### Derechos Fundamentales
 
@@ -76,41 +66,43 @@ Para ejercer estos derechos o realizar consultas privadas:
 
 ### 🛡️ Medidas de Seguridad
 Implementamos protecciones contra:
-* 🔒 Acceso no autorizado
-* 🔒 Divulgación indebida
-* 🔒 Alteración de datos
-* 🔒 Destrucción de información
+* 🔒 Acceso no autorizado.
+* 🔒 Divulgación indebida.
+* 🔒 Alteración de datos.
+* 🔒 Destrucción de información.
 
 ---
 
-## 7. Almacenamiento de Datos
+## 6. Almacenamiento de Datos
 
 **Base de Datos:** Los referenciales se almacenan en una base de datos PostgreSQL, un sistema de gestión de bases de datos relacional, conocido por su estabilidad, robustez y soporte para características avanzadas.
 
 ---
 
-## 8. Responsabilidades
+## 7. Responsabilidades
+
 Los usuarios son responsables del uso ético y legal de la información proporcionada por la plataforma, respetando la privacidad y los derechos de terceros. Cualquier uso indebido de la información será responsabilidad exclusiva del usuario.
 
 ---
 
+## 8. Limitaciones
 
-## 9. Limitaciones
 La plataforma no garantiza la disponibilidad continua del servicio y se reserva el derecho de modificar o suspender el acceso sin previo aviso.
 
 ---
 
+## 9. Jurisdicción
 
-## 10. Jurisdicción
 Cualquier controversia será sometida a la jurisdicción de los tribunales de justicia de la República de Chile.
 
 ---
 
+## 10. Modificaciones
 
-## 11. Modificaciones
 Referenciales.cl se reserva el derecho de modificar estos términos y condiciones en cualquier momento, notificando los cambios a través de la plataforma.
 
 ---
 
-## 12. Declaración de Buenas Prácticas
+## 11. Declaración de Buenas Prácticas
+
 Referenciales.cl fomenta el uso ético y responsable de la información pública, respetando la privacidad de los involucrados y promoviendo la transparencia en el mercado de bienes raíces en Chile.
