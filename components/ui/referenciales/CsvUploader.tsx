@@ -1,7 +1,7 @@
 // components/ui/referenciales/CsvUploader.tsx
 'use client';
 
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { toast } from 'react-hot-toast';
 
 interface CsvUploaderProps {
