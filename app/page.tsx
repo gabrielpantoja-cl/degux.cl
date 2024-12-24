@@ -15,7 +15,7 @@ export default function Page() {
       {showBanner && (
         <div className="flex items-center justify-between bg-yellow-200 p-4 rounded-lg mb-4">
           <p className="text-yellow-800">
-          🏗️ Estamos en fase beta. Agradecemos tu paciencia y feedback mientras mejoramos nuestro servicio.
+            🏗️ Estamos en fase beta. Agradecemos tu paciencia y feedback mientras mejoramos la plataforma.
           </p>
           <button
             onClick={() => setShowBanner(false)}
@@ -52,23 +52,27 @@ export default function Page() {
         </div>
         <div className="flex items-center justify-center p-6 md:w-3/5 md:px-28 md:py-12">
           <div className="relative w-full">
+            {/* Versión Desktop */}
             <div className="relative hidden md:block aspect-[1000/760]">
               <Image
-                src="/hero-desktop.png"
-                alt="Screenshots of the dashboard project showing desktop version"
+                src="/images/hero-desktop.png"
+                alt="Panel de control versión escritorio"
                 fill
-                style={{ objectFit: 'contain' }}
+                quality={100}
                 priority
+                style={{ objectFit: 'contain' }}
                 sizes="(min-width: 768px) 1000px, 100vw"
               />
             </div>
+            {/* Versión Mobile */}
             <div className="relative block md:hidden aspect-[560/620]">
               <Image
-                src="/hero-mobile.png"
-                alt="Screenshot of the dashboard project showing mobile version"
+                src="/images/hero-mobile.png"
+                alt="Panel de control versión móvil"
                 fill
-                style={{ objectFit: 'contain' }}
+                quality={100}
                 priority
+                style={{ objectFit: 'contain' }}
                 sizes="(max-width: 768px) 560px, 100vw"
               />
             </div>
