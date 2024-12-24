@@ -31,27 +31,17 @@ const FormFields: React.FC<FormFieldsProps> = ({ state, currentUser }) => (
         <span className="font-medium">ID:</span> {currentUser.id}
       </p>
     </div>
-    <div className="mb-4">
-      <label htmlFor="fojas" className="block text-sm font-medium text-gray-700">
-        Fojas
-      </label>
-      <input
-        type="text"
-        name="fojas"
-        id="fojas"
-        className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm ${
-        state.invalidFields.has('fojas') ? 'border-red-500' : ''
-        }`}
-        placeholder="Escribe las fojas de la inscripción"  
-        pattern="^[0-9]+(\s?([vV](?:uelta)?|[vV]ta)?)?$"
-        title="Ingrese un número seguido opcionalmente de 'v', 'V', 'vta' o 'vuelta' (con o sin espacio)"
-        required
-      />
-      {state.errors.fojas && (
-        <p className="mt-2 text-sm text-red-600">{state.errors.fojas.join(', ')}</p>
-      )}
-    </div>
 
+    <Input
+      label="Fojas"
+      id="fojas"
+      name="fojas"
+      placeholder="Escribe las fojas de la inscripción"
+      pattern="^[0-9]+(\s?([vV](?:uelta)?|[vV]ta)?)?$"
+      title="Ingrese un número seguido opcionalmente de 'v', 'V', 'vta' o 'vuelta' (con o sin espacio)"
+      error={state.errors.fojas}
+      required={true}
+    />
     <Input
       label="Número"
       id="numero"
