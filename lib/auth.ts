@@ -4,6 +4,11 @@ import GoogleProvider from 'next-auth/providers/google';
 import { PrismaAdapter } from '@auth/prisma-adapter';
 import { prisma } from '@/lib/prisma';
 
+// Constantes
+const ONE_YEAR = 365 * 24 * 60 * 60;
+const ONE_DAY = 24 * 60 * 60;
+const DEFAULT_ROLE = 'user';
+
 // Tipos personalizados
 interface ExtendedSession extends Session {
   user: {
@@ -20,9 +25,25 @@ interface ExtendedUser extends User {
   role: string;
 }
 
+interface AuthLog {
+  message: string;
+  data?: Record<string, unknown>;
+  error?: Error;
+}
+
 const googleClientId = process.env.GOOGLE_CLIENT_ID;
 const googleClientSecret = process.env.GOOGLE_CLIENT_SECRET;
 const isProd = process.env.NODE_ENV === 'production';
+
+// Logger personalizado
+const authLogger = {
+  debug: (message: string, data?: Record<string, unknown>) => {
+    if (!isProd) console.log(`[Auth Debug] ${message}:`, data);
+  },
+  error: (message: string, error: Error) => {
+    console.error(`[Auth Error] ${message}:`, error);
+  }
+};
 
 if (!googleClientId || !googleClientSecret) {
   throw new Error("Missing Google client ID or secret in environment variables");
@@ -40,7 +61,7 @@ export const authOptions: AuthOptions = {
           prompt: "select_account",
           access_type: "offline",
           response_type: "code",
-          scope: "openid email profile" // Solicita los alcances mínimos necesarios
+          scope: "openid email profile"
         }
       }
     }),
@@ -53,7 +74,7 @@ export const authOptions: AuthOptions = {
         if (url.startsWith('/')) return `${baseUrl}${url}`;
         return baseUrl;
       } catch (error) {
-        console.error('[Auth Error] Redirect callback:', error);
+        authLogger.error('Redirect callback failed', error as Error);
         return baseUrl;
       }
     },
@@ -61,20 +82,21 @@ export const authOptions: AuthOptions = {
       try {
         if (session?.user && token?.id) {
           session.user.id = token.id as string;
-          session.user.role = (token.role as string) || 'user';
+          session.user.role = (token.role as string) || DEFAULT_ROLE;
           
-          // Auditoría de sesión
           await prisma.auditLog.create({
             data: {
               userId: token.id as string,
               action: 'session.created',
               metadata: { email: session.user.email }
             }
-          }).catch(error => console.error('[Audit Error]:', error));
+          }).catch(error => authLogger.error('Session audit failed', error as Error));
+
+          authLogger.debug('Session created', { userId: token.id, role: token.role });
         }
         return session as ExtendedSession;
       } catch (error) {
-        console.error('[Auth Error] Session callback:', error);
+        authLogger.error('Session callback failed', error as Error);
         return session as ExtendedSession;
       }
     },
@@ -85,17 +107,15 @@ export const authOptions: AuthOptions = {
           token.id = extendedUser.id;
           token.role = extendedUser.role;
           
-          if (!isProd) {
-            console.log('[Auth Debug] JWT callback:', { 
-              id: token.id,
-              email: token.email,
-              role: token.role 
-            });
-          }
+          authLogger.debug('JWT token created', { 
+            id: token.id,
+            email: token.email,
+            role: token.role 
+          });
         }
         return token;
       } catch (error) {
-        console.error('[Auth Error] JWT callback:', error);
+        authLogger.error('JWT callback failed', error as Error);
         return token;
       }
     }
@@ -108,7 +128,7 @@ export const authOptions: AuthOptions = {
           action: 'signIn',
           metadata: { email: user.email }
         }
-      }).catch(error => console.error('[Audit Error]:', error));
+      }).catch(error => authLogger.error('SignIn audit failed', error as Error));
     }
   },
   pages: {
@@ -116,31 +136,33 @@ export const authOptions: AuthOptions = {
     error: "/auth/error",
   },
   secret: process.env.NEXTAUTH_SECRET,
-  debug: !isProd,
+  debug: process.env.NODE_ENV === 'development',
   cookies: {
     sessionToken: {
       name: isProd ? '__Secure-next-auth.session-token' : 'next-auth.session-token',
       options: {
         httpOnly: true,
-        sameSite: 'lax', // Ajuste para cumplir con las mejores prácticas de seguridad
+        sameSite: 'lax',
         path: '/',
         secure: isProd,
-        domain: isProd ? '.referenciales.cl' : 'localhost'
+        domain: isProd ? '.referenciales.cl' : 'localhost',
+        maxAge: ONE_YEAR
       }
     },
     callbackUrl: {
       name: isProd ? '__Secure-next-auth.callback-url' : 'next-auth.callback-url',
       options: {
-        sameSite: 'lax', // Ajuste para cumplir con las mejores prácticas de seguridad
+        sameSite: 'lax',
         path: '/',
-        secure: isProd
+        secure: isProd,
+        maxAge: ONE_DAY
       }
     }
   },
   session: {
     strategy: "jwt",
-    maxAge: 365 * 24 * 60 * 60, // 1 año
-    updateAge: 24 * 60 * 60 // 1 día
+    maxAge: ONE_YEAR,
+    updateAge: ONE_DAY
   }
 };
 
