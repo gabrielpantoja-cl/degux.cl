@@ -37,11 +37,15 @@ const isProd = process.env.NODE_ENV === 'production';
 
 // Logger personalizado
 const authLogger = {
-  debug: (message: string, data?: Record<string, unknown>) => {
+  debug: (message: string, data?: Record<string, unknown>): AuthLog => {
+    const log: AuthLog = { message, data };
     if (!isProd) console.log(`[Auth Debug] ${message}:`, data);
+    return log;
   },
-  error: (message: string, error: Error) => {
+  error: (message: string, error: Error): AuthLog => {
+    const log: AuthLog = { message, error };
     console.error(`[Auth Error] ${message}:`, error);
+    return log;
   }
 };
 
