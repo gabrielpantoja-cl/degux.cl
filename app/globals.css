@@ -277,3 +277,11 @@ progress {
 ::-webkit-search-decoration {
   -webkit-appearance: none;
 }
+
+/* Estilos específicos para los iconos de Leaflet */
+.leaflet-marker-icon,
+.leaflet-marker-shadow {
+  display: block;
+  text-indent: -9999px; /* Oculta cualquier texto */
+  overflow: hidden; /* Asegura que no haya contenido adicional visible */
+}

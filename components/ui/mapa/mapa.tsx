@@ -1,79 +1,71 @@
-// app/ui/mapa/mapa.tsx
+// components/ui/mapa/mapa.tsx
 'use client';
 import React, { useEffect, useState } from 'react';
-import { MapContainer, TileLayer, CircleMarker, Popup } from 'react-leaflet';
+import { MapContainer, TileLayer, useMap } from 'react-leaflet';
+import { GeoSearchControl, OpenStreetMapProvider } from 'leaflet-geosearch';
 import 'leaflet/dist/leaflet.css';
+import 'leaflet-geosearch/dist/geosearch.css';
+import './mapa.css'; // Importa el archivo CSS personalizado
 import { fetchReferencialesForMap } from '@/lib/mapData';
+import { MapMarker, Point } from '@/components/ui/mapa/MapMarker';
+import L from 'leaflet';
 
-// Función para formatear números con separador de miles
-const formatNumber = (num: number) => {
-    return num.toLocaleString('es-CL');
-};
-  
-// Mapeo de nombres de campos
-const fieldNames: { [key: string]: string } = {
-    cbr: 'CBR',
-    fojas: 'Fojas',
-    numero: 'Número',
-    anio: 'Año',
-    comprador: 'Comprador',
-    vendedor: 'Vendedor',
-    predio: 'Predio',
-    comuna: 'Comuna',
-    rol: 'Rol',
-    fechaescritura: 'Fecha Escritura',
-    superficie: 'Superficie (m²)',
-    monto: 'Monto ($)',
-    observaciones: 'Observaciones'
-};
+// Configura el icono del marcador personalizado
+const redIcon = new L.Icon({
+  iconUrl: '/images/marker-icon.png',
+  iconSize: [25, 41], // Tamaño del icono
+  iconAnchor: [12, 41], // Punto del icono que corresponde a la ubicación del marcador
+  popupAnchor: [1, -34], // Punto desde el cual se abrirá el popup relativo al icono
+  shadowUrl: '/images/marker-shadow.png', // Ruta a la sombra del marcador
+  shadowSize: [41, 41], // Tamaño de la sombra
+  shadowAnchor: [12, 41] // Punto del icono que corresponde a la ubicación de la sombra
+});
 
-type Point = {
-    id: string;
-    latLng: [number, number];
-    lat: number;
-    lng: number;
-    userId: string;
-    geom: [number, number];
-    fojas?: string;
-    numero?: string;
-    anio: string;
-    cbr?: string;
-    comprador?: string;
-    vendedor?: string;
-    predio?: string;
-    comuna?: string;
-    rol?: string;
-    fechaescritura?: Date;
-    superficie?: number;
-    monto?: number;
-    observaciones?: string;
-    [key: string]: any;
-};
+// Componente para el control de búsqueda
+const SearchField = (): null => {
+    const map = useMap();
+    
+    useEffect(() => {
+        const provider = new OpenStreetMapProvider({
+            params: {
+                'accept-language': 'es',
+                countrycodes: 'cl',
+            },
+            searchUrl: '/api/geocode', // Proxy endpoint
+        });
 
-// Orden deseado de los campos
-const fieldOrder = [
-    'cbr',
-    'fojas',
-    'numero',
-    'anio',
-    'comprador',
-    'vendedor',
-    'predio',
-    'comuna',
-    'rol',
-    'fechaescritura',
-    'monto',
-    'superficie',
-    'observaciones'
-];
+        const searchControl = new (GeoSearchControl as any)({
+            provider: provider,
+            style: 'bar',
+            searchLabel: 'Buscar dirección...',
+            autoComplete: true,
+            autoCompleteDelay: 250,
+            showMarker: true,
+            showPopup: false,
+            retainZoomLevel: false,
+            animateZoom: true,
+            keepResult: false,
+            maxMarkers: 1,
+            marker: {
+                icon: redIcon // Usa el icono personalizado
+            }
+        });
+
+        map.addControl(searchControl);
+        return () => {
+            map.removeControl(searchControl);
+        };
+    }, [map]);
+
+    return null;
+};
 
 const Mapa = () => {
-    const [data, setData] = useState<Point[]>([]);
+    const [filteredData, setFilteredData] = useState<Point[]>([]);
 
     useEffect(() => {
         fetchReferencialesForMap()
             .then(response => {
-                console.log('Datos recibidos del backend:', response);
                 const points = response
                     .filter(point => point?.geom && Array.isArray(point.geom) && point.geom.length === 2)
                     .map(point => ({
@@ -86,96 +78,41 @@ const Mapa = () => {
                         geom: point.geom
                     } as Point));
                 
-                setData(points);
+                setFilteredData(points);
             })
             .catch(error => {
                 console.error('Error fetching data: ', error);
             });
     }, []);
 
-    const renderField = (key: string, value: any) => {
-        // Ignorar campos específicos
-        if ([
-            'id',
-            'latLng',
-            'geom',
-            'userId',
-            'lat',
-            'lng'
-        ].includes(key)) {
-            return null;
-        }
-
-        // Formatear fecha
-        if (value instanceof Date) {
-            return (
-                <p key={key}>
-                    <strong>{fieldNames[key] || key}:</strong>{' '}
-                    {value.toLocaleDateString('es-CL')}
-                </p>
-            );
-        }
-
-        // Formatear números (monto y superficie)
-        if ((key === 'monto' || key === 'superficie') && typeof value === 'number') {
-            return (
-                <p key={key}>
-                    <strong>{fieldNames[key]}:</strong>{' '}
-                    {formatNumber(value)}
-                </p>
-            );
-        }
-
-        // Resto de campos
-        if (typeof value === 'string' || typeof value === 'number') {
-            return (
-                <p key={key}>
-                    <strong>{fieldNames[key] || key}:</strong>{' '}
-                    {value}
-                </p>
-            );
-        }
-
-        return null;
-    };
-
     return (
-<MapContainer 
-        center={[-38.7445, -72.9507]}
-        zoom={13} 
-        style={{ 
-            height: "70vh",    
-            width: "90%",      
-            margin: "auto",    
-            borderRadius: "8px" 
-        }}
-    >          
-    
-    <TileLayer
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        maxZoom={19}
-        minZoom={5}      
-        tileSize={256}
-        keepBuffer={2}
-        updateWhenZooming={false}
-        updateWhenIdle={true}
-    />  
-
-            {data.map(point => (
-                <CircleMarker
-                    key={point.id}
-                    center={point.latLng}
-                    radius={20}
-                >
-                    <Popup>
-                        <div className="popup-content">
-                            {fieldOrder.map(key => renderField(key, point[key]))}
-                        </div>
-                    </Popup>
-                </CircleMarker>
-            ))}
-        </MapContainer>
+        <div className="relative w-full">
+            <MapContainer 
+                center={[-38.7445, -72.9507]}
+                zoom={13} 
+                style={{ 
+                    height: "70vh",    
+                    width: "90%",      
+                    margin: "auto",    
+                    borderRadius: "8px" 
+                }}
+            >          
+                <SearchField />
+                <TileLayer
+                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                    maxZoom={19}
+                    minZoom={5}      
+                    tileSize={256}
+                    keepBuffer={2}
+                    updateWhenZooming={false}
+                    updateWhenIdle={true}
+                />  
+                {filteredData.map(point => (
+                    <MapMarker key={point.id} point={point} />
+                ))}
+            </MapContainer>
+        </div>
     );
 };
 
