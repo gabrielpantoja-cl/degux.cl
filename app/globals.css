@@ -3,6 +3,11 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Agregar al globals.css */
+.mobile-safe-padding {
+  padding-top: max(env(safe-area-inset-top), 1rem);
+}
+
 /* Estilos específicos para Markdown */
 .markdown-content {
   /* Espaciado general */
