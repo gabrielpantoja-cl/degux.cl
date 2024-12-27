@@ -9,6 +9,7 @@ import Link from 'next/link';
 
 export default function Page() {
   const [showBanner, setShowBanner] = useState(true);
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
 
   return (
     <main className="flex min-h-screen flex-col p-6">
@@ -36,17 +37,30 @@ export default function Page() {
             Una base de datos para la tasación.
           </p>
           <div className="flex flex-col gap-4">
+            <div className="flex items-center">
+              <input
+                type="checkbox"
+                id="acceptTerms"
+                checked={acceptedTerms}
+                onChange={(e) => setAcceptedTerms(e.target.checked)}
+                className="mr-2"
+              />
+              <label htmlFor="acceptTerms" className="text-sm text-gray-600">
+                He leído y acepto los <Link href="/terms" className="text-blue-500 underline">Términos y Condiciones</Link>
+              </label>
+            </div>
             <Link
               href="/login"
-              className="flex items-center gap-5 self-start rounded-lg bg-blue-500 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-blue-400 md:text-base"
+              className={`flex items-center gap-5 self-start rounded-lg px-6 py-3 text-sm font-medium text-white transition-colors md:text-base ${
+                acceptedTerms ? 'bg-blue-500 hover:bg-blue-400' : 'bg-gray-300 cursor-not-allowed'
+              }`}
+              onClick={(e) => {
+                if (!acceptedTerms) {
+                  e.preventDefault();
+                }
+              }}
             >
               <span>Log in</span>
-            </Link>
-            <Link
-              href="/terms"
-              className="flex items-center gap-5 self-start rounded-lg bg-gray-100 px-6 py-3 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-200 md:text-base"
-            >
-              <span>Términos y Condiciones</span>
             </Link>
           </div>
         </div>
