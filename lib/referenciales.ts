@@ -1,4 +1,4 @@
-// app/lib/referenciales.ts
+// lib/referenciales.ts
 
 'use server';
 
@@ -17,7 +17,7 @@ export async function fetchLatestReferenciales() {
         fechaescritura: 'desc',
       },
       include: {
-        user: true, // Cambiado de colaborador a user
+        user: true, 
       },
     });
 
@@ -121,5 +121,43 @@ export async function fetchReferencialById(id: string) {
   } catch (error) {
     console.error('Database Error:', error);
     throw error;
+  }
+}
+
+// Agregar a lib/referenciales.ts
+
+export async function fetchTopComunas() {
+  noStore();
+  try {
+    const comunasData = await prisma.referenciales.groupBy({
+      by: ['comuna'],
+      _count: {
+        comuna: true
+      },
+      orderBy: {
+        _count: {
+          comuna: 'desc'
+        }
+      },
+      take: 4,
+      where: {
+        comuna: {
+          not: ''  // Filtrar comunas vacías
+        }
+      }
+    });
+
+    // Formatear datos para el gráfico
+    const formattedData = comunasData.map(item => ({
+      comuna: item.comuna,
+      count: item._count?.comuna ?? 0 // Uso de optional chaining y valor por defecto
+    }));
+
+    console.log('Top comunas obtenidas:', formattedData);
+    return formattedData;
+
+  } catch (error) {
+    console.error('Error al obtener top comunas:', error);
+    throw new Error('Error al obtener las comunas con más referenciales');
   }
 }

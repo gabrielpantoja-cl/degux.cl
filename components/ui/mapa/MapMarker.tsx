@@ -25,13 +25,13 @@ export const fieldNames: { [key: string]: string } = {
 
 // Orden de campos
 export const fieldOrder = [
-    'cbr', 'fojas', 'numero', 'anio', 'comprador',
-    'vendedor', 'predio', 'comuna', 'rol', 'fechaescritura',
-    'monto', 'superficie', 'observaciones'
+    'cbr', 'fojas', 'numero', 'anio', 'predio',
+    'comuna', 'rol', 'fechaescritura', 'monto',
+    'superficie', 'observaciones'
 ];
 
 const renderField = (key: string, value: any) => {
-    if (['id', 'latLng', 'geom', 'userId', 'lat', 'lng'].includes(key)) {
+    if (['id', 'latLng', 'geom', 'userId', 'lat', 'lng', 'comprador', 'vendedor'].includes(key)) {
         return null;
     }
 
