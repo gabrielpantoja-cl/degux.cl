@@ -1,4 +1,4 @@
-// components/ui/dashboard/TopCommunesChart.tsx
+// components/ui/dashboard/TopComunasChart.tsx
 'use client';
 import React from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
@@ -9,7 +9,7 @@ type CommuneData = {
   count: number;
 };
 
-export default async function TopCommunesChart() {
+export default async function TopComunasChart() {
   const data = await fetchTopComunas();
 
   return (
