@@ -23,7 +23,7 @@ const formatFieldValue = (key: string, value: any) => {
     return value.toLocaleString('es-CL');
   }
   return value;
-}; // Agregar llave de cierre aquí
+};
 
 // Definir interfaz basada en el modelo
 interface ReferencialTableProps {
@@ -51,11 +51,6 @@ const TABLE_HEADERS: { key: ReferencialKeys, label: string }[] = [
   { key: 'observaciones', label: 'Observaciones' },
 ];
 
-// Función para formatear números con punto como separador de miles
-const formatNumber = (num: number) => {
-  return num.toLocaleString('es-CL');
-};
-
 export default async function ReferencialesTable({
   query,
   currentPage,
@@ -75,7 +70,7 @@ export default async function ReferencialesTable({
                     {TABLE_HEADERS.map(({ key, label }) => (
                       <p key={key} className={key === 'cbr' ? 'font-medium' : ''}>
                         {label}: {formatFieldValue(key, referencial[key])}
-                                                  </p>
+                      </p>
                     ))}
                   </div>
                 </div>
@@ -113,4 +108,4 @@ export default async function ReferencialesTable({
       </div>
     </div>
   );
-}   
+}
