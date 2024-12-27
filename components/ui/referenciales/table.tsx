@@ -1,20 +1,27 @@
 // app/ui/referenciales/table.tsx
 
-// 1. Importar tipos desde Prisma schema
+// Importar tipos desde Prisma schema
 import { referenciales } from '@prisma/client';
 import { formatDateToLocal } from '@/lib/utils';
 import { fetchFilteredReferenciales } from '@/lib/referenciales';
 
-// 2. Definir interfaz basada en el modelo
+// Campos sensibles que requieren blur
+const SENSITIVE_FIELDS = ['comprador', 'vendedor'];
+
+// Helper para verificar si un campo es sensible
+const isSensitiveField = (key: string) => SENSITIVE_FIELDS.includes(key);
+
+
+// Definir interfaz basada en el modelo
 interface ReferencialTableProps {
   query: string;
   currentPage: number;
 }
 
-// 3. Definir tipo de claves del objeto referencial
+// Definir tipo de claves del objeto referencial
 type ReferencialKeys = keyof referenciales;
 
-// 4. Campos alineados con schema.prisma
+// Campos alineados con schema.prisma
 const TABLE_HEADERS: { key: ReferencialKeys, label: string }[] = [
   { key: 'cbr', label: 'CBR' },
   { key: 'fojas', label: 'Fojas' },
@@ -49,19 +56,18 @@ export default async function ReferencialesTable({
           {/* Vista móvil */}
           <div className="md:hidden">
             {referenciales?.map((referencial: referenciales) => (
-              <div
-                key={referencial.id}
-                className="mb-2 w-full rounded-md bg-white p-4"
-              >
+              <div key={referencial.id} className="mb-2 w-full rounded-md bg-white p-4">
                 <div className="flex items-center justify-between border-b pb-4">
                   <div>
                     {TABLE_HEADERS.map(({ key, label }) => (
                       <p key={key} className={key === 'cbr' ? 'font-medium' : ''}>
                         {label}: {
-                          key === 'fechaescritura' ? formatDateToLocal(referencial[key].toISOString()) :
-                          key === 'monto' ? formatNumber(referencial[key]) :
-                          key === 'superficie' ? formatNumber(referencial[key]) :
-                          referencial[key]
+                          <span className={isSensitiveField(key) ? 'blur-sm hover:blur-none transition-all duration-300' : ''}>
+                            {key === 'fechaescritura' ? formatDateToLocal(referencial[key].toISOString()) :
+                            key === 'monto' ? formatNumber(referencial[key]) :
+                            key === 'superficie' ? formatNumber(referencial[key]) :
+                            referencial[key]}
+                          </span>
                         }
                       </p>
                     ))}
@@ -85,12 +91,10 @@ export default async function ReferencialesTable({
               </thead>
               <tbody className="bg-white">
                 {referenciales?.map((referencial: referenciales) => (
-                  <tr
-                    key={referencial.id}
-                    className="w-full border-b py-3 text-sm last-of-type:border-none [&:first-child>td:first-child]:rounded-tl-lg [&:first-child>td:last-child]:rounded-tr-lg [&:last-child>td:first-child]:rounded-bl-lg [&:last-child>td:last-child]:rounded-br-lg"
-                  >
+                  <tr key={referencial.id} 
+                      className="w-full border-b py-3 text-sm last-of-type:border-none [&:first-child>td:first-child]:rounded-tl-lg [&:first-child>td:last-child]:rounded-tr-lg [&:last-child>td:first-child]:rounded-bl-lg [&:last-child>td:last-child]:rounded-br-lg">
                     {TABLE_HEADERS.map(({ key }) => (
-                      <td key={key} className="whitespace-nowrap px-3 py-3">
+                      <td key={key} className={`whitespace-nowrap px-3 py-3 ${isSensitiveField(key) ? 'blur-sm hover:blur-none transition-all duration-300' : ''}`}>
                         {key === 'fechaescritura' ? formatDateToLocal(referencial[key].toISOString()) :
                          key === 'monto' ? formatNumber(referencial[key]) :
                          key === 'superficie' ? formatNumber(referencial[key]) :
