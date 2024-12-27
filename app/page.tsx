@@ -16,8 +16,7 @@ export default function Page() {
       {showBanner && (
         <div className="flex items-center justify-between bg-yellow-200 p-4 rounded-lg mb-4">
           <p className="text-yellow-800">
-            🏗️ Estamos en fase beta. Agradecemos tu paciencia y feedback mientras mejoramos la plataforma.
-          </p>
+          🚧 Estamos en desarrollo. Agradecemos tus comentarios y opiniones mientras mejoramos la plataforma. Únete al grupo de WhatsApp para compartir tus ideas.          </p>
           <button
             onClick={() => setShowBanner(false)}
             className="ml-4 rounded bg-yellow-300 px-3 py-1 text-yellow-800 hover:bg-yellow-400"
@@ -34,7 +33,7 @@ export default function Page() {
           <div className="h-0 w-0 border-b-[30px] border-l-[20px] border-r-[20px] border-b-black border-l-transparent border-r-transparent" />
           <p className={`${lusitana.className} text-xl text-gray-800 md:text-3xl md:leading-normal`}>
             Bienvenido a <strong>referenciales.cl</strong><br />
-            Una base de datos para la tasación.
+            Una base de datos colaborativa.
           </p>
           <div className="flex flex-col gap-4">
             <div className="flex items-center">
