@@ -33,31 +33,31 @@ Facilitar el acceso a datos de referencia para beneficio de la comunidad.
 
 ---
 
-## 4. Marco Legal
+### 4. Marco Legal
 
-El acceso y uso del sitio web se rige íntegramente por las leyes de la República de Chile:
+El acceso y uso del sitio web se rige íntegramente por las leyes de la República de Chile, incluyendo las disposiciones pertinentes del Código Civil y especialmente por el siguiente marco normativo específico:
 
-📜 **Marco Normativo:**
-* **Ley N° 19.628** - Protección de Datos Personales.
-* **Ley N° 19.496** - Derechos del Consumidor.
-* **Ley N° 20.285** - Acceso a la Información Pública.
-* **Código Civil** de Chile.
+* **<a href="https://www.bcn.cl/leychile/navegar?idNorma=141599" target="_blank" rel="noopener noreferrer">Ley N° 19.628</a>** - Protección de la Vida Privada (1999).
+* **<a href="https://www.bcn.cl/leychile/navegar?idNorma=61438" target="_blank" rel="noopener noreferrer">Ley N° 19.496</a>** - Establece Normas sobre Protección de los Derechos de los Consumidores (Última versión: 20-ABR-2021).
+* **<a href="https://www.bcn.cl/leychile/navegar?idNorma=276363" target="_blank" rel="noopener noreferrer">Ley N° 20.285</a>** - Sobre Acceso a la Información Pública (Última modificación: 05-ENE-2016 - Ley 20880).
+* **<a href="https://www.bcn.cl/leychile/navegar?idNorma=1119730" target="_blank" rel="noopener noreferrer">Ley N° 21.096</a>** - Consagración Constitucional del Derecho a la Protección de Datos Personales (2018).
+* **<a href="https://www.bcn.cl/leychile/navegar?idNorma=1209272" target="_blank" rel="noopener noreferrer">Ley N° 21.719</a>** - Nueva Ley que regula la Protección y Tratamiento de Datos Personales y crea la Agencia de Protección de Datos Personales (vigencia: diciembre 2026).
 
 ---
 
 ## 5. Derechos y Protección de Datos
 
-Referenciales.cl se compromete a cumplir con la **Ley N° 19.628** sobre Protección de Datos Personales, asegurando que todos los datos personales recolectados y procesados en la plataforma sean tratados de manera segura y conforme a la ley. Esto incluye, pero no se limita a, los siguientes aspectos:
+Referenciales.cl se compromete a cumplir con Ley de Protección de la Vida Privada, que regula el tratamiento de datos personales en Chile, asegurando que todos los datos personales recolectados y procesados en la plataforma sean tratados de manera segura y conforme a la ley. Esto incluye, pero no se limita a, los siguientes aspectos:
 
 ### Derechos Fundamentales
 
-* **Derecho de Acceso:** 
+* ✅ **Derecho de Acceso:** 
   - Los usuarios tienen el derecho a acceder a sus datos personales almacenados en la plataforma.
-* **Derecho de Rectificación:** 
+* ✅ **Derecho de Rectificación:** 
   - Los usuarios pueden solicitar la corrección de sus datos personales si estos son inexactos o están desactualizados.
-* **Derecho de Cancelación:** 
+* ✅ **Derecho de Cancelación:** 
   - Los usuarios tienen el derecho a solicitar la eliminación de sus datos personales cuando estos ya no sean necesarios para los fines para los que fueron recolectados, o cuando el usuario retire su consentimiento.
-* **Derecho de Oposición:** 
+* ✅ **Derecho de Oposición:** 
   - En casos específicos, los usuarios pueden oponerse al tratamiento de sus datos personales.
 
 ### 📞 Proceso de Reclamación
