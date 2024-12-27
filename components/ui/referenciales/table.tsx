@@ -5,12 +5,25 @@ import { referenciales } from '@prisma/client';
 import { formatDateToLocal } from '@/lib/utils';
 import { fetchFilteredReferenciales } from '@/lib/referenciales';
 
-// Campos sensibles que requieren blur
+// Mantener la definición de campos sensibles
 const SENSITIVE_FIELDS = ['comprador', 'vendedor'];
-
-// Helper para verificar si un campo es sensible
 const isSensitiveField = (key: string) => SENSITIVE_FIELDS.includes(key);
 
+// Función helper para manejar la visualización de datos sensibles
+const formatFieldValue = (key: string, value: any) => {
+  if (isSensitiveField(key)) {
+    return '• • • • •'; // Placeholder para datos sensibles
+  }
+
+  // Formatear según el tipo de campo
+  if (key === 'fechaescritura' && value) {
+    return formatDateToLocal(value.toISOString());
+  }
+  if ((key === 'monto' || key === 'superficie') && value) {
+    return value.toLocaleString('es-CL');
+  }
+  return value;
+}; // Agregar llave de cierre aquí
 
 // Definir interfaz basada en el modelo
 interface ReferencialTableProps {
@@ -61,15 +74,8 @@ export default async function ReferencialesTable({
                   <div>
                     {TABLE_HEADERS.map(({ key, label }) => (
                       <p key={key} className={key === 'cbr' ? 'font-medium' : ''}>
-                        {label}: {
-                          <span className={isSensitiveField(key) ? 'blur-sm hover:blur-none transition-all duration-300' : ''}>
-                            {key === 'fechaescritura' ? formatDateToLocal(referencial[key].toISOString()) :
-                            key === 'monto' ? formatNumber(referencial[key]) :
-                            key === 'superficie' ? formatNumber(referencial[key]) :
-                            referencial[key]}
-                          </span>
-                        }
-                      </p>
+                        {label}: {formatFieldValue(key, referencial[key])}
+                                                  </p>
                     ))}
                   </div>
                 </div>
@@ -94,11 +100,8 @@ export default async function ReferencialesTable({
                   <tr key={referencial.id} 
                       className="w-full border-b py-3 text-sm last-of-type:border-none [&:first-child>td:first-child]:rounded-tl-lg [&:first-child>td:last-child]:rounded-tr-lg [&:last-child>td:first-child]:rounded-bl-lg [&:last-child>td:last-child]:rounded-br-lg">
                     {TABLE_HEADERS.map(({ key }) => (
-                      <td key={key} className={`whitespace-nowrap px-3 py-3 ${isSensitiveField(key) ? 'blur-sm hover:blur-none transition-all duration-300' : ''}`}>
-                        {key === 'fechaescritura' ? formatDateToLocal(referencial[key].toISOString()) :
-                         key === 'monto' ? formatNumber(referencial[key]) :
-                         key === 'superficie' ? formatNumber(referencial[key]) :
-                         referencial[key]}
+                      <td key={key} className="whitespace-nowrap px-3 py-3">
+                        {formatFieldValue(key, referencial[key])}
                       </td>
                     ))}
                   </tr>
