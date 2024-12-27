@@ -1,16 +1,24 @@
 // components/ui/dashboard/TopComunasChart.tsx
 'use client';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { fetchTopComunas } from '@/lib/referenciales';
 
-type CommuneData = {
+interface CommuneData {
   comuna: string;
   count: number;
-};
+}
 
-export default async function TopComunasChart() {
-  const data = await fetchTopComunas();
+export default function TopComunasChart() {
+  const [data, setData] = useState<CommuneData[]>([]);
+
+  useEffect(() => {
+    async function getData() {
+      const result: CommuneData[] = await fetchTopComunas();
+      setData(result);
+    }
+    getData();
+  }, []);
 
   return (
     <div className="flex w-full flex-col md:col-span-4 lg:col-span-4">
