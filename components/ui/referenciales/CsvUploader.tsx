@@ -61,14 +61,14 @@ export default function CsvUploader({ users }: CsvUploaderProps) {
       '100',
       '123',
       '2024',
-      'CBR Santiago',
+      'Santiago',
       'Ana Compradora',
       'Juan Vendedor',
       'Fundo El Example',
       'Santiago',
       '123-45',
       '2024-03-21',
-      '1000',
+      '5000',
       '50000000',
       'Deslinde Norte: Río Example'
     ].join(',');
