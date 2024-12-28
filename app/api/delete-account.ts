@@ -2,6 +2,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { getSession } from 'next-auth/react';
 import { prisma } from '@/lib/prisma';
+import nodemailer from 'nodemailer';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'DELETE') {
@@ -15,9 +16,25 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
-    // Eliminar la cuenta del usuario usando el id
-    await prisma.user.delete({
+    const user = await prisma.user.delete({
       where: { id: session.user.id },
+    });
+
+    // Configurar el transporte de correo
+    const transporter = nodemailer.createTransport({
+      service: 'Gmail',
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
+    });
+
+    // Enviar correo electrónico
+    await transporter.sendMail({
+      from: process.env.EMAIL_USER,
+      to: user.email,
+      subject: 'Cuenta Eliminada',
+      text: 'Tu cuenta ha sido eliminada exitosamente.',
     });
 
     res.status(200).json({ message: 'Account deleted successfully' });
