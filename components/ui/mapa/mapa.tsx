@@ -10,6 +10,47 @@ import { fetchReferencialesForMap } from '@/lib/mapData';
 import { MapMarker, Point } from '@/components/ui/mapa/MapMarker';
 import L from 'leaflet';
 
+// Componente para el botón de ubicación
+const LocationButton = () => {
+    const map = useMap();
+    const [loading, setLoading] = useState(false);
+
+    const handleLocationClick = () => {
+        setLoading(true);
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                const { latitude, longitude } = position.coords;
+                map.flyTo([latitude, longitude], 15, {
+                    duration: 2
+                });
+                setLoading(false);
+            },
+            (error) => {
+                console.error('Error getting location:', error);
+                setLoading(false);
+                alert('No se pudo obtener tu ubicación');
+            }
+        );
+    };
+
+    return (
+        <button 
+            onClick={handleLocationClick}
+            className="absolute z-[1000] bottom-8 right-8 bg-blue-500 hover:bg-blue-600 text-white rounded-full p-3 shadow-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
+            disabled={loading}
+        >
+            {loading ? (
+                <span className="animate-spin">⌛</span>
+            ) : (
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+            )}
+        </button>
+    );
+};
+
 // Configura el icono del marcador personalizado
 const redIcon = new L.Icon({
   iconUrl: '/images/marker-icon.png',
@@ -98,6 +139,7 @@ const Mapa = () => {
                 }}
             >          
                 <SearchField />
+                <LocationButton />
                 <TileLayer
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                     attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
