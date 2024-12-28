@@ -72,14 +72,14 @@ const LocationButton = () => {
     return (
         <button 
             onClick={handleLocationClick}
-            className="absolute z-[1000] bottom-8 right-8 bg-blue-500 hover:bg-blue-600 text-white rounded-full p-3 shadow-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
+            className="absolute z-[1000] bottom-8 right-8 bg-blue-500 bg-opacity-80 hover:bg-opacity-100 hover:bg-blue-600 text-white rounded-full p-2 shadow-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
             disabled={loading}
             title="Obtener mi ubicación"
         >
             {loading ? (
-                <span className="animate-spin">⌛</span>
+                <span className="animate-spin text-sm">⌛</span>
             ) : (
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                 </svg>
