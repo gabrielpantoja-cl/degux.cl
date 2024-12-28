@@ -2,12 +2,14 @@
 
 ## 1. Introducción
 
-**Referenciales.cl** es una aplicación web diseñada para proporcionar una base de datos colaborativa relacionada con transacciones de suelo en Chile, basada en información recolectada por personas voluntarias. Esta información incluye datos de compraventas de propiedades obtenidos en Conservadores de Bienes Raíces (CBR).
+**Referenciales.cl** es una aplicación web de código abierto diseñada para proporcionar una base de datos colaborativa relacionada con transacciones de suelo en Chile. Basada en información recolectada por personas voluntarias, esta plataforma fomenta la transparencia y colaboración, permitiendo a desarrolladores y usuarios contribuir al desarrollo del proyecto.
 
 > **Importante:** Referenciales.cl es una iniciativa sin fines de lucro que busca contribuir al acceso libre de información. No garantizamos la exactitud, completitud o actualidad de los datos, ni nos responsabilizamos por el uso que los usuarios hagan de esta información.
 
 ### Nuestro Objetivo
-Facilitar el acceso a datos de referencia para beneficio de la comunidad.
+En Referenciales.cl, buscamos democratizar el acceso a información sobre transacciones de suelo en Chile. Nuestra plataforma ofrece datos de referencia para empoderar a ciudadanos y profesionales, promoviendo la transparencia y comprensión del mercado inmobiliario. Valoramos la colaboración y el intercambio de conocimiento para construir un mercado más justo y accesible para todos.
+
+
 
 ---
 
@@ -105,4 +107,4 @@ Referenciales.cl se reserva el derecho de modificar estos términos y condicione
 
 ## 11. Declaración de Buenas Prácticas
 
-Referenciales.cl fomenta el uso ético y responsable de la información pública, respetando la privacidad de los involucrados y promoviendo la transparencia en el mercado de bienes raíces en Chile.
+Referenciales.cl fomenta el uso ético y responsable de la información pública, respetando la privacidad de los involucrados y promoviendo la transparencia en el mercado de bienes raíces en Chile. Como un proyecto de código abierto, invitamos a la comunidad a participar activamente en el desarrollo y mejora de la plataforma, asegurando que el conocimiento y la innovación sean compartidos para el beneficio colectivo.
