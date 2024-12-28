@@ -32,15 +32,21 @@ export default function SideNav() {
 
     try {
       setIsDeleting(true);
-      await fetch('/api/delete-account', {
+      const response = await fetch('/api/delete-account', {
         method: 'DELETE',
       });
+
+      if (!response.ok) {
+        throw new Error('Failed to delete account');
+      }
+
       await signOut({
         callbackUrl: '/',
         redirect: true
       });
     } catch (error) {
       console.error('Error during account deletion:', error);
+      alert('Hubo un error al eliminar la cuenta. Por favor, inténtalo de nuevo.');
     } finally {
       setIsDeleting(false);
     }
