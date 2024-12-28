@@ -1,6 +1,4 @@
 // app/ui/referenciales/table.tsx
-
-// Importar tipos desde Prisma schema
 import { referenciales } from '@prisma/client';
 import { formatDateToLocal } from '@/lib/utils';
 import { fetchFilteredReferenciales } from '@/lib/referenciales';
@@ -12,10 +10,9 @@ const isSensitiveField = (key: string) => SENSITIVE_FIELDS.includes(key);
 // Función helper para manejar la visualización de datos sensibles
 const formatFieldValue = (key: string, value: any) => {
   if (isSensitiveField(key)) {
-    return '• • • • •'; // Placeholder para datos sensibles
+    return '• • • • •';
   }
 
-  // Formatear según el tipo de campo
   if (key === 'fechaescritura' && value) {
     return formatDateToLocal(value.toISOString());
   }
@@ -25,23 +22,19 @@ const formatFieldValue = (key: string, value: any) => {
   return value;
 };
 
-// Definir interfaz basada en el modelo
 interface ReferencialTableProps {
   query: string;
   currentPage: number;
 }
 
-// Definir tipo de claves del objeto referencial
 type ReferencialKeys = keyof referenciales;
 
 // Campos alineados con schema.prisma
-const TABLE_HEADERS: { key: ReferencialKeys, label: string }[] = [
+const ALL_TABLE_HEADERS: { key: ReferencialKeys, label: string }[] = [
   { key: 'cbr', label: 'CBR' },
   { key: 'fojas', label: 'Fojas' },
   { key: 'numero', label: 'Número' },
   { key: 'anio', label: 'Año' },
-  { key: 'comprador', label: 'Comprador' },
-  { key: 'vendedor', label: 'Vendedor' },
   { key: 'predio', label: 'Predio' },
   { key: 'comuna', label: 'Comuna' },
   { key: 'rol', label: 'Rol' },
@@ -50,6 +43,11 @@ const TABLE_HEADERS: { key: ReferencialKeys, label: string }[] = [
   { key: 'superficie', label: 'Superficie (m²)' },
   { key: 'observaciones', label: 'Observaciones' },
 ];
+
+// Filtrar headers excluyendo campos sensibles
+const VISIBLE_HEADERS = ALL_TABLE_HEADERS.filter(
+  header => !SENSITIVE_FIELDS.includes(header.key)
+);
 
 export default async function ReferencialesTable({
   query,
@@ -67,7 +65,7 @@ export default async function ReferencialesTable({
               <div key={referencial.id} className="mb-2 w-full rounded-md bg-white p-4">
                 <div className="flex items-center justify-between border-b pb-4">
                   <div>
-                    {TABLE_HEADERS.map(({ key, label }) => (
+                    {VISIBLE_HEADERS.map(({ key, label }) => (
                       <p key={key} className={key === 'cbr' ? 'font-medium' : ''}>
                         {label}: {formatFieldValue(key, referencial[key])}
                       </p>
@@ -83,7 +81,7 @@ export default async function ReferencialesTable({
             <table className="min-w-full text-gray-900">
               <thead className="rounded-lg text-left text-sm font-normal">
                 <tr>
-                  {TABLE_HEADERS.map(({ key, label }) => (
+                  {VISIBLE_HEADERS.map(({ key, label }) => (
                     <th key={key} scope="col" className="px-3 py-5 font-medium">
                       {label}
                     </th>
@@ -94,7 +92,7 @@ export default async function ReferencialesTable({
                 {referenciales?.map((referencial: referenciales) => (
                   <tr key={referencial.id} 
                       className="w-full border-b py-3 text-sm last-of-type:border-none [&:first-child>td:first-child]:rounded-tl-lg [&:first-child>td:last-child]:rounded-tr-lg [&:last-child>td:first-child]:rounded-bl-lg [&:last-child>td:last-child]:rounded-br-lg">
-                    {TABLE_HEADERS.map(({ key }) => (
+                    {VISIBLE_HEADERS.map(({ key }) => (
                       <td key={key} className="whitespace-nowrap px-3 py-3">
                         {formatFieldValue(key, referencial[key])}
                       </td>
