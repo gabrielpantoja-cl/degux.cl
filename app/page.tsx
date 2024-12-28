@@ -16,7 +16,7 @@ export default function Page() {
       {showBanner && (
         <div className="flex items-center justify-between bg-yellow-200 p-4 rounded-lg mb-4">
           <p className="text-yellow-800">
-          🚧 Estamos en desarrollo. Agradecemos tus comentarios y opiniones mientras mejoramos la plataforma. Únete al grupo de WhatsApp para compartir tus ideas.          </p>
+          🚧 Estamos en desarrollo. Agradecemos tus comentarios y opiniones mientras mejoramos la plataforma.          </p>
           <button
             onClick={() => setShowBanner(false)}
             className="ml-4 rounded bg-yellow-300 px-3 py-1 text-yellow-800 hover:bg-yellow-400"
