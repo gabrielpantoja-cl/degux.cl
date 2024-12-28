@@ -33,7 +33,7 @@ Facilitar el acceso a datos de referencia para beneficio de la comunidad.
 
 ---
 
-### 4. Marco Legal
+## 4. Marco Legal
 
 El acceso y uso del sitio web se rige íntegramente por las leyes de la República de Chile, incluyendo las disposiciones pertinentes del Código Civil y especialmente por el siguiente marco normativo específico:
 
