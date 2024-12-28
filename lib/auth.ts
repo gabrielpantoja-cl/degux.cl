@@ -3,6 +3,7 @@ import NextAuth, { AuthOptions, Session, User } from 'next-auth';
 import GoogleProvider from 'next-auth/providers/google';
 import { PrismaAdapter } from '@auth/prisma-adapter';
 import { prisma } from '@/lib/prisma';
+import nodemailer from 'nodemailer';
 
 // Constantes
 const ONE_YEAR = 365 * 24 * 60 * 60;
@@ -52,6 +53,15 @@ const authLogger = {
 if (!googleClientId || !googleClientSecret) {
   throw new Error("Missing Google client ID or secret in environment variables");
 }
+
+// Configurar el transporte de correo
+const transporter = nodemailer.createTransport({
+  service: 'Gmail',
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
+  },
+});
 
 export const authOptions: AuthOptions = {
   adapter: PrismaAdapter(prisma),
@@ -126,13 +136,28 @@ export const authOptions: AuthOptions = {
   },
   events: {
     async signIn({ user }) {
-      await prisma.auditLog.create({
-        data: {
-          userId: user.id,
-          action: 'signIn',
-          metadata: { email: user.email }
+      try {
+        await prisma.auditLog.create({
+          data: {
+            userId: user.id,
+            action: 'signIn',
+            metadata: { email: user.email }
+          }
+        });
+
+        // Enviar correo electrónico de bienvenida
+        if (user.email) {
+          await transporter.sendMail({
+            from: process.env.EMAIL_USER,
+            to: user.email,
+            subject: 'Bienvenido a la Aplicación',
+            text: 'Gracias por registrarte en nuestra aplicación.',
+          });
         }
-      }).catch(error => authLogger.error('SignIn audit failed', error as Error));
+
+      } catch (error) {
+        authLogger.error('SignIn audit failed', error as Error);
+      }
     }
   },
   pages: {
