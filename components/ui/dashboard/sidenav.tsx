@@ -5,20 +5,14 @@ import Link from 'next/link';
 import NavLinks from '@/components/ui/dashboard/nav-links';
 import AcmeLogo from '@/components/ui/acme-logo';
 import { PowerIcon, ExclamationTriangleIcon } from '@heroicons/react/24/outline';
-import { signOut, useSession } from 'next-auth/react';
+import { signOut } from 'next-auth/react';
 import { useState } from 'react';
 import { toast } from 'react-hot-toast';
-
-interface DeleteAccountResponse {
-  message: string;
-  success: boolean;
-  error?: string;
-}
+import { useDeleteAccount } from '@/hooks/useDeleteAccount';
 
 export default function SideNav() {
-  const { data: session } = useSession();
   const [isLoading, setIsLoading] = useState(false);
-  const [isDeleting, setIsDeleting] = useState(false);
+  const { deleteAccount, isDeleting } = useDeleteAccount();
 
   const handleSignOut = async () => {
     try {
@@ -32,71 +26,6 @@ export default function SideNav() {
       toast.error('Error al cerrar sesión');
     } finally {
       setIsLoading(false);
-    }
-  };
-
-  const handleDeleteAccount = async () => {
-    if (!session?.user) {
-      toast.error('Debes iniciar sesión para eliminar tu cuenta');
-      return;
-    }
-
-    if (!confirm('¿Estás seguro de que deseas eliminar tu cuenta? Esta acción no se puede deshacer.')) {
-      return;
-    }
-
-    try {
-      setIsDeleting(true);
-      toast.loading('Eliminando cuenta...');
-
-      const response = await fetch('/api/delete-account', {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-        }
-      });
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        let errorMessage = 'Error al eliminar la cuenta';
-        try {
-          const errorData = JSON.parse(errorText);
-          errorMessage = errorData.message || errorData.error || errorMessage;
-        } catch {
-          errorMessage += ` (${response.status})`;
-        }
-        throw new Error(errorMessage);
-      }
-
-      const responseText = await response.text();
-      if (!responseText) {
-        throw new Error('Respuesta vacía del servidor');
-      }
-
-      let data: DeleteAccountResponse;
-      try {
-        data = JSON.parse(responseText);
-      } catch {
-        throw new Error('Respuesta del servidor inválida');
-      }
-
-      if (data.success) {
-        toast.dismiss();
-        toast.success(data.message || 'Cuenta eliminada correctamente');
-        await signOut({
-          callbackUrl: '/',
-          redirect: true
-        });
-      } else {
-        throw new Error(data.error || 'Error inesperado al eliminar la cuenta');
-      }
-
-    } catch (error) {
-      console.error('Error durante la eliminación de cuenta:', error);
-      toast.dismiss();
-      toast.error(error instanceof Error ? error.message : 'Error al eliminar la cuenta');
-    } finally {
-      setIsDeleting(false);
     }
   };
 
@@ -125,7 +54,7 @@ export default function SideNav() {
           <div className="hidden md:block">{isLoading ? 'Saliendo...' : 'Cerrar Sesión'}</div>
         </button>
         <button
-          onClick={handleDeleteAccount}
+          onClick={deleteAccount}
           disabled={isDeleting || isLoading}
           aria-label={isDeleting ? 'Eliminando cuenta...' : 'Eliminar cuenta'}
           className={`flex h-[48px] grow items-center justify-center gap-2 rounded-md bg-red-50 p-3 text-sm font-medium 
