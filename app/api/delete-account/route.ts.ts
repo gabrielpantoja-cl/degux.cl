@@ -4,16 +4,18 @@ import { getServerSession } from 'next-auth';
 import { prisma } from '@/lib/prisma';
 import nodemailer from 'nodemailer';
 import { authOptions } from '@/lib/auth';
-import { headers } from 'next/headers';
 
-export async function DELETE(request: Request) {
+export async function DELETE() {
   try {
-    const headersList = headers();
     const session = await getServerSession(authOptions);
 
     if (!session?.user?.id) {
       return NextResponse.json(
-        { message: 'No autorizado', error: 'Unauthorized' },
+        { 
+          success: false,
+          message: 'No autorizado', 
+          error: 'Unauthorized' 
+        },
         { status: 401 }
       );
     }
@@ -25,7 +27,11 @@ export async function DELETE(request: Request) {
 
     if (!user) {
       return NextResponse.json(
-        { message: 'Usuario no encontrado', error: 'Not Found' },
+        { 
+          success: false,
+          message: 'Usuario no encontrado', 
+          error: 'Not Found' 
+        },
         { status: 404 }
       );
     }
@@ -67,7 +73,10 @@ export async function DELETE(request: Request) {
     }
 
     return NextResponse.json(
-      { message: 'Cuenta eliminada exitosamente', success: true },
+      { 
+        success: true,
+        message: 'Cuenta eliminada exitosamente'
+      },
       { status: 200 }
     );
 
@@ -75,6 +84,7 @@ export async function DELETE(request: Request) {
     console.error('Error al eliminar cuenta:', error);
     return NextResponse.json(
       { 
+        success: false,
         message: 'Error al eliminar la cuenta. Por favor, intente nuevamente.',
         error: error instanceof Error ? error.message : 'Unknown error'
       },

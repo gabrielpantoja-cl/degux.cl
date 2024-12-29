@@ -19,6 +19,7 @@ REQUIRED_ENV_VARS.forEach(envVar => {
 const publicRoutes = ["/", "/prices", "/terms", "/about", "/contact"];
 const authRoutes = ["/login", "/register", "/auth/error"];
 const apiAuthPrefix = "/api/auth";
+const protectedApiRoutes = ["/api/delete-account"]; // Nueva constante
 const staticRoutes = [
   "/_next",
   "/favicon.ico",
@@ -127,6 +128,16 @@ export default async function middleware(req: AuthenticatedRequest) {
 
     // Autenticación de usuario
     const isLoggedIn = await isAuthenticated(req);
+
+    // Verificar rutas API protegidas
+    if (protectedApiRoutes.includes(pathname) && !isLoggedIn) {
+      return setSecurityHeaders(
+        NextResponse.json(
+          { error: "No autorizado" },
+          { status: 401 }
+        )
+      );
+    }
 
     // Manejo de rutas autenticadas y no autenticadas
     if (!isLoggedIn && !authRoutes.includes(pathname)) {
