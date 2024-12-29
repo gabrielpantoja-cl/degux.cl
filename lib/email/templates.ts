@@ -6,11 +6,11 @@ interface EmailTemplate {
 
 interface EmailTemplates {
   welcome: (userName: string) => EmailTemplate;
-  deleteAccount?: (userName: string) => EmailTemplate;
+  deleteAccount: (userName: string) => EmailTemplate;
 }
 
 export const emailTemplates: EmailTemplates = {
-  welcome: (userName: string) => ({
+  welcome: (userName) => ({
     subject: 'Bienvenido a Referenciales',
     html: `
       <div style="
@@ -23,7 +23,7 @@ export const emailTemplates: EmailTemplates = {
         box-shadow: 0 2px 4px rgba(0,0,0,0.1);
       ">
         <div style="text-align: center; margin-bottom: 20px;">
-          <h2 style="color: #2563eb;">¡Bienvenido ${userName || ''}!</h2>
+          <h2 style="color: #2563eb;">¡Bienvenido ${userName}!</h2>
         </div>
         
         <div style="color: #4b5563; line-height: 1.6;">
@@ -40,7 +40,7 @@ export const emailTemplates: EmailTemplates = {
     `
   }),
   
-  deleteAccount: (userName: string) => ({
+  deleteAccount: (userName) => ({
     subject: 'Cuenta Eliminada - Referenciales',
     html: `
       <div style="
@@ -57,7 +57,7 @@ export const emailTemplates: EmailTemplates = {
         </div>
         
         <div style="color: #4b5563; line-height: 1.6;">
-          <p>Hola ${userName || ''},</p>
+          <p>Hola ${userName},</p>
           <p>Tu cuenta en Referenciales ha sido eliminada exitosamente.</p>
           <p>Esperamos volver a verte pronto.</p>
         </div>
