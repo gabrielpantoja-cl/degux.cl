@@ -10,7 +10,7 @@ interface EmailTemplates {
 }
 
 export const emailTemplates: EmailTemplates = {
-  welcome: (userName) => ({
+  welcome: (userName: string) => ({
     subject: 'Bienvenido a Referenciales',
     html: `
       <div style="
@@ -40,7 +40,7 @@ export const emailTemplates: EmailTemplates = {
     `
   }),
   
-  deleteAccount: (userName) => ({
+  deleteAccount: (userName: string) => ({
     subject: 'Cuenta Eliminada - Referenciales',
     html: `
       <div style="
