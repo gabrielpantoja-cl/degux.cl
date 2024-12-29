@@ -3,7 +3,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Agregar al globals.css */
+/* Espacio seguro para móviles */
 .mobile-safe-padding {
   padding-top: max(env(safe-area-inset-top), 1rem);
 }
@@ -29,25 +29,25 @@
     line-height: 1.5;
   }
   
- /* Párrafos y listas */
-.markdown-content p {
-  margin: 1.5em 0;
-}
+  /* Párrafos y listas */
+  & p {
+    margin: 1.5em 0;
+  }
 
-.markdown-content ul, .markdown-content ol {
-  margin: 1.5em 0;
-  padding-left: 1.5em;
-  line-height: 1.4; /* Ajuste del interlineado para listas */
-}
+  & ul, & ol {
+    margin: 1.5em 0;
+    padding-left: 1.5em;
+    line-height: 1.4; /* Ajuste del interlineado para listas */
+  }
 
-.markdown-content li {
-  margin: 0.25em 0; /* Reducir el margen entre los elementos de la lista */
-}
+  & li {
+    margin: 0.25em 0; /* Reducir el margen entre los elementos de la lista */
+  }
 
-.markdown-content li > p {
-  margin-top: 0.25em; /* Reducir el margen superior para descripciones */
-  margin-bottom: 0.25em; /* Reducir el margen inferior para descripciones */
-}
+  & li > p {
+    margin-top: 0.25em; /* Reducir el margen superior para descripciones */
+    margin-bottom: 0.25em; /* Reducir el margen inferior para descripciones */
+  }
   
   /* Blockquotes */
   & blockquote {
@@ -84,9 +84,7 @@
 :root {
   text-size-adjust: 100%;
   -webkit-text-size-adjust: 100%;
-  /* WebKit browsers */
   -moz-text-size-adjust: 100%;
-  /* Firefox */
 }
 
 /* Universal selector for box-sizing and resetting padding/margin */
@@ -111,16 +109,13 @@ body {
 
 /* Custom styles for number input fields */
 input[type='number'] {
-  -moz-appearance: textfield;
-  /* Firefox */
-  appearance: textfield;
-  /* Standard */
+  -moz-appearance: textfield; /* Firefox */
+  appearance: textfield; /* Standard */
 }
 
 input[type='number']::-webkit-inner-spin-button,
 input[type='number']::-webkit-outer-spin-button {
-  -webkit-appearance: none;
-  /* Chrome, Safari */
+  -webkit-appearance: none; /* Chrome, Safari */
   margin: 0;
 }
 
@@ -284,4 +279,14 @@ progress {
   display: block;
   text-indent: -9999px; /* Oculta cualquier texto */
   overflow: hidden; /* Asegura que no haya contenido adicional visible */
+}
+
+/* Asegurar que el modal tenga un z-index alto */
+.fixed.inset-0.z-50 {
+  z-index: 9999;
+}
+
+/* Asegurar que el contenedor del mapa tenga un z-index bajo */
+.leaflet-container {
+  z-index: 1;
 }
