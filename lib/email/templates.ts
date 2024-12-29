@@ -4,10 +4,12 @@ interface EmailTemplate {
   html: string;
 }
 
+/* eslint-disable no-unused-vars */
 interface EmailTemplates {
   welcome: (userName: string) => EmailTemplate;
   deleteAccount: (userName: string) => EmailTemplate;
 }
+/* eslint-enable no-unused-vars */
 
 export const emailTemplates: EmailTemplates = {
   welcome: (userName: string) => ({
