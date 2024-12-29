@@ -3,8 +3,8 @@
   "scripts": {
     "seed": "node prisma/seed.mjs",
     "build": "next build",
-    "dev": "NODE_NO_WARNINGS=1 next dev",
-    "start": "next start",
+    "dev": "next dev",    
+    "start": "next start", 
     "lint": "next lint",
     "prepare": "husky install",
     "postinstall": "prisma generate",
