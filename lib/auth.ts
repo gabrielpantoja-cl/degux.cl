@@ -3,7 +3,7 @@ import NextAuth, { AuthOptions, Session, User } from 'next-auth';
 import GoogleProvider from 'next-auth/providers/google';
 import { PrismaAdapter } from '@auth/prisma-adapter';
 import { prisma } from '@/lib/prisma';
-import nodemailer from 'nodemailer';
+import { sendWelcomeEmail } from '@/lib/email/sender';
 
 // Constantes
 const ONE_YEAR = 365 * 24 * 60 * 60;
@@ -36,8 +36,8 @@ const googleClientId = process.env.GOOGLE_CLIENT_ID;
 const googleClientSecret = process.env.GOOGLE_CLIENT_SECRET;
 const isProd = process.env.NODE_ENV === 'production';
 
-// Logger personalizado
-const authLogger = {
+// Logger personalizado (ahora exportado)
+export const authLogger = {
   debug: (message: string, data?: Record<string, unknown>): AuthLog => {
     const log: AuthLog = { message, data };
     if (!isProd) console.log(`[Auth Debug] ${message}:`, data);
@@ -53,15 +53,6 @@ const authLogger = {
 if (!googleClientId || !googleClientSecret) {
   throw new Error("Missing Google client ID or secret in environment variables");
 }
-
-// Configurar el transporte de correo
-const transporter = nodemailer.createTransport({
-  service: 'Gmail',
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
-  },
-});
 
 export const authOptions: AuthOptions = {
   adapter: PrismaAdapter(prisma),
@@ -134,69 +125,54 @@ export const authOptions: AuthOptions = {
       }
     }
   },
-  // lib/auth.ts
-events: {
-  async signIn({ user, account }) {
-    try {
-      // Verificar si es usuario nuevo
-      const existingUser = await prisma.user.findUnique({
-        where: { email: user.email! }
-      });
-
-      if (!existingUser && account?.provider === 'google') {
-        // Crear nuevo usuario
-        await prisma.user.create({
-          data: {
-            email: user.email!,
-            name: user.name,
-            image: user.image,
-            role: DEFAULT_ROLE,
-            emailVerified: new Date(),
-          }
+  events: {
+    async signIn({ user, account }) {
+      try {
+        const existingUser = await prisma.user.findUnique({
+          where: { email: user.email! }
         });
 
-        authLogger.debug('New user created', { 
-          email: user.email,
-          provider: account.provider 
-        });
-      }
+        if (!existingUser && account?.provider === 'google') {
+          await prisma.user.create({
+            data: {
+              email: user.email!,
+              name: user.name,
+              image: user.image,
+              role: DEFAULT_ROLE,
+              emailVerified: new Date(),
+            }
+          });
 
-      // Registrar inicio de sesión
-      await prisma.auditLog.create({
-        data: {
-          userId: user.id,
-          action: existingUser ? 'signIn' : 'userCreated',
-          metadata: { 
+          authLogger.debug('New user created', { 
             email: user.email,
-            provider: account?.provider 
+            provider: account.provider 
+          });
+
+          // Enviar correo usando el nuevo sistema
+          if (user.email) {
+            await sendWelcomeEmail({
+              email: user.email,
+              name: user.name || undefined
+            });
           }
         }
-      });
 
-      // Enviar correo solo a usuarios nuevos
-      if (!existingUser && user.email) {
-        await transporter.sendMail({
-          from: process.env.EMAIL_USER,
-          to: user.email,
-          subject: 'Bienvenido a Referenciales',
-          text: `
-            Hola ${user.name || ''},
-            
-            Gracias por registrarte en Referenciales. Tu cuenta ha sido creada exitosamente.
-            
-            Saludos,
-            El equipo de Referenciales
-          `
+        await prisma.auditLog.create({
+          data: {
+            userId: user.id,
+            action: existingUser ? 'signIn' : 'userCreated',
+            metadata: { 
+              email: user.email,
+              provider: account?.provider 
+            }
+          }
         });
-        
-        authLogger.debug('Welcome email sent', { email: user.email });
-      }
 
-    } catch (error) {
-      authLogger.error('SignIn/Create user failed', error as Error);
+      } catch (error) {
+        authLogger.error('SignIn/Create user failed', error as Error);
+      }
     }
-  }
-},
+  },
   pages: {
     signIn: "/login",
     error: "/auth/error",
