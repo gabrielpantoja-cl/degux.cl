@@ -22,6 +22,12 @@ const nextConfig = {
         hostname: 'localhost',
         port: '',
         pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'referenciales.cl',
+        port: '',
+        pathname: '/**',
       }
     ],
   },
