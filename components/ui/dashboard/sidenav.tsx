@@ -1,13 +1,16 @@
+// components/ui/dashboard/sidenav.tsx
 "use client";
 
 import Link from 'next/link';
 import NavLinks from '@/components/ui/dashboard/nav-links';
 import AcmeLogo from '@/components/ui/acme-logo';
 import { PowerIcon, ExclamationTriangleIcon } from '@heroicons/react/24/outline';
-import { signOut } from 'next-auth/react';
+import { signOut, useSession } from 'next-auth/react';
 import { useState } from 'react';
+import { toast } from 'react-hot-toast';
 
 export default function SideNav() {
+  const { data: session } = useSession();
   const [isLoading, setIsLoading] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
 
@@ -19,13 +22,19 @@ export default function SideNav() {
         redirect: true
       });
     } catch (error) {
-      console.error('Error during sign out:', error);
+      console.error('Error durante el cierre de sesión:', error);
+      toast.error('Error al cerrar sesión');
     } finally {
       setIsLoading(false);
     }
   };
 
   const handleDeleteAccount = async () => {
+    if (!session?.user) {
+      toast.error('Debes iniciar sesión para eliminar tu cuenta');
+      return;
+    }
+
     if (!confirm('¿Estás seguro de que deseas eliminar tu cuenta? Esta acción no se puede deshacer.')) {
       return;
     }
@@ -34,19 +43,25 @@ export default function SideNav() {
       setIsDeleting(true);
       const response = await fetch('/api/delete-account', {
         method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        }
       });
 
       if (!response.ok) {
-        throw new Error('Failed to delete account');
+        const error = await response.json();
+        throw new Error(error.message || 'Error al eliminar la cuenta');
       }
 
+      toast.success('Cuenta eliminada correctamente');
+      
       await signOut({
         callbackUrl: '/',
         redirect: true
       });
     } catch (error) {
-      console.error('Error during account deletion:', error);
-      alert('Hubo un error al eliminar la cuenta. Por favor, inténtalo de nuevo.');
+      console.error('Error durante la eliminación de cuenta:', error);
+      toast.error(error instanceof Error ? error.message : 'Error al eliminar la cuenta');
     } finally {
       setIsDeleting(false);
     }
@@ -67,9 +82,10 @@ export default function SideNav() {
         <div className="hidden h-auto w-full grow rounded-md bg-gray-50 md:block"></div>
         <button
           onClick={handleSignOut}
-          disabled={isLoading}
+          disabled={isLoading || isDeleting}
+          aria-label={isLoading ? 'Cerrando sesión...' : 'Cerrar sesión'}
           className={`flex h-[48px] grow items-center justify-center gap-2 rounded-md bg-gray-50 p-3 text-sm font-medium 
-            ${isLoading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-sky-100 hover:text-blue-600'} 
+            ${(isLoading || isDeleting) ? 'opacity-50 cursor-not-allowed' : 'hover:bg-sky-100 hover:text-blue-600'} 
             md:flex-none md:justify-start md:p-2 md:px-3`}
         >
           <PowerIcon className={`w-6 ${isLoading ? 'animate-pulse' : ''}`} />
@@ -77,9 +93,10 @@ export default function SideNav() {
         </button>
         <button
           onClick={handleDeleteAccount}
-          disabled={isDeleting}
+          disabled={isDeleting || isLoading}
+          aria-label={isDeleting ? 'Eliminando cuenta...' : 'Eliminar cuenta'}
           className={`flex h-[48px] grow items-center justify-center gap-2 rounded-md bg-red-50 p-3 text-sm font-medium 
-            ${isDeleting ? 'opacity-50 cursor-not-allowed' : 'hover:bg-red-100 hover:text-red-600'} 
+            ${(isDeleting || isLoading) ? 'opacity-50 cursor-not-allowed' : 'hover:bg-red-100 hover:text-red-600'} 
             md:flex-none md:justify-start md:p-2 md:px-3`}
         >
           <ExclamationTriangleIcon className={`w-6 ${isDeleting ? 'animate-pulse' : ''}`} />
