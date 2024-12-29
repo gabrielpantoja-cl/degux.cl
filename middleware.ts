@@ -19,7 +19,8 @@ REQUIRED_ENV_VARS.forEach(envVar => {
 const publicRoutes = ["/", "/prices", "/terms", "/about", "/contact"];
 const authRoutes = ["/login", "/register", "/auth/error"];
 const apiAuthPrefix = "/api/auth";
-const protectedApiRoutes = ["/api/delete-account"]; // Nueva constante
+const protectedApiRoutes = ["/api/delete-account"]; // Rutas API protegidas
+const apiRoutes = [...protectedApiRoutes]; // Todas las rutas API
 const staticRoutes = [
   "/_next",
   "/favicon.ico",
@@ -94,23 +95,24 @@ export default async function middleware(req: AuthenticatedRequest) {
     const pathname = nextUrl.pathname;
     const host = req.headers.get('host');
 
-    // Mejorar logging para debugging en producción y desarrollo
     console.log("[Middleware Detailed Debug]:", {
       path: pathname,
       isProd,
       host,
       referer: req.headers.get('referer'),
       isCallback: pathname.includes('/callback'),
-      isAuthRoute: pathname.startsWith(apiAuthPrefix)
+      isAuthRoute: pathname.startsWith(apiAuthPrefix),
+      isProtectedApi: protectedApiRoutes.includes(pathname),
+      isApi: apiRoutes.includes(pathname)
     });
 
-    // Permitir todas las rutas OAuth y de API sin restricciones
+    // Permitir todas las rutas OAuth
     if (pathname.startsWith(apiAuthPrefix)) {
       console.log("[OAuth Flow]:", pathname);
       return NextResponse.next();
     }
 
-    // Validación de host permitidos para evitar ataques de phishing
+    // Validación de host permitidos
     if (!ALLOWED_HOSTS.includes(host || '')) {
       console.error("[Security Error]: Invalid host", host);
       return NextResponse.redirect(new URL("/auth/error", nextUrl));
@@ -129,17 +131,25 @@ export default async function middleware(req: AuthenticatedRequest) {
     // Autenticación de usuario
     const isLoggedIn = await isAuthenticated(req);
 
-    // Verificar rutas API protegidas
-    if (protectedApiRoutes.includes(pathname) && !isLoggedIn) {
-      return setSecurityHeaders(
-        NextResponse.json(
-          { error: "No autorizado" },
-          { status: 401 }
-        )
-      );
+    // Rutas API protegidas
+    if (protectedApiRoutes.includes(pathname)) {
+      if (!isLoggedIn) {
+        console.log("[API Auth Error]:", pathname);
+        return setSecurityHeaders(
+          NextResponse.json(
+            { 
+              success: false,
+              message: "No autorizado",
+              error: "Unauthorized"
+            },
+            { status: 401 }
+          )
+        );
+      }
+      return NextResponse.next();
     }
 
-    // Manejo de rutas autenticadas y no autenticadas
+    // Rutas que requieren autenticación
     if (!isLoggedIn && !authRoutes.includes(pathname)) {
       const loginUrl = new URL("/login", nextUrl);
       if (pathname !== '/login') {
@@ -161,5 +171,6 @@ export default async function middleware(req: AuthenticatedRequest) {
 export const config = {
   matcher: [
     "/((?!_next/static|_next/image|favicon.ico|public/|assets/|images/).*)",
+    "/api/:path*"  // Añadir matcher para rutas API
   ],
 };
