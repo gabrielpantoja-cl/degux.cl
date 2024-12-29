@@ -135,28 +135,64 @@ export const authOptions: AuthOptions = {
     }
   },
   events: {
-    async signIn({ user }) {
+    async signIn({ user, account, profile }) {
       try {
-        await prisma.auditLog.create({
-          data: {
-            userId: user.id,
-            action: 'signIn',
-            metadata: { email: user.email }
-          }
+        // Verificar si es usuario nuevo
+        const existingUser = await prisma.user.findUnique({
+          where: { email: user.email! }
         });
 
-        // Enviar correo electrónico de bienvenida
-        if (user.email) {
-          await transporter.sendMail({
-            from: process.env.EMAIL_USER,
-            to: user.email,
-            subject: 'Bienvenido a la Aplicación',
-            text: 'Gracias por registrarte en nuestra aplicación.',
+        if (!existingUser && account?.provider === 'google') {
+          // Crear nuevo usuario
+          await prisma.user.create({
+            data: {
+              email: user.email!,
+              name: user.name,
+              image: user.image,
+              role: DEFAULT_ROLE,
+              emailVerified: new Date(),
+            }
+          });
+
+          authLogger.debug('New user created', { 
+            email: user.email,
+            provider: account.provider 
           });
         }
 
+        // Registrar inicio de sesión
+        await prisma.auditLog.create({
+          data: {
+            userId: user.id,
+            action: existingUser ? 'signIn' : 'userCreated',
+            metadata: { 
+              email: user.email,
+              provider: account?.provider 
+            }
+          }
+        });
+
+        // Enviar correo solo a usuarios nuevos
+        if (!existingUser && user.email) {
+          await transporter.sendMail({
+            from: process.env.EMAIL_USER,
+            to: user.email,
+            subject: 'Bienvenido a Referenciales',
+            text: `
+              Hola ${user.name || ''},
+              
+              Gracias por registrarte en Referenciales. Tu cuenta ha sido creada exitosamente.
+              
+              Saludos,
+              El equipo de Referenciales
+            `
+          });
+          
+          authLogger.debug('Welcome email sent', { email: user.email });
+        }
+
       } catch (error) {
-        authLogger.error('SignIn audit failed', error as Error);
+        authLogger.error('SignIn/Create user failed', error as Error);
       }
     }
   },
