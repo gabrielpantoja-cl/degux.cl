@@ -9,6 +9,12 @@ import { signOut, useSession } from 'next-auth/react';
 import { useState } from 'react';
 import { toast } from 'react-hot-toast';
 
+interface DeleteAccountResponse {
+  message: string;
+  success?: boolean;
+  error?: string;
+}
+
 export default function SideNav() {
   const { data: session } = useSession();
   const [isLoading, setIsLoading] = useState(false);
@@ -48,17 +54,22 @@ export default function SideNav() {
         }
       });
 
+      const data: DeleteAccountResponse = await response.json();
+
       if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message || 'Error al eliminar la cuenta');
+        throw new Error(data.message || 'Error al eliminar la cuenta');
       }
 
-      toast.success('Cuenta eliminada correctamente');
-      
-      await signOut({
-        callbackUrl: '/',
-        redirect: true
-      });
+      if (data.success) {
+        toast.success(data.message || 'Cuenta eliminada correctamente');
+        await signOut({
+          callbackUrl: '/',
+          redirect: true
+        });
+      } else {
+        throw new Error(data.error || 'Error inesperado al eliminar la cuenta');
+      }
+
     } catch (error) {
       console.error('Error durante la eliminación de cuenta:', error);
       toast.error(error instanceof Error ? error.message : 'Error al eliminar la cuenta');
