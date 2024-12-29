@@ -15,7 +15,7 @@ REQUIRED_ENV_VARS.forEach(envVar => {
   }
 });
 
-// Configuración de rutas mejorada
+// Configuración de rutas
 const publicRoutes = ["/", "/prices", "/terms", "/about", "/contact"];
 const authRoutes = ["/login", "/register", "/auth/error"];
 const apiAuthPrefix = "/api/auth";
@@ -149,6 +149,6 @@ export default async function middleware(req: AuthenticatedRequest) {
 
 export const config = {
   matcher: [
-    "/((?!_next/static|_next/image|favicon.ico|public/|assets/).*)",
+    "/((?!_next/static|_next/image|favicon.ico|public/|assets/|images/).*)",
   ],
 };
