@@ -47,6 +47,8 @@ export default function SideNav() {
 
     try {
       setIsDeleting(true);
+      toast.loading('Eliminando cuenta...');
+
       const response = await fetch('/api/delete-account', {
         method: 'DELETE',
         headers: {
@@ -54,18 +56,32 @@ export default function SideNav() {
         }
       });
 
-      let data: DeleteAccountResponse;
-      try {
-        data = await response.json();
-      } catch (e) {
-        throw new Error('La respuesta del servidor no es JSON válido');
+      if (!response.ok) {
+        const errorText = await response.text();
+        let errorMessage = 'Error al eliminar la cuenta';
+        try {
+          const errorData = JSON.parse(errorText);
+          errorMessage = errorData.message || errorData.error || errorMessage;
+        } catch {
+          errorMessage += ` (${response.status})`;
+        }
+        throw new Error(errorMessage);
       }
 
-      if (!response.ok) {
-        throw new Error(data.message || 'Error al eliminar la cuenta');
+      const responseText = await response.text();
+      if (!responseText) {
+        throw new Error('Respuesta vacía del servidor');
+      }
+
+      let data: DeleteAccountResponse;
+      try {
+        data = JSON.parse(responseText);
+      } catch {
+        throw new Error('Respuesta del servidor inválida');
       }
 
       if (data.success) {
+        toast.dismiss();
         toast.success(data.message || 'Cuenta eliminada correctamente');
         await signOut({
           callbackUrl: '/',
@@ -77,6 +93,7 @@ export default function SideNav() {
 
     } catch (error) {
       console.error('Error durante la eliminación de cuenta:', error);
+      toast.dismiss();
       toast.error(error instanceof Error ? error.message : 'Error al eliminar la cuenta');
     } finally {
       setIsDeleting(false);
