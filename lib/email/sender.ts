@@ -1,7 +1,6 @@
 // lib/email/sender.ts
 import nodemailer from 'nodemailer';
 import { emailTemplates } from './templates';
-import { authOptions } from '../auth';
 
 // Crear un logger simple para mantener la funcionalidad
 const emailLogger = {
