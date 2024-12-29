@@ -134,68 +134,69 @@ export const authOptions: AuthOptions = {
       }
     }
   },
-  events: {
-    async signIn({ user, account, profile }) {
-      try {
-        // Verificar si es usuario nuevo
-        const existingUser = await prisma.user.findUnique({
-          where: { email: user.email! }
-        });
+  // lib/auth.ts
+events: {
+  async signIn({ user, account }) {
+    try {
+      // Verificar si es usuario nuevo
+      const existingUser = await prisma.user.findUnique({
+        where: { email: user.email! }
+      });
 
-        if (!existingUser && account?.provider === 'google') {
-          // Crear nuevo usuario
-          await prisma.user.create({
-            data: {
-              email: user.email!,
-              name: user.name,
-              image: user.image,
-              role: DEFAULT_ROLE,
-              emailVerified: new Date(),
-            }
-          });
-
-          authLogger.debug('New user created', { 
-            email: user.email,
-            provider: account.provider 
-          });
-        }
-
-        // Registrar inicio de sesión
-        await prisma.auditLog.create({
+      if (!existingUser && account?.provider === 'google') {
+        // Crear nuevo usuario
+        await prisma.user.create({
           data: {
-            userId: user.id,
-            action: existingUser ? 'signIn' : 'userCreated',
-            metadata: { 
-              email: user.email,
-              provider: account?.provider 
-            }
+            email: user.email!,
+            name: user.name,
+            image: user.image,
+            role: DEFAULT_ROLE,
+            emailVerified: new Date(),
           }
         });
 
-        // Enviar correo solo a usuarios nuevos
-        if (!existingUser && user.email) {
-          await transporter.sendMail({
-            from: process.env.EMAIL_USER,
-            to: user.email,
-            subject: 'Bienvenido a Referenciales',
-            text: `
-              Hola ${user.name || ''},
-              
-              Gracias por registrarte en Referenciales. Tu cuenta ha sido creada exitosamente.
-              
-              Saludos,
-              El equipo de Referenciales
-            `
-          });
-          
-          authLogger.debug('Welcome email sent', { email: user.email });
-        }
-
-      } catch (error) {
-        authLogger.error('SignIn/Create user failed', error as Error);
+        authLogger.debug('New user created', { 
+          email: user.email,
+          provider: account.provider 
+        });
       }
+
+      // Registrar inicio de sesión
+      await prisma.auditLog.create({
+        data: {
+          userId: user.id,
+          action: existingUser ? 'signIn' : 'userCreated',
+          metadata: { 
+            email: user.email,
+            provider: account?.provider 
+          }
+        }
+      });
+
+      // Enviar correo solo a usuarios nuevos
+      if (!existingUser && user.email) {
+        await transporter.sendMail({
+          from: process.env.EMAIL_USER,
+          to: user.email,
+          subject: 'Bienvenido a Referenciales',
+          text: `
+            Hola ${user.name || ''},
+            
+            Gracias por registrarte en Referenciales. Tu cuenta ha sido creada exitosamente.
+            
+            Saludos,
+            El equipo de Referenciales
+          `
+        });
+        
+        authLogger.debug('Welcome email sent', { email: user.email });
+      }
+
+    } catch (error) {
+      authLogger.error('SignIn/Create user failed', error as Error);
     }
-  },
+  }
+},
   pages: {
     signIn: "/login",
     error: "/auth/error",
