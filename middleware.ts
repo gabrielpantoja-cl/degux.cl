@@ -31,7 +31,7 @@ const staticRoutes = [
 const isProd = process.env.NODE_ENV === 'production';
 const ALLOWED_HOSTS = ['localhost:3000', 'referenciales.cl'];
 
-// Tipos mejorados
+// Tipos de request extendidos
 interface AuthenticatedRequest extends NextRequest {
   auth?: {
     token: any;
@@ -39,7 +39,7 @@ interface AuthenticatedRequest extends NextRequest {
   };
 }
 
-// Headers de seguridad mejorados
+// Headers de seguridad para evitar ataques XSS y CSRF
 function setSecurityHeaders(response: NextResponse): NextResponse {
   const cspDirectives = [
     "default-src 'self'",
@@ -93,7 +93,7 @@ export default async function middleware(req: AuthenticatedRequest) {
     const pathname = nextUrl.pathname;
     const host = req.headers.get('host');
 
-    // Mejorar logging para debugging
+    // Mejorar logging para debugging en producción y desarrollo
     console.log("[Middleware Detailed Debug]:", {
       path: pathname,
       isProd,
@@ -109,26 +109,26 @@ export default async function middleware(req: AuthenticatedRequest) {
       return NextResponse.next();
     }
 
-    // Validación de host
+    // Validación de host permitidos para evitar ataques de phishing
     if (!ALLOWED_HOSTS.includes(host || '')) {
       console.error("[Security Error]: Invalid host", host);
       return NextResponse.redirect(new URL("/auth/error", nextUrl));
     }
 
-    // Assets estáticos
+    // Assets estáticos y rutas de Next.js
     if (staticRoutes.some(route => pathname.startsWith(route))) {
       return NextResponse.next();
     }
 
-    // Rutas públicas
+    // Rutas públicas sin autenticación
     if (publicRoutes.includes(pathname)) {
       return setSecurityHeaders(NextResponse.next());
     }
 
-    // Autenticación
+    // Autenticación de usuario
     const isLoggedIn = await isAuthenticated(req);
 
-    // Manejo de rutas autenticadas
+    // Manejo de rutas autenticadas y no autenticadas
     if (!isLoggedIn && !authRoutes.includes(pathname)) {
       const loginUrl = new URL("/login", nextUrl);
       if (pathname !== '/login') {
