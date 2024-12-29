@@ -11,7 +11,7 @@ import { toast } from 'react-hot-toast';
 
 interface DeleteAccountResponse {
   message: string;
-  success?: boolean;
+  success: boolean;
   error?: string;
 }
 
@@ -54,7 +54,12 @@ export default function SideNav() {
         }
       });
 
-      const data: DeleteAccountResponse = await response.json();
+      let data: DeleteAccountResponse;
+      try {
+        data = await response.json();
+      } catch (e) {
+        throw new Error('La respuesta del servidor no es JSON válido');
+      }
 
       if (!response.ok) {
         throw new Error(data.message || 'Error al eliminar la cuenta');
