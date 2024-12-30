@@ -3,8 +3,8 @@
   "scripts": {
     "seed": "node prisma/seed.mjs",
     "build": "next build",
-    "dev": "next dev",    
-    "start": "next start", 
+    "dev": "next dev",
+    "start": "next start",
     "lint": "next lint",
     "prepare": "husky install",
     "postinstall": "prisma generate",
@@ -62,6 +62,7 @@
     "typescript": "^5.2.2",
     "unified": "^11.0.5",
     "use-debounce": "^10.0.0",
+    "xlsx": "^0.18.5",
     "zod": "^3.23.8"
   },
   "devDependencies": {
