@@ -85,7 +85,7 @@ const nextConfig = {
           },
           {
             key: 'Permissions-Policy',
-            value: 'camera=(), microphone=(), geolocation=(self "https://referenciales.cl")'
+            value: 'camera=(), microphone=(), geolocation=(self "https://referenciales.cl/dashboard/mapa")'
           },
           {
             key: 'Strict-Transport-Security',
