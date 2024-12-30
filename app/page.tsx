@@ -34,7 +34,7 @@ export default function Page() {
           <div className="h-0 w-0 border-b-[30px] border-l-[20px] border-r-[20px] border-b-black border-l-transparent border-r-transparent" />
           <p className={`${lusitana.className} text-xl text-gray-800 md:text-3xl md:leading-normal`}>
             Bienvenido a <strong>referenciales.cl</strong><br />
-            Una base de datos colaborativa.
+            Una base de datos para la tasación.
           </p>
           <div className="flex flex-col gap-4">
             <div className="flex items-center">
