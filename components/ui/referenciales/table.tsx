@@ -1,7 +1,11 @@
 // app/ui/referenciales/table.tsx
+"use client";
+
 import { referenciales } from '@prisma/client';
 import { formatDateToLocal } from '@/lib/utils';
 import { fetchFilteredReferenciales } from '@/lib/referenciales';
+import { exportReferencialesToXlsx } from '@/lib/exportToXlsx';
+import { useState, useEffect } from 'react';
 
 // Mantener la definición de campos sensibles
 const SENSITIVE_FIELDS = ['comprador', 'vendedor'];
@@ -49,16 +53,31 @@ const VISIBLE_HEADERS = ALL_TABLE_HEADERS.filter(
   header => !SENSITIVE_FIELDS.includes(header.key)
 );
 
-export default async function ReferencialesTable({
+export default function ReferencialesTable({
   query,
   currentPage,
 }: ReferencialTableProps) {
-  const referenciales = await fetchFilteredReferenciales(query, currentPage);
+  const [referenciales, setReferenciales] = useState<referenciales[]>([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const data = await fetchFilteredReferenciales(query, currentPage);
+      setReferenciales(data);
+    };
+    fetchData();
+  }, [query, currentPage]);
+
+  const handleExport = () => {
+    exportReferencialesToXlsx(referenciales, VISIBLE_HEADERS);
+  };
 
   return (
     <div className="mt-6 flow-root">
       <div className="inline-block min-w-full align-middle">
         <div className="rounded-lg bg-gray-50 p-2 md:pt-0">
+          <button onClick={handleExport} className="mb-4 rounded bg-blue-500 px-4 py-2 text-white">
+            Exportar a XLSX
+          </button>
           {/* Vista móvil */}
           <div className="md:hidden">
             {referenciales?.map((referencial: referenciales) => (
