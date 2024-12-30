@@ -35,15 +35,17 @@ En Referenciales.cl, buscamos democratizar el acceso a información sobre transa
 
 ---
 
-## 4. Marco Legal
+## 4. Marco Legal y Jurisdicción
 
-El acceso y uso del sitio web se rige íntegramente por las leyes de la República de Chile, incluyendo las disposiciones pertinentes del Código Civil y especialmente por el siguiente marco normativo específico:
+El acceso y uso del sitio web Referenciales.cl se rige por las leyes de la República de Chile, incluyendo, pero no limitado a, las siguientes normativas:
 
 * **<a href="https://www.bcn.cl/leychile/navegar?idNorma=141599" target="_blank" rel="noopener noreferrer">Ley N° 19.628</a>** - Protección de la Vida Privada (1999).
 * **<a href="https://www.bcn.cl/leychile/navegar?idNorma=61438" target="_blank" rel="noopener noreferrer">Ley N° 19.496</a>** - Establece Normas sobre Protección de los Derechos de los Consumidores (Última versión: 20-ABR-2021).
 * **<a href="https://www.bcn.cl/leychile/navegar?idNorma=276363" target="_blank" rel="noopener noreferrer">Ley N° 20.285</a>** - Sobre Acceso a la Información Pública (Última modificación: 05-ENE-2016 - Ley 20880).
 * **<a href="https://www.bcn.cl/leychile/navegar?idNorma=1119730" target="_blank" rel="noopener noreferrer">Ley N° 21.096</a>** - Consagración Constitucional del Derecho a la Protección de Datos Personales (2018).
 * **<a href="https://www.bcn.cl/leychile/navegar?idNorma=1209272" target="_blank" rel="noopener noreferrer">Ley N° 21.719</a>** - Nueva Ley que regula la Protección y Tratamiento de Datos Personales y crea la Agencia de Protección de Datos Personales (vigencia: diciembre 2026).
+
+En caso de cualquier controversia relacionada con el uso de la plataforma, esta será sometida a la jurisdicción de los tribunales de justicia de la República de Chile.
 
 ---
 
@@ -93,18 +95,12 @@ La plataforma no garantiza la disponibilidad continua del servicio y se reserva 
 
 ---
 
-## 9. Jurisdicción
-
-Cualquier controversia será sometida a la jurisdicción de los tribunales de justicia de la República de Chile.
-
----
-
-## 10. Modificaciones
+## 9. Modificaciones
 
 Referenciales.cl se reserva el derecho de modificar estos términos y condiciones en cualquier momento, notificando los cambios a través de la plataforma.
 
 ---
 
-## 11. Declaración de Buenas Prácticas
+## 10. Declaración de Buenas Prácticas
 
 Referenciales.cl fomenta el uso ético y responsable de la información pública, respetando la privacidad de los involucrados y promoviendo la transparencia en el mercado de bienes raíces en Chile. Como un proyecto de código abierto, invitamos a la comunidad a participar activamente en el desarrollo y mejora de la plataforma, asegurando que el conocimiento y la innovación sean compartidos para el beneficio colectivo.
