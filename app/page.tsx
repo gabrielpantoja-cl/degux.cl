@@ -54,7 +54,7 @@ export default function Page() {
                 className="mr-2"
               />
               <label htmlFor="acceptTerms" className="text-sm text-gray-600">
-                He leído y acepto los <Link href="/terms" className="text-blue-500 underline">Términos y Condiciones</Link> y <Link href="/privacy" className="text-blue-500 underline">Política de Privacidad</Link>
+                He leído y acepto los <Link href="/terms" className="text-blue-500 underline">Términos de Servicio</Link> y <Link href="/privacy" className="text-blue-500 underline">Política de Privacidad</Link>
               </label>
             </div>
             <Link
