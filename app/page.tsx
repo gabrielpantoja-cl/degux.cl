@@ -14,9 +14,9 @@ export default function Page() {
   return (
     <main className="flex min-h-screen flex-col p-6">
       {showBanner && (
-        <div className="fixed bottom-0 left-0 right-0 flex items-center justify-between bg-yellow-200 p-4 rounded-t-lg mb-0">
+        <div className="fixed bottom-0 left-0 right-0 flex items-center justify-between bg-yellow-200 p-4 rounded-t-lg mb-0 z-50">
           <p className="text-yellow-800">
-            Usamos cookies para mejorar tu experiencia. Revisa su sección dedicada al final de la <Link href="/privacy" className="text-blue-500 underline">Política de Privacidad</Link>.  
+            Usamos cookies para mejorar tu experiencia. Revisa nuestras <Link href="/privacy" className="text-blue-500 underline">política de privacidad y cookies</Link>.
           </p>
           <div className="flex gap-2">
             <button
