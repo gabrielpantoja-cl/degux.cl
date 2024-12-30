@@ -14,16 +14,24 @@ export default function Page() {
   return (
     <main className="flex min-h-screen flex-col p-6">
       {showBanner && (
-        <div className="flex items-center justify-between bg-yellow-200 p-4 rounded-lg mb-4">
+        <div className="fixed bottom-0 left-0 right-0 flex items-center justify-between bg-yellow-200 p-4 rounded-t-lg mb-0">
           <p className="text-yellow-800">
-            🚧 Estamos en desarrollo activo. Agradecemos tus comentarios y opiniones mientras mejoramos la plataforma.
+            Usamos cookies para mejorar tu experiencia. Revisa su sección dedicada al final de la <Link href="/privacy" className="text-blue-500 underline">Política de Privacidad</Link>.  
           </p>
-          <button
-            onClick={() => setShowBanner(false)}
-            className="ml-4 rounded bg-yellow-300 px-3 py-1 text-yellow-800 hover:bg-yellow-400"
-          >
-            Cerrar
-          </button>
+          <div className="flex gap-2">
+            <button
+              onClick={() => setShowBanner(false)}
+              className="rounded bg-yellow-300 px-3 py-1 text-yellow-800 hover:bg-yellow-400"
+            >
+              Cerrar
+            </button>
+            <button
+              onClick={() => setShowBanner(false)}
+              className="rounded bg-yellow-300 px-3 py-1 text-yellow-800 hover:bg-yellow-400"
+            >
+              Aceptar
+            </button>
+          </div>
         </div>
       )}
       <div className="flex h-20 shrink-0 items-end rounded-lg bg-blue-500 p-4 md:h-52">
@@ -46,7 +54,7 @@ export default function Page() {
                 className="mr-2"
               />
               <label htmlFor="acceptTerms" className="text-sm text-gray-600">
-                He leído y acepto los <Link href="/terms" className="text-blue-500 underline">Términos y Condiciones</Link>
+                He leído y acepto los <Link href="/terms" className="text-blue-500 underline">Términos y Condiciones</Link> y <Link href="/privacy" className="text-blue-500 underline">Política de Privacidad</Link>
               </label>
             </div>
             <Link

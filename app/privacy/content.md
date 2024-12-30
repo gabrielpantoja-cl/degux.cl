@@ -69,16 +69,21 @@ Implementamos protecciones contra:
 
 ---
 
+---
+
 ## 6. Cookies
 
 Referenciales.cl utiliza cookies para mejorar la experiencia del usuario en la plataforma. Las cookies son pequeños archivos de texto que se almacenan en el dispositivo del usuario y permiten recordar sus preferencias y actividades anteriores en el sitio web.
 
 ### Tipos de Cookies Utilizadas ###
-* Cookies Esenciales: Necesarias para el funcionamiento básico del sitio web.
-* Cookies de Rendimiento: Utilizadas para recopilar información sobre cómo los usuarios interactúan con el sitio web.
-* Cookies de Funcionalidad: Permiten recordar las preferencias del usuario para proporcionar una experiencia personalizada.
+* **Cookies Esenciales:** Necesarias para el funcionamiento básico del sitio web.
+* **Cookies de Rendimiento:** Utilizadas para recopilar información sobre cómo los usuarios interactúan con el sitio web.
+* **Cookies de Funcionalidad:** Permiten recordar las preferencias del usuario para proporcionar una experiencia personalizada.
+
+> **Nota:** No utilizamos cookies con fines publicitarios.
 
 ### Gestión de Cookies ###
 Los usuarios pueden gestionar las cookies a través de la configuración de su navegador. Sin embargo, deshabilitar las cookies puede afectar la funcionalidad del sitio web.
 
+---
 ---
