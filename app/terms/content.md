@@ -1,4 +1,4 @@
-# Términos y Condiciones de Uso – Referenciales.cl
+# Términos de Servicio – Referenciales.cl
 
 ## 1. Introducción
 
@@ -8,8 +8,6 @@
 
 ### Nuestro Objetivo
 En Referenciales.cl, buscamos democratizar el acceso a información sobre transacciones de suelo en Chile. Nuestra plataforma ofrece datos de referencia para empoderar a ciudadanos y profesionales, promoviendo la transparencia y comprensión del mercado inmobiliario. Valoramos la colaboración y el intercambio de conocimiento para construir un mercado más justo y accesible para todos.
-
-
 
 ---
 
@@ -25,82 +23,24 @@ En Referenciales.cl, buscamos democratizar el acceso a información sobre transa
 
 ---
 
-## 3. Autenticación y Uso de Servicios de Terceros
-
-**Sistema de Autenticación:** Referenciales.cl utiliza Google como único autenticador.
-
-> **Nota:** Los usuarios deben iniciar sesión con su cuenta de Google, delegando la gestión de seguridad y datos a Google según sus términos y políticas.
-
-🔒 **Seguridad:** Referenciales.cl no almacena contraseñas y sigue las mejores prácticas de seguridad.
-
----
-
-## 4. Marco Legal y Jurisdicción
-
-El acceso y uso del sitio web Referenciales.cl se rige por las leyes de la República de Chile, incluyendo, pero no limitado a, las siguientes normativas:
-
-* **<a href="https://www.bcn.cl/leychile/navegar?idNorma=141599" target="_blank" rel="noopener noreferrer">Ley N° 19.628</a>** - Protección de la Vida Privada (1999).
-* **<a href="https://www.bcn.cl/leychile/navegar?idNorma=61438" target="_blank" rel="noopener noreferrer">Ley N° 19.496</a>** - Establece Normas sobre Protección de los Derechos de los Consumidores (Última versión: 20-ABR-2021).
-* **<a href="https://www.bcn.cl/leychile/navegar?idNorma=276363" target="_blank" rel="noopener noreferrer">Ley N° 20.285</a>** - Sobre Acceso a la Información Pública (Última modificación: 05-ENE-2016 - Ley 20880).
-* **<a href="https://www.bcn.cl/leychile/navegar?idNorma=1119730" target="_blank" rel="noopener noreferrer">Ley N° 21.096</a>** - Consagración Constitucional del Derecho a la Protección de Datos Personales (2018).
-* **<a href="https://www.bcn.cl/leychile/navegar?idNorma=1209272" target="_blank" rel="noopener noreferrer">Ley N° 21.719</a>** - Nueva Ley que regula la Protección y Tratamiento de Datos Personales y crea la Agencia de Protección de Datos Personales (vigencia: diciembre 2026).
-
-En caso de cualquier controversia relacionada con el uso de la plataforma, esta será sometida a la jurisdicción de los tribunales de justicia de la República de Chile.
-
----
-
-## 5. Derechos y Protección de Datos
-
-Referenciales.cl se compromete a cumplir con Ley de Protección de la Vida Privada, que regula el tratamiento de datos personales en Chile, asegurando que todos los datos personales recolectados y procesados en la plataforma sean tratados de manera segura y conforme a la ley. Esto incluye, pero no se limita a, los siguientes aspectos:
-
-### Derechos Fundamentales
-
-* ✅ **Derecho de Acceso:** 
-  - Los usuarios tienen el derecho a acceder a sus datos personales almacenados en la plataforma.
-* ✅ **Derecho de Rectificación:** 
-  - Los usuarios pueden solicitar la corrección de sus datos personales si estos son inexactos o están desactualizados.
-* ✅ **Derecho de Cancelación:** 
-  - Los usuarios tienen el derecho a solicitar la eliminación de sus datos personales cuando estos ya no sean necesarios para los fines para los que fueron recolectados, o cuando el usuario retire su consentimiento.
-* ✅ **Derecho de Oposición:** 
-  - En casos específicos, los usuarios pueden oponerse al tratamiento de sus datos personales.
-
-### 📞 Proceso de Reclamación
-Para ejercer estos derechos o realizar consultas privadas:
-> **WhatsApp:** [`+56 9 3176 9472`](https://wa.me/56931769472)
-
-### 🛡️ Medidas de Seguridad
-Implementamos protecciones contra:
-* 🔒 Acceso no autorizado.
-* 🔒 Divulgación indebida.
-* 🔒 Alteración de datos.
-* 🔒 Destrucción de información.
-
----
-
-## 6. Almacenamiento de Datos
-
-**Base de Datos:** Los referenciales se almacenan en una base de datos PostgreSQL, un sistema de gestión de bases de datos relacional, conocido por su estabilidad, robustez y soporte para características avanzadas.
-
----
-
-## 7. Responsabilidades
+## 3. Responsabilidades
 
 Los usuarios son responsables del uso ético y legal de la información proporcionada por la plataforma, respetando la privacidad y los derechos de terceros. Cualquier uso indebido de la información será responsabilidad exclusiva del usuario.
 
 ---
 
-## 8. Limitaciones
+## 4. Limitaciones
 
 La plataforma no garantiza la disponibilidad continua del servicio y se reserva el derecho de modificar o suspender el acceso sin previo aviso.
 
 ---
 
-## 9. Modificaciones
+## 5. Modificaciones
 
 Referenciales.cl se reserva el derecho de modificar estos términos y condiciones en cualquier momento, notificando los cambios a través de la plataforma.
 
 ---
 
-## 10. Declaración de Buenas Prácticas
+## 6. Declaración de Buenas Prácticas
 
 Referenciales.cl fomenta el uso ético y responsable de la información pública, respetando la privacidad de los involucrados y promoviendo la transparencia en el mercado de bienes raíces en Chile. Como un proyecto de código abierto, invitamos a la comunidad a participar activamente en el desarrollo y mejora de la plataforma, asegurando que el conocimiento y la innovación sean compartidos para el beneficio colectivo.

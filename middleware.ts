@@ -16,11 +16,11 @@ REQUIRED_ENV_VARS.forEach(envVar => {
 });
 
 // Configuración de rutas
-const publicRoutes = ["/", "/prices", "/terms", "/about", "/contact"];
+const publicRoutes = ["/", "/privacy", "/terms", "/about", "/contact"];
 const authRoutes = ["/login", "/register", "/auth/error"];
 const apiAuthPrefix = "/api/auth";
-const protectedApiRoutes = ["/api/delete-account"]; // Rutas API protegidas
-const apiRoutes = [...protectedApiRoutes]; // Todas las rutas API
+const protectedApiRoutes = ["/api/delete-account"]; 
+const apiRoutes = [...protectedApiRoutes]; 
 const staticRoutes = [
   "/_next",
   "/favicon.ico",
