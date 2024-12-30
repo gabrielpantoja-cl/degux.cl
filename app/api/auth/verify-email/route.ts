@@ -5,7 +5,8 @@ import { type NextRequest } from "next/server";
 
 export async function GET(request: NextRequest) {
   try {
-    const searchParams = request.nextUrl.searchParams;
+    const url = new URL(request.url);
+    const searchParams = new URLSearchParams(url.search);
     const token = searchParams.get("token");
 
     if (!token) {
