@@ -1,7 +1,8 @@
 // app/page.tsx
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { toast } from 'react-hot-toast';
 import AcmeLogo from '@/components/ui/acme-logo';
 import { lusitana } from '@/components/ui/fonts';
 import Image from 'next/image';
@@ -10,6 +11,14 @@ import Link from 'next/link';
 export default function Page() {
   const [showBanner, setShowBanner] = useState(true);
   const [acceptedTerms, setAcceptedTerms] = useState(false);
+
+  useEffect(() => {
+    const signOutMessage = localStorage.getItem('signOutMessage');
+    if (signOutMessage) {
+      toast.success(signOutMessage, { duration: 5000 }); // Duración de 5 segundos
+      localStorage.removeItem('signOutMessage');
+    }
+  }, []);
 
   return (
     <main className="flex min-h-screen flex-col p-6">

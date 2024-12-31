@@ -15,6 +15,7 @@ import {
   CardFooter,
 } from "@/components/ui/card";
 import { LoaderCircle } from "lucide-react";
+import { toast } from 'react-hot-toast';
 
 const LoginPageContent = () => {
   const { status } = useSession();
@@ -54,18 +55,21 @@ const LoginPageContent = () => {
 
       const result = await signIn("google", {
         callbackUrl: "/dashboard",
-        redirect: true,
+        redirect: false,
       });
 
       if (result?.error) {
         setError(result.error);
         setIsLoading(false);
+      } else {
+        toast.success("Inicio de sesión exitoso", { duration: 5000 });
+        router.push("/dashboard");
       }
     } catch (error) {
       setError("Ocurrió un error inesperado. Por favor, intente nuevamente.");
       setIsLoading(false);
     }
-  }, []);
+  }, [router]);
 
   const errorMessage = useMemo(() => error, [error]);
 
