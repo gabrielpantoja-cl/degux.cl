@@ -5,13 +5,13 @@ import Link from 'next/link';
 import NavLinks from '@/components/ui/dashboard/nav-links';
 import AcmeLogo from '@/components/ui/acme-logo';
 import { PowerIcon, ExclamationTriangleIcon } from '@heroicons/react/24/outline';
-import { signOut } from 'next-auth/react';
 import { useState } from 'react';
 import { toast } from 'react-hot-toast';
 import { useDeleteAccount } from '@/hooks/useDeleteAccount';
+import { useSignOut } from '@/hooks/useSignOut';
 
 export default function SideNav() {
-  const [isLoading, setIsLoading] = useState(false);
+  const { signOut, isLoading: isSigningOut } = useSignOut();
   const { 
     deleteAccount, 
     isDeleting, 
@@ -19,21 +19,6 @@ export default function SideNav() {
     setShowModal, 
     handleConfirmDelete 
   } = useDeleteAccount();
-
-  const handleSignOut = async () => {
-    try {
-      setIsLoading(true);
-      await signOut({
-        callbackUrl: '/',
-        redirect: true
-      });
-    } catch (error) {
-      console.error('Error durante el cierre de sesión:', error);
-      toast.error('Error al cerrar sesión');
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   return (
     <>
@@ -50,22 +35,22 @@ export default function SideNav() {
           <NavLinks />
           <div className="hidden h-auto w-full grow rounded-md bg-gray-50 md:block"></div>
           <button
-            onClick={handleSignOut}
-            disabled={isLoading || isDeleting}
-            aria-label={isLoading ? 'Cerrando sesión...' : 'Cerrar sesión'}
+            onClick={signOut}
+            disabled={isSigningOut || isDeleting}
+            aria-label={isSigningOut ? 'Cerrando sesión...' : 'Cerrar sesión'}
             className={`flex h-[48px] grow items-center justify-center gap-2 rounded-md bg-gray-50 p-3 text-sm font-medium 
-              ${(isLoading || isDeleting) ? 'opacity-50 cursor-not-allowed' : 'hover:bg-sky-100 hover:text-blue-600'} 
+              ${(isSigningOut || isDeleting) ? 'opacity-50 cursor-not-allowed' : 'hover:bg-sky-100 hover:text-blue-600'} 
               md:flex-none md:justify-start md:p-2 md:px-3`}
           >
-            <PowerIcon className={`w-6 ${isLoading ? 'animate-pulse' : ''}`} />
-            <div className="hidden md:block">{isLoading ? 'Saliendo...' : 'Cerrar Sesión'}</div>
+            <PowerIcon className={`w-6 ${isSigningOut ? 'animate-pulse' : ''}`} />
+            <div className="hidden md:block">{isSigningOut ? 'Saliendo...' : 'Cerrar Sesión'}</div>
           </button>
           <button
             onClick={deleteAccount}
-            disabled={isDeleting || isLoading}
+            disabled={isDeleting || isSigningOut}
             aria-label={isDeleting ? 'Eliminando cuenta...' : 'Eliminar cuenta'}
             className={`flex h-[48px] grow items-center justify-center gap-2 rounded-md bg-red-50 p-3 text-sm font-medium 
-              ${(isDeleting || isLoading) ? 'opacity-50 cursor-not-allowed' : 'hover:bg-red-100 hover:text-red-600'} 
+              ${(isDeleting || isSigningOut) ? 'opacity-50 cursor-not-allowed' : 'hover:bg-red-100 hover:text-red-600'} 
               md:flex-none md:justify-start md:p-2 md:px-3`}
           >
             <ExclamationTriangleIcon className={`w-6 ${isDeleting ? 'animate-pulse' : ''}`} />
