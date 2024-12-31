@@ -1,7 +1,6 @@
 // components/ui/referenciales/FormFields.tsx
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Input } from '@/components/ui/input';
-import { useSession } from 'next-auth/react';
 
 interface FormState {
   errors: {
@@ -24,20 +23,6 @@ interface FormFieldsProps {
 }
 
 const FormFields: React.FC<FormFieldsProps> = ({ state, currentUser }) => {
-  const { data: session, status } = useSession();
-  const [user, setUser] = useState<CurrentUser | null>(null);
-
-  useEffect(() => {
-    if (status === 'authenticated' && session?.user) {
-      setUser({
-        id: session.user.id,
-        name: session.user.name || 'Usuario'
-      });
-    } else {
-      setUser(null);
-    }
-  }, [session, status]);
-
   return (
     <>
       <div className="mb-6 p-4 bg-gray-50 rounded-lg">
