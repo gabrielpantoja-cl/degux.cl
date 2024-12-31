@@ -7,7 +7,7 @@
 > **Importante:** Referenciales.cl es una iniciativa sin fines de lucro que busca contribuir al acceso libre de información. No garantizamos la exactitud, completitud o actualidad de los datos, ni nos responsabilizamos por el uso que los usuarios hagan de esta información.
 
 ### Nuestro Objetivo
-En Referenciales.cl, buscamos  generar un sistema de acceso de información sobre transacciones de suelo en Chile para peritos tasadores.
+En Referenciales.cl, buscamos generar un sistema de acceso de información sobre transacciones de suelo en Chile para peritos tasadores.
 
 ---
 
