@@ -36,6 +36,22 @@ export async function DELETE() {
       );
     }
 
+    // Verificar si el usuario tiene registros en la tabla de referenciales
+    const userRecords = await prisma.referenciales.findMany({
+      where: { userId: session.user.id }
+    });
+
+    if (userRecords.length > 0) {
+      return NextResponse.json(
+        { 
+          success: false,
+          message: 'Existen registros asociados a tu usuario en la base de datos. En este momento no se puede eliminar tu cuenta. Por favor, contacta con soporte al WhatsApp.',
+          error: 'User has records'
+        },
+        { status: 400 }
+      );
+    }
+
     // Eliminar usuario
     const deletedUser = await prisma.user.delete({
       where: { id: session.user.id }

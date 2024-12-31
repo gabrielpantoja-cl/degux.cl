@@ -109,8 +109,18 @@ export const useDeleteAccount = () => {
         throw new Error(data.error || `Error ${response.status}: ${data.message || 'Error desconocido'}`);
       }
 
+      if (!data.success && data.message.includes('registros asociados')) {
+        toast.error(data.message, {
+          id: toastId,
+          duration: 7000 // Duración de 7 segundos
+        });
+        setShowModal(false);
+        return;
+      }
+
       toast.success(data.message || 'Cuenta eliminada correctamente', {
-        id: toastId
+        id: toastId,
+        duration: 7000 // Duración de 7 segundos
       });
 
       await signOut({ callbackUrl: '/', redirect: true });
@@ -122,7 +132,7 @@ export const useDeleteAccount = () => {
         error instanceof Error 
           ? error.message 
           : 'Error al eliminar la cuenta. Por favor, intenta nuevamente.',
-        { id: toastId }
+        { id: toastId, duration: 7000 } // Duración de 7 segundos
       );
     } finally {
       setIsDeleting(false);
@@ -132,7 +142,7 @@ export const useDeleteAccount = () => {
 
   const deleteAccount = () => {
     if (!session?.user) {
-      toast.error('Debes iniciar sesión para eliminar tu cuenta');
+      toast.error('Debes iniciar sesión para eliminar tu cuenta', { duration: 7000 }); // Duración de 7 segundos
       return;
     }
     setShowModal(true);
