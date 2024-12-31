@@ -47,3 +47,4 @@ start-db.sh
 
 # Ignore scripts folder
 /scripts/
+.codegpt
