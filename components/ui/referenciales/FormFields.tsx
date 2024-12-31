@@ -20,20 +20,21 @@ interface CurrentUser {
 
 interface FormFieldsProps {
   state: FormState;
+  currentUser: CurrentUser; // Añadimos currentUser a la interfaz
 }
 
-const FormFields: React.FC<FormFieldsProps> = ({ state }) => {
+const FormFields: React.FC<FormFieldsProps> = ({ state, currentUser }) => {
   const { data: session, status } = useSession();
-  const [currentUser, setCurrentUser] = useState<CurrentUser | null>(null);
+  const [user, setUser] = useState<CurrentUser | null>(null);
 
   useEffect(() => {
     if (status === 'authenticated' && session?.user) {
-      setCurrentUser({
+      setUser({
         id: session.user.id,
         name: session.user.name || 'Usuario'
       });
     } else {
-      setCurrentUser(null);
+      setUser(null);
     }
   }, [session, status]);
 
