@@ -37,7 +37,7 @@ La plataforma no garantiza la disponibilidad continua del servicio y se reserva 
 
 ## 5. Modificaciones
 
-Referenciales.cl se reserva el derecho de modificar estos términos y condiciones en cualquier momento, notificando los cambios a través de la plataforma.
+Referenciales.cl se reserva el derecho de modificar estos términos y condiciones en cualquier momento. Es responsabilidad del usuario revisar periódicamente estos términos para estar al tanto de cualquier cambio. El uso continuado de la plataforma después de la publicación de cualquier modificación constituye la aceptación de dichos cambios.
 
 ---
 
