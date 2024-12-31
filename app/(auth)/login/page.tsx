@@ -56,6 +56,7 @@ const LoginPageContent = () => {
       const result = await signIn("google", {
         callbackUrl: "/dashboard",
         redirect: false,
+        prompt: "select_account", // Forzar selección de cuenta
       });
 
       if (result?.error) {
