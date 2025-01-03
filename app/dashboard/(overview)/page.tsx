@@ -9,9 +9,23 @@ import { db } from "@/lib/db";
 export default async function Page() {
     // Obtener datos directamente en el componente de página
     const latestReferenciales = await db.referenciales.findMany({
-        include: {
-            user: true, // Incluir la relación con el usuario
+        select: {
+            id: true,
+            createdAt: true,
+            comuna: true,
+            user: {
+                select: {
+                    id: true,
+                    name: true,
+                    email: true,
+                    image: true
+                }
+            }
         },
+        orderBy: {
+            createdAt: 'desc'
+        },
+        take: 5
     });
 
     // Agrupar y contar las comunas desde la tabla referenciales
