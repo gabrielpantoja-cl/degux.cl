@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { signIn } from 'next-auth/react';
-import LoginPage from '../../app/auth/login/page'; // Asegúrate de que esta ruta sea correcta
+import LoginPage from '../../app/auth/login/page'; 
 
 jest.mock('next-auth/react', () => ({
   signIn: jest.fn(),
