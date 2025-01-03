@@ -1,5 +1,5 @@
 // __tests__/app/auth/login.test.js
-import { render, screen, fireEvent, cleanup } from '@testing-library/react';
+import { render, screen, fireEvent, cleanup, waitFor } from '@testing-library/react';
 import { signIn } from 'next-auth/react';
 import LoginPage from '@/app/auth/login/page';
 
@@ -9,7 +9,6 @@ jest.mock('next-auth/react', () => ({
 
 describe('LoginPage', () => {
   beforeEach(() => {
-    // Limpiar mocks antes de cada test
     jest.clearAllMocks();
   });
 
@@ -35,11 +34,13 @@ describe('LoginPage', () => {
       render(<LoginPage />);
       const googleButton = screen.getByText('Continuar con Google');
       
-      await fireEvent.click(googleButton);
+      fireEvent.click(googleButton);
 
-      expect(signIn).toHaveBeenCalledTimes(1);
-      expect(signIn).toHaveBeenCalledWith('google', {
-        callbackUrl: 'http://localhost:3000',
+      await waitFor(() => {
+        expect(signIn).toHaveBeenCalledTimes(1);
+        expect(signIn).toHaveBeenCalledWith('google', {
+          callbackUrl: 'http://localhost:3000',
+        });
       });
     });
 
@@ -50,14 +51,15 @@ describe('LoginPage', () => {
       render(<LoginPage />);
       const googleButton = screen.getByText('Continuar con Google');
       
-      await fireEvent.click(googleButton);
+      fireEvent.click(googleButton);
 
-      const result = await signIn('google', {
-        callbackUrl: 'http://localhost:3000',
+      await waitFor(async () => {
+        const result = await signIn('google', {
+          callbackUrl: 'http://localhost:3000',
+        });
+        expect(result.token).toBe(mockToken);
+        expect(result.ok).toBe(true);
       });
-
-      expect(result.token).toBe(mockToken);
-      expect(result.ok).toBe(true);
     });
 
     it('debe manejar errores de autenticación', async () => {
@@ -67,12 +69,13 @@ describe('LoginPage', () => {
       render(<LoginPage />);
       const googleButton = screen.getByText('Continuar con Google');
       
-      await fireEvent.click(googleButton);
+      fireEvent.click(googleButton);
 
-      expect(signIn).toHaveBeenCalled();
-      // Verificar que se muestre un mensaje de error si existe
-      const errorMessage = screen.queryByText(/error/i);
-      expect(errorMessage).not.toBeNull();
+      await waitFor(() => {
+        expect(signIn).toHaveBeenCalled();
+        const errorMessage = screen.queryByText(/error/i);
+        expect(errorMessage).not.toBeNull();
+      });
     });
   });
 });
