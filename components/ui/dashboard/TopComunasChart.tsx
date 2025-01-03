@@ -1,25 +1,17 @@
 // components/ui/dashboard/TopComunasChart.tsx
-'use client';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import { fetchTopComunas } from '@/lib/referenciales';
 
 interface CommuneData {
   comuna: string;
   count: number;
 }
 
-export default function TopComunasChart() {
-  const [data, setData] = useState<CommuneData[]>([]);
+interface TopComunasChartProps {
+  data: CommuneData[];
+}
 
-  useEffect(() => {
-    async function getData() {
-      const result: CommuneData[] = await fetchTopComunas();
-      setData(result);
-    }
-    getData();
-  }, []);
-
+export default function TopComunasChart({ data }: TopComunasChartProps) {
   return (
     <div className="flex w-full flex-col md:col-span-4 lg:col-span-4">
       <h2 className="mb-4 text-xl md:text-2xl">Top Comunas con más Referenciales</h2>
