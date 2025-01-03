@@ -1,4 +1,5 @@
 // app/dashboard/(overview)/page.tsx
+'use client';
 import LatestReferenciales from '@/components/ui/dashboard/latest-referenciales';
 import { lusitana } from '@/components/ui/fonts';
 import { Suspense } from 'react';
