@@ -7,18 +7,36 @@ import TopComunasChart from '@/components/ui/dashboard/TopComunasChart';
 import { db } from "@/lib/db";
 
 export default async function Page() {
-    // Obtener datos directamente en el componente de página
     const latestReferenciales = await db.referenciales.findMany({
         select: {
             id: true,
-            createdAt: true,
+            lat: true,
+            lng: true,
+            fojas: true,
+            numero: true,
+            anio: true,
+            cbr: true,
+            comprador: true,
+            vendedor: true,
+            predio: true,
             comuna: true,
+            rol: true,
+            fechaescritura: true,
+            superficie: true,
+            monto: true,
+            observaciones: true,
+            createdAt: true,
             user: {
                 select: {
                     id: true,
                     name: true,
                     email: true,
-                    image: true
+                    password: true,
+                    emailVerified: true,
+                    image: true,
+                    role: true,
+                    createdAt: true,
+                    updatedAt: true
                 }
             }
         },
@@ -27,7 +45,6 @@ export default async function Page() {
         },
         take: 5
     });
-
     // Agrupar y contar las comunas desde la tabla referenciales
     const topComunas = await db.referenciales.groupBy({
         by: ['comuna'],
@@ -43,6 +60,19 @@ export default async function Page() {
     });
 
     // Transformar los datos para que coincidan con la estructura esperada por el componente
+    const topComunas = await db.referenciales.groupBy({
+        by: ['comuna'],
+        _count: {
+            comuna: true,
+        },
+        orderBy: {
+            _count: {
+                comuna: 'desc',
+            },
+        },
+        take: 10,
+    });
+
     const topComunasData = topComunas.map(item => ({
         comuna: item.comuna,
         count: item._count.comuna,
