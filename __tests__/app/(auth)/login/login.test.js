@@ -1,4 +1,4 @@
-// __tests__/app/(auth)/login.test.js
+// __tests__/app/(auth)/login/login.test.js
 import { render, screen, fireEvent, cleanup, waitFor } from '@testing-library/react';
 import { signIn } from 'next-auth/react';
 import LoginPage from '@/app/(auth)/login/page';
