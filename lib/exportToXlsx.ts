@@ -1,19 +1,27 @@
 // lib/exportToXlsx.ts
-import * as XLSX from 'xlsx';
+import ExcelJS from 'exceljs';
 import { referenciales } from '@prisma/client';
 
-export const exportReferencialesToXlsx = (referenciales: referenciales[], headers: { key: keyof referenciales, label: string }[]) => {
-  const data = referenciales.map(referencial => {
+export const exportReferencialesToXlsx = async (referenciales: referenciales[], headers: { key: keyof referenciales, label: string }[]) => {
+  const workbook = new ExcelJS.Workbook();
+  const worksheet = workbook.addWorksheet('Referenciales');
+
+  // Agregar encabezados
+  worksheet.columns = headers.map(header => ({
+    header: header.label,
+    key: header.key as string,
+    width: 20,
+  }));
+
+  // Agregar filas
+  referenciales.forEach(referencial => {
     const row: { [key: string]: any } = {};
-    headers.forEach(({ key, label }) => {
-      row[label] = referencial[key];
+    headers.forEach(({ key }) => {
+      row[key as string] = referencial[key];
     });
-    return row;
+    worksheet.addRow(row);
   });
 
-  const worksheet = XLSX.utils.json_to_sheet(data);
-  const workbook = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(workbook, worksheet, 'Referenciales');
-
-  XLSX.writeFile(workbook, 'referenciales.xlsx');
+  // Guardar el archivo
+  await workbook.xlsx.writeFile('referenciales.xlsx');
 };
