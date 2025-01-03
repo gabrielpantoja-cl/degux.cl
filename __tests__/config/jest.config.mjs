@@ -1,9 +1,9 @@
-// jest.config.js
-const nextJest = require('next/jest')
+// __tests__/config/jest.config.mjs
+import nextJest from 'next/jest';
 
 const createJestConfig = nextJest({
   dir: './',
-})
+});
 
 /** @type {import('jest').Config} */
 const customJestConfig = {
@@ -35,6 +35,6 @@ const customJestConfig = {
   ],
   verbose: true,
   testTimeout: 30000,
-}
+};
 
-module.exports = createJestConfig(customJestConfig)
+export default createJestConfig(customJestConfig);
