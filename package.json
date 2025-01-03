@@ -70,6 +70,7 @@
     "@babel/preset-react": "^7.26.3",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^14.3.1",
+    "@testing-library/user-event": "^14.5.2",
     "@types/bcrypt": "^5.0.2",
     "@types/bcryptjs": "^2.4.6",
     "@types/jest": "^29.5.14",
@@ -90,7 +91,8 @@
     "next": "^14.2.22",
     "prettier": "^3.0.3",
     "prisma": "^6.0.1",
-    "ts-jest": "^29.2.5"
+    "ts-jest": "^29.2.5",
+    "whatwg-fetch": "^3.6.20"
   },
   "engines": {
     "node": "20.x"
