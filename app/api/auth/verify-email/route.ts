@@ -1,12 +1,11 @@
-// app/api/auth/verify/route.ts
+// app/api/auth/verify-email/route.ts
 import { db } from "@/lib/db";
 import { redirect } from "next/navigation";
 import { type NextRequest } from "next/server";
 
 export async function GET(request: NextRequest) {
   try {
-    const url = new URL(request.url);
-    const searchParams = new URLSearchParams(url.search);
+    const searchParams = request.nextUrl.searchParams;
     const token = searchParams.get("token");
 
     if (!token) {
