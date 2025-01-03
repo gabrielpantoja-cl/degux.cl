@@ -1,3 +1,4 @@
+//  auth.test.js
 import { render, screen, fireEvent } from '@testing-library/react';
 import { signIn } from 'next-auth/react';
 import LoginPage from '../../app/auth/login/page'; 
