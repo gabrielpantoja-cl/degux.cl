@@ -31,7 +31,8 @@ const customJestConfig = {
     '^.+\\.module\\.(css|sass|scss)$',
   ],
   transform: {
-    '^.+\\.(js|jsx|ts|tsx|mjs)$': ['babel-jest', { presets: ['next/babel'] }]
+    '^.+\\.(ts|tsx)$': 'ts-jest',
+    '^.+\\.(js|jsx)$': 'ts-jest',
   },
   coveragePathIgnorePatterns: [
     '/node_modules/',
