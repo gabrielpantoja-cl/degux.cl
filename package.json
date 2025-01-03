@@ -43,7 +43,7 @@
     "leaflet": "^1.9.4",
     "leaflet-geosearch": "^4.0.0",
     "lucide-react": "^0.469.0",
-    "next-auth": "^4.24.11",
+    "next-auth": "^4.24.7",
     "nodemailer": "^6.9.16",
     "postcss": "^8.4.49",
     "punycode": "^2.3.1",
