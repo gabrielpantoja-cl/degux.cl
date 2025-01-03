@@ -1,5 +1,5 @@
-// jest.config.js
-const nextJest = require('next/jest')
+// jest.config.mjs
+import nextJest from 'next/jest'
 
 const createJestConfig = nextJest({
   dir: './',
@@ -15,6 +15,9 @@ const customJestConfig = {
     '<rootDir>/.next/',
     '<rootDir>/node_modules/',
   ],
+  transform: {
+    '^.+\\.(ts|tsx)$': 'ts-jest',
+  },
 }
 
-module.exports = createJestConfig(customJestConfig)
+export default createJestConfig(customJestConfig)

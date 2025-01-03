@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { signIn } from 'next-auth/react';
-import LoginPage from '../../app/auth/login/page'; 
+import LoginPage from '../../app/auth/login/page'; // Asegúrate de que esta ruta sea correcta
 
 jest.mock('next-auth/react', () => ({
   signIn: jest.fn(),
@@ -10,7 +10,7 @@ describe('Google OAuth Authentication', () => {
   it('should call signIn with Google provider', async () => {
     render(<LoginPage />);
 
-    const googleButton = screen.getByText('Sign in with Google');
+    const googleButton = screen.getByText('Continuar con Google');
     fireEvent.click(googleButton);
 
     expect(signIn).toHaveBeenCalledWith('google', {
@@ -24,7 +24,7 @@ describe('Google OAuth Authentication', () => {
 
     render(<LoginPage />);
 
-    const googleButton = screen.getByText('Sign in with Google');
+    const googleButton = screen.getByText('Continuar con Google');
     fireEvent.click(googleButton);
 
     const result = await signIn('google', {
