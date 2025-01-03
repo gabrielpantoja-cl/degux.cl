@@ -3,21 +3,10 @@
 import LatestReferenciales from '@/components/ui/dashboard/latest-referenciales';
 import { lusitana } from '@/components/ui/fonts';
 import { Suspense } from 'react';
-import dynamic from 'next/dynamic';
 import { CardsSkeleton, LatestReferencialesSkeleton } from '@/components/ui/skeletons';
-import { Metadata } from 'next';
+import TopComunasChart from '@/components/ui/dashboard/TopComunasChart';
 
-// Importar TopCommunesChart de forma dinámica con SSR deshabilitado
-const TopCommunesChart = dynamic(
-    () => import('@/components/ui/dashboard/TopComunasChart'),
-    { ssr: false }
-);
-
-export const metadata: Metadata = {
-    title: 'Home',
-};
-
-export default async function Page() {
+export default function Page() {
     return (
         <main>
             <h1 className={`${lusitana.className} mb-4 text-xl md:text-2xl`}>
@@ -32,7 +21,7 @@ export default async function Page() {
                     <LatestReferenciales />
                 </Suspense>
                 <Suspense fallback={<LatestReferencialesSkeleton />}>
-                    <TopCommunesChart />
+                    <TopComunasChart />
                 </Suspense>
             </div>
         </main>
