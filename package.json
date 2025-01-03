@@ -14,7 +14,6 @@
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.7.3",
-    "@babel/core": "^7.24.0",
     "@babel/runtime": "^7.24.0",
     "@heroicons/react": "^2.0.18",
     "@hookform/resolvers": "^3.9.0",
@@ -71,9 +70,6 @@
   "devDependencies": {
     "@babel/plugin-syntax-typescript": "^7.25.9",
     "@babel/plugin-transform-runtime": "^7.25.9",
-    "@babel/preset-env": "^7.24.0",
-    "@babel/preset-react": "^7.24.0",
-    "@babel/preset-typescript": "^7.26.0",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^14.3.1",
     "@testing-library/user-event": "^14.5.2",
