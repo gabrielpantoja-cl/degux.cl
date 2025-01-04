@@ -16,7 +16,6 @@ import {
 } from "@/components/ui/card";
 import { LoaderCircle } from "lucide-react";
 
-// Tipos e interfaces
 interface User {
   id?: string;
   email: string;
@@ -26,44 +25,82 @@ interface User {
   updatedAt?: Date;
 }
 
+interface UserResponse {
+  user: User;
+  isNewUser: boolean;
+}
+
 type AuthError = 
   | "AccessDenied"
   | "OAuthSignin"
   | "UserNotFound"
   | "DatabaseError"
-  | "UserCreationError";
+  | "UserCreationError"
+  | "NetworkError";
 
-// Constantes
-const ERROR_MESSAGES: Record<AuthError | 'default', string> = {
-  AccessDenied: "No tienes permiso para acceder a esta aplicación.",
-  OAuthSignin: "Ocurrió un error durante el inicio de sesión con Google.",
-  UserNotFound: "Usuario no encontrado.",
-  DatabaseError: "Error al conectar con la base de datos.",
-  UserCreationError: "Error al crear el usuario.",
-  default: "Ocurrió un error durante el inicio de sesión."
-} as const;
+  const ERROR_MESSAGES: Record<AuthError | 'default', string> = {
+    AccessDenied: "No tienes permiso para acceder a esta aplicación.",
+    OAuthSignin: "Ocurrió un error durante el inicio de sesión con Google.",
+    UserNotFound: "Usuario no encontrado.",
+    DatabaseError: "Error al conectar con la base de datos.",
+    UserCreationError: "Error al crear el usuario.",
+    NetworkError: "Error de conexión. Por favor, intenta de nuevo.",
+    default: "Ocurrió un error durante el inicio de sesión."
+  } as const;
 
-// Servicios
-const userService = {
-  async verifyOrCreateUser(userData: Partial<User>): Promise<User> {
-    try {
-      const response = await fetch('/api/users/verify', {
+  const MAX_RETRIES = 3;
+  const RETRY_DELAY = 1000;
+
+  const userService = {
+    async verifyOrCreateUser(userData: Partial<User>, retryCount = 0): Promise<UserResponse> {
+      try {
+        const response = await fetch('/api/users/verify', {
+          method: 'POST',
+          headers: { 
+            'Content-Type': 'application/json',
+            'Cache-Control': 'no-cache'
+          },
+          body: JSON.stringify(userData),
+        });
+  
+        if (!response.ok) {
+          if (response.status === 404) {
+            // Si el usuario no existe, intentamos crearlo
+            return this.createUser(userData);
+          }
+          throw new Error(response.statusText);
+        }
+  
+        const data = await response.json();
+        return { user: data, isNewUser: false };
+  
+      } catch (error) {
+        console.error('Error in verifyOrCreateUser:', error);
+        
+        if (retryCount < MAX_RETRIES) {
+          await new Promise(resolve => setTimeout(resolve, RETRY_DELAY));
+          return this.verifyOrCreateUser(userData, retryCount + 1);
+        }
+        
+        throw new Error(ERROR_MESSAGES.UserCreationError);
+      }
+    },
+  
+    async createUser(userData: Partial<User>): Promise<UserResponse> {
+      const response = await fetch('/api/users', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(userData),
       });
-
+  
       if (!response.ok) {
-        throw new Error(response.statusText);
+        throw new Error(ERROR_MESSAGES.UserCreationError);
       }
-
-      return await response.json();
-    } catch (error) {
-      console.error('Error in verifyOrCreateUser:', error);
-      throw new Error(ERROR_MESSAGES.UserCreationError);
+  
+      const user = await response.json();
+      return { user, isNewUser: true };
     }
-  }
-};
+  };
 
 // Componentes
 const LoadingFallback: React.FC = () => (
@@ -100,24 +137,37 @@ const LoginPageContent: React.FC = () => {
   }, [searchParams, handleError]);
 
   useEffect(() => {
+    let isSubscribed = true;
+
     const handleAuthenticatedUser = async () => {
       if (status === "authenticated" && session?.user) {
         try {
           setIsLoading(true);
-          await userService.verifyOrCreateUser({
+          
+          const { user, isNewUser } = await userService.verifyOrCreateUser({
             email: session.user.email!,
             name: session.user.name!,
             image: session.user.image!,
           });
-          router.push("/dashboard");
+
+          if (isSubscribed) {
+            // Redirigir según si es usuario nuevo o existente
+            router.push(isNewUser ? "/onboarding" : "/dashboard");
+          }
         } catch (error) {
-          setError(ERROR_MESSAGES.UserCreationError);
-          setIsLoading(false);
+          if (isSubscribed) {
+            setError(ERROR_MESSAGES.UserCreationError);
+            setIsLoading(false);
+          }
         }
       }
     };
 
     handleAuthenticatedUser();
+
+    return () => {
+      isSubscribed = false;
+    };
   }, [status, session, router]);
 
   const handleGoogleLogin = useCallback(async () => {
@@ -134,7 +184,6 @@ const LoginPageContent: React.FC = () => {
       if (result?.error) {
         setError(handleError(result.error));
       }
-      // La redirección se maneja en el useEffect cuando el status cambia a "authenticated"
     } catch (error) {
       setError(ERROR_MESSAGES.default);
     } finally {
