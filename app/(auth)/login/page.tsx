@@ -1,8 +1,7 @@
-// app/auth/login/page.tsx
 "use client";
 
 import { SessionProvider, useSession, signIn } from 'next-auth/react';
-import React, { useState, useEffect, useCallback, useMemo, Suspense } from 'react';
+import React, { useState, useEffect, useCallback, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
@@ -15,7 +14,18 @@ import {
   CardFooter,
 } from "@/components/ui/card";
 import { LoaderCircle } from "lucide-react";
-import { toast } from 'react-hot-toast';
+
+const ERROR_MESSAGES = {
+  AccessDenied: "No tienes permiso para acceder a esta aplicación.",
+  OAuthSignin: "Ocurrió un error durante el inicio de sesión con Google.",
+  default: "Ocurrió un error durante el inicio de sesión."
+} as const;
+
+const LoadingFallback = () => (
+  <div className="min-h-screen flex justify-center items-center">
+    <LoaderCircle className="h-6 w-6 animate-spin" />
+  </div>
+);
 
 const LoginPageContent = () => {
   const { status } = useSession();
@@ -25,14 +35,7 @@ const LoginPageContent = () => {
   const [error, setError] = useState("");
 
   const handleError = useCallback((error: string) => {
-    switch (error) {
-      case "AccessDenied":
-        return "No tienes permiso para acceder a esta aplicación.";
-      case "OAuthSignin":
-        return "Ocurrió un error durante el inicio de sesión con Google.";
-      default:
-        return "Ocurrió un error durante el inicio de sesión.";
-    }
+    return ERROR_MESSAGES[error as keyof typeof ERROR_MESSAGES] || ERROR_MESSAGES.default;
   }, []);
 
   useEffect(() => {
@@ -56,23 +59,20 @@ const LoginPageContent = () => {
       const result = await signIn("google", {
         callbackUrl: "/dashboard",
         redirect: false,
-        prompt: "select_account", // Forzar selección de cuenta
+        prompt: "select_account",
       });
 
       if (result?.error) {
-        setError(result.error);
-        setIsLoading(false);
+        setError(handleError(result.error));
       } else {
-        toast.success("Inicio de sesión exitoso", { duration: 5000 });
         router.push("/dashboard");
       }
     } catch (error) {
       setError("Ocurrió un error inesperado. Por favor, intente nuevamente.");
+    } finally {
       setIsLoading(false);
     }
-  }, [router]);
-
-  const errorMessage = useMemo(() => error, [error]);
+  }, [router, handleError]);
 
   return (
     <div className="min-h-screen flex justify-center items-start md:items-center p-8 bg-gray-50">
@@ -87,9 +87,9 @@ const LoginPageContent = () => {
         </CardHeader>
 
         <CardContent>
-          {errorMessage && (
+          {error && (
             <Alert variant="destructive" className="mb-4">
-              <AlertDescription>{errorMessage}</AlertDescription>
+              <AlertDescription>{error}</AlertDescription>
             </Alert>
           )}
 
@@ -152,10 +152,10 @@ const LoginPageContent = () => {
   );
 };
 
-const LoginPage = () => {
+const LoginPage: React.FC = () => {
   return (
     <SessionProvider>
-      <Suspense fallback={<div>Loading...</div>}>
+      <Suspense fallback={<LoadingFallback />}>
         <LoginPageContent />
       </Suspense>
     </SessionProvider>
