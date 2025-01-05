@@ -1,12 +1,41 @@
 // __tests__/__mocks__/providers/google-provider.ts
 import { Provider } from 'next-auth/providers';
+import { Session } from 'next-auth';
+import { SessionProvider } from 'next-auth/react';
+import React, { ReactNode, FC } from 'react';
 
-// Constantes para testing
+// Tipos
+interface GoogleProfile {
+  sub: string;
+  name: string;
+  given_name: string;
+  family_name: string;
+  email: string;
+  email_verified: boolean;
+  picture: string;
+}
+
+interface GoogleResponse {
+  accessToken: string;
+  refreshToken: string;
+  profile: GoogleProfile;
+}
+
+interface ProviderOptions {
+  clientId: string;
+  clientSecret: string;
+}
+
+interface ProvidersWrapperProps {
+  children: ReactNode;
+}
+
+// Constantes
 export const MOCK_GOOGLE_ID = 'mock-google-id';
 export const MOCK_GOOGLE_SECRET = 'mock-google-secret';
 
-// Mock de credenciales de usuario
-export const mockGoogleProfile = {
+// Mocks de datos
+export const mockGoogleProfile: GoogleProfile = {
   sub: '123456789',
   name: 'Test User',
   given_name: 'Test',
@@ -16,14 +45,13 @@ export const mockGoogleProfile = {
   picture: 'https://example.com/picture.jpg',
 };
 
-// Mock de respuesta de autenticación
-export const mockGoogleResponse = {
+export const mockGoogleResponse: GoogleResponse = {
   accessToken: 'mock-access-token',
   refreshToken: 'mock-refresh-token',
   profile: mockGoogleProfile,
 };
 
-// Mock del proveedor de Google
+// Provider de Google
 export const mockGoogleProvider: Provider = {
   id: 'google',
   name: 'Google',
@@ -40,55 +68,49 @@ export const mockGoogleProvider: Provider = {
   clientSecret: MOCK_GOOGLE_SECRET,
   idToken: true,
   checks: ['pkce', 'state'],
-  profile: (profile) => {
-    return {
-      id: profile.sub,
-      name: profile.name,
-      email: profile.email,
-      image: profile.picture,
-    }
-  },
+  profile: (profile: GoogleProfile) => ({
+    id: profile.sub,
+    name: profile.name,
+    email: profile.email,
+    image: profile.picture,
+  }),
 };
 
-// Mock de la función de callback
-export const mockGoogleCallback = jest.fn().mockImplementation(async () => {
-  return mockGoogleResponse;
-});
+// Mock de callback
+export const mockGoogleCallback = jest.fn().mockImplementation(
+  async (): Promise<GoogleResponse> => mockGoogleResponse
+);
 
-// Mock completo del provider para usar en tests
-export default {
+// Provider completo
+export const googleProviderMock = {
   ...mockGoogleProvider,
   credentials: undefined,
   options: {
     clientId: MOCK_GOOGLE_ID,
     clientSecret: MOCK_GOOGLE_SECRET,
-  },
+  } as ProviderOptions,
   callback: mockGoogleCallback,
 };
 
-// Mock del SessionProvider
-export const mockSession = {
-  data: {
-    user: {
-      name: mockGoogleProfile.name,
-      email: mockGoogleProfile.email,
-      image: mockGoogleProfile.picture,
-    },
-    expires: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
+// Session mock
+export const mockSession: Session = {
+  user: {
+    id: mockGoogleProfile.sub,
+    name: mockGoogleProfile.name,
+    email: mockGoogleProfile.email,
+    image: mockGoogleProfile.picture,
   },
-  status: 'authenticated',
+  expires: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
 };
 
-// Tipos para el wrapper de providers
-export interface ProvidersWrapperProps {
-  children: React.ReactNode;
-}
-
-// Wrapper que contiene todos los providers necesarios
-export const AllTheProviders = ({ children }: ProvidersWrapperProps) => {
+// Wrapper de providers
+export const AllTheProviders: ComponentType<ProvidersWrapperProps> = ({ children }) => {
   return (
-    <SessionProvider session={mockSession}>
+    <NextAuthSessionProvider session={mockSession}>
       {children}
-    </SessionProvider>
+    </NextAuthSessionProvider>
   );
 };
+
+export type { ProvidersWrapperProps };
+export default googleProviderMock;

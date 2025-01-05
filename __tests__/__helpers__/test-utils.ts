@@ -32,14 +32,14 @@ const mockSession: MockSession = {
   }
 }
 
-// Wrapper con tipos corregidos
-const AllTheProviders = ({ children }: ProvidersWrapperProps) => {
+// Wrapper con providers
+const AllTheProviders = ({ children }: ProvidersWrapperProps): JSX.Element => {
   return (
-    <SessionProvider session={mockSession as unknown as Session}>
+    <SessionProvider session={mockSession}>
       {children}
     </SessionProvider>
-  )
-}
+  );
+};
 
 // Función de renderizado personalizada con tipos
 const customRender = (
