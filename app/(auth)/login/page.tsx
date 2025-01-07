@@ -3,7 +3,7 @@
 
 import { SessionProvider, useSession, signIn } from 'next-auth/react';
 import React, { useState, useEffect, useCallback, Suspense } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation'; // Eliminada importación de useRouter
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import {
@@ -120,7 +120,6 @@ const GoogleIcon: React.FC = () => (
 
 const LoginPageContent: React.FC = () => {
   const { status, data: session } = useSession();
-  const router = useRouter();
   const searchParams = useSearchParams();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
@@ -178,9 +177,12 @@ const LoginPageContent: React.FC = () => {
     try {
       setIsLoading(true);
       setError("");
-
+  
       await signIn("google", {
-        redirect: false // Cambiado a false para mejor control
+        redirect: false,
+        // Agregar estos parámetros
+        callbackUrl: "/dashboard",
+        prompt: "select_account"
       });
       
     } catch (error) {
