@@ -1,7 +1,7 @@
+// action/auth-action.ts
 "use server";
 
 import { signIn } from "next-auth/react";
-import { db } from "@/lib/db";
 import { registerSchema } from "@/lib/zod";
 import { z } from "zod";
 
@@ -33,39 +33,8 @@ export const registerAction = async (
       };
     }
 
-    // Verificar si el usuario ya existe
-    const user = await db.user.findUnique({
-      where: {
-        email: data.email,
-      },
-      include: {
-        accounts: true, // Incluir las cuentas asociadas
-      },
-    });
-
-    if (user) {
-      // Verificar si tiene cuentas OAuth vinculadas
-      const oauthAccounts = user.accounts.filter(
-        (account) => account.type === "oauth"
-      );
-      if (oauthAccounts.length > 0) {
-        return {
-          error:
-            "Para confirmar tu identidad, inicia sesión con la misma cuenta que usaste originalmente.",
-        };
-      }
-      return {
-        error: "El usuario ya existe",
-      };
-    }
-
-    // Crear el usuario sin contraseña
-    await db.user.create({
-      data: {
-        email: data.email,
-        name: data.name,
-      },
-    });
+    // No es necesario verificar si el usuario ya existe o crear un nuevo usuario aquí
+    // NextAuth con Google Provider manejará esto automáticamente
 
     const result = await signIn("google", {
       redirect: false,
