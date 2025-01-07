@@ -51,3 +51,4 @@ start-db.sh
 
 # draw.io files
 *.drawio
+*.drawio.bkp
