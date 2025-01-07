@@ -38,69 +38,69 @@ type AuthError =
   | "UserCreationError"
   | "NetworkError";
 
-  const ERROR_MESSAGES: Record<AuthError | 'default', string> = {
-    AccessDenied: "No tienes permiso para acceder a esta aplicación.",
-    OAuthSignin: "Ocurrió un error durante el inicio de sesión con Google.",
-    UserNotFound: "Usuario no encontrado.",
-    DatabaseError: "Error al conectar con la base de datos.",
-    UserCreationError: "Error al crear el usuario.",
-    NetworkError: "Error de conexión. Por favor, intenta de nuevo.",
-    default: "Ocurrió un error durante el inicio de sesión."
-  } as const;
+const ERROR_MESSAGES: Record<AuthError | 'default', string> = {
+  AccessDenied: "No tienes permiso para acceder a esta aplicación.",
+  OAuthSignin: "Ocurrió un error durante el inicio de sesión con Google.",
+  UserNotFound: "Usuario no encontrado.",
+  DatabaseError: "Error al conectar con la base de datos.",
+  UserCreationError: "Error al crear el usuario.",
+  NetworkError: "Error de conexión. Por favor, intenta de nuevo.",
+  default: "Ocurrió un error durante el inicio de sesión."
+} as const;
 
-  const MAX_RETRIES = 3;
-  const RETRY_DELAY = 1000;
+const MAX_RETRIES = 3;
+const RETRY_DELAY = 1000;
 
-  const userService = {
-    async verifyOrCreateUser(userData: Partial<User>, retryCount = 0): Promise<UserResponse> {
-      try {
-        const response = await fetch('/api/users/verify', {
-          method: 'POST',
-          headers: { 
-            'Content-Type': 'application/json',
-            'Cache-Control': 'no-cache'
-          },
-          body: JSON.stringify(userData),
-        });
-  
-        if (!response.ok) {
-          if (response.status === 404) {
-            // Si el usuario no existe, intentamos crearlo
-            return this.createUser(userData);
-          }
-          throw new Error(response.statusText);
-        }
-  
-        const data = await response.json();
-        return { user: data, isNewUser: false };
-  
-      } catch (error) {
-        console.error('Error in verifyOrCreateUser:', error);
-        
-        if (retryCount < MAX_RETRIES) {
-          await new Promise(resolve => setTimeout(resolve, RETRY_DELAY));
-          return this.verifyOrCreateUser(userData, retryCount + 1);
-        }
-        
-        throw new Error(ERROR_MESSAGES.UserCreationError);
-      }
-    },
-  
-    async createUser(userData: Partial<User>): Promise<UserResponse> {
-      const response = await fetch('/api/users', {
+const userService = {
+  async verifyOrCreateUser(userData: Partial<User>, retryCount = 0): Promise<UserResponse> {
+    try {
+      const response = await fetch('/api/users/verify', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Cache-Control': 'no-cache'
+        },
         body: JSON.stringify(userData),
       });
-  
+
       if (!response.ok) {
-        throw new Error(ERROR_MESSAGES.UserCreationError);
+        if (response.status === 404) {
+          // Si el usuario no existe, intentamos crearlo
+          return this.createUser(userData);
+        }
+        throw new Error(response.statusText);
       }
-  
-      const user = await response.json();
-      return { user, isNewUser: true };
+
+      const data = await response.json();
+      return { user: data, isNewUser: false };
+
+    } catch (error) {
+      console.error('Error in verifyOrCreateUser:', error);
+      
+      if (retryCount < MAX_RETRIES) {
+        await new Promise(resolve => setTimeout(resolve, RETRY_DELAY));
+        return this.verifyOrCreateUser(userData, retryCount + 1);
+      }
+      
+      throw new Error(ERROR_MESSAGES.UserCreationError);
     }
-  };
+  },
+
+  async createUser(userData: Partial<User>): Promise<UserResponse> {
+    const response = await fetch('/api/users', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(userData),
+    });
+
+    if (!response.ok) {
+      throw new Error(ERROR_MESSAGES.UserCreationError);
+    }
+
+    const user = await response.json();
+    return { user, isNewUser: true };
+  }
+};
 
 // Componentes
 const LoadingFallback: React.FC = () => (
@@ -144,19 +144,23 @@ const LoginPageContent: React.FC = () => {
         try {
           setIsLoading(true);
           
-          const { user, isNewUser } = await userService.verifyOrCreateUser({
+          const { isNewUser } = await userService.verifyOrCreateUser({
             email: session.user.email!,
             name: session.user.name!,
             image: session.user.image!,
           });
 
           if (isSubscribed) {
-            // Redirigir según si es usuario nuevo o existente
-            router.push(isNewUser ? "/onboarding" : "/dashboard");
+            const redirectPath = isNewUser ? "/onboarding" : "/dashboard";
+            window.location.href = redirectPath; // Usar window.location para navegación completa
           }
         } catch (error) {
           if (isSubscribed) {
+            console.error("Error en verificación de usuario:", error);
             setError(ERROR_MESSAGES.UserCreationError);
+          }
+        } finally {
+          if (isSubscribed) {
             setIsLoading(false);
           }
         }
@@ -168,28 +172,24 @@ const LoginPageContent: React.FC = () => {
     return () => {
       isSubscribed = false;
     };
-  }, [status, session, router]);
+  }, [status, session]);
 
   const handleGoogleLogin = useCallback(async () => {
     try {
       setIsLoading(true);
       setError("");
 
-      const result = await signIn("google", {
-        callbackUrl: "/dashboard",
-        redirect: false,
-        prompt: "select_account",
+      await signIn("google", {
+        redirect: false // Cambiado a false para mejor control
       });
-
-      if (result?.error) {
-        setError(handleError(result.error));
-      }
+      
     } catch (error) {
-      setError(ERROR_MESSAGES.default);
+      console.error("Error durante la autenticación:", error);
+      setError(ERROR_MESSAGES.OAuthSignin);
     } finally {
       setIsLoading(false);
     }
-  }, [handleError]);
+  }, []);
 
   return (
     <div className="min-h-screen flex justify-center items-start md:items-center p-8 bg-gray-50">

@@ -104,11 +104,11 @@ export const mockSession: Session = {
 };
 
 // Wrapper de providers
-export const AllTheProviders: ComponentType<ProvidersWrapperProps> = ({ children }) => {
+export const AllTheProviders: FC<ProvidersWrapperProps> = ({ children }) => {
   return (
-    <NextAuthSessionProvider session={mockSession}>
+    <SessionProvider session={mockSession}>
       {children}
-    </NextAuthSessionProvider>
+    </SessionProvider>
   );
 };
 
