@@ -68,3 +68,6 @@ Utilizamos PostgreSQL + Prisma ORM. El esquema actual incluye:
 Proyecto inspirado en varios repositorios de código abierto. Contribuciones son bienvenidas mediante pull requests.
 
 ## Licencia Este proyecto está licenciado bajo la [Licencia MIT](https://opensource.org/licenses/MIT).
+
+## Diagrama del Sistema
+![Diagrama del Sistema](public/diagrama_sistema.png)

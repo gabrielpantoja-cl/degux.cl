@@ -48,3 +48,6 @@ start-db.sh
 # Ignore scripts folder
 /scripts/
 .codegpt
+
+# draw.io files
+*.drawio
