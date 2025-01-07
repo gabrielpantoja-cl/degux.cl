@@ -5,9 +5,36 @@ import { PrismaAdapter } from '@next-auth/prisma-adapter';
 import { prisma } from '@/lib/prisma';
 import { sendWelcomeEmail } from '@/lib/email/sender';
 
-// Constantes
-const ONE_YEAR = 365 * 24 * 60 * 60;
-const ONE_DAY = 24 * 60 * 60;
+// Constantes de tiempo para sesiones y cookies
+const TIME = {
+  SECOND: 1,
+  MINUTE: 60,
+  HOUR: 60 * 60,
+  DAY: 24 * 60 * 60,
+  WEEK: 7 * 24 * 60 * 60,
+  MONTH: 30 * 24 * 60 * 60,
+  YEAR: 365 * 24 * 60 * 60
+} as const;
+
+// Configuración de tiempos para la aplicación
+const SESSION_CONFIG = {
+  MAX_AGE: TIME.MONTH, // 30 días máximo por seguridad
+  UPDATE_AGE: TIME.DAY, // Actualizar la sesión cada día
+  TOKEN_MAX_AGE: TIME.WEEK // 7 días para el token JWT
+} as const;
+
+// Configuración de cookies
+const COOKIE_CONFIG = {
+  SESSION: {
+    maxAge: SESSION_CONFIG.MAX_AGE,
+    updateAge: SESSION_CONFIG.UPDATE_AGE
+  },
+  CALLBACK: {
+    maxAge: TIME.HOUR // 1 hora para la URL de callback
+  }
+} as const;
+
+// Definir el rol por defecto
 const DEFAULT_ROLE = 'user';
 
 // Tipos personalizados
@@ -68,9 +95,8 @@ export const authOptions: AuthOptions = {
           access_type: "offline",
           response_type: "code",
           scope: "openid email profile",
-           // Agregar estos parámetros
-      include_granted_scopes: true,
-      state: Date.now().toString(), // Forzar estado único
+          include_granted_scopes: true,
+          state: Date.now().toString() // Forzar estado único
         }
       }
     }),
@@ -191,7 +217,7 @@ export const authOptions: AuthOptions = {
         path: '/',
         secure: isProd,
         domain: isProd ? '.referenciales.cl' : 'localhost',
-        maxAge: ONE_YEAR
+        maxAge: COOKIE_CONFIG.SESSION.maxAge
       }
     },
     callbackUrl: {
@@ -200,15 +226,24 @@ export const authOptions: AuthOptions = {
         sameSite: 'lax',
         path: '/',
         secure: isProd,
-        maxAge: ONE_DAY
+        maxAge: COOKIE_CONFIG.CALLBACK.maxAge
       }
     }
   },
   session: {
     strategy: "jwt",
-    maxAge: ONE_YEAR,
-    updateAge: ONE_DAY
+    maxAge: SESSION_CONFIG.MAX_AGE,
+    updateAge: SESSION_CONFIG.UPDATE_AGE
   }
 };
+
+// Validaciones de seguridad
+if (SESSION_CONFIG.MAX_AGE > TIME.MONTH) {
+  console.warn('[Auth Warning] Session maxAge exceeds recommended 30 days');
+}
+
+if (SESSION_CONFIG.UPDATE_AGE > TIME.DAY) {
+  console.warn('[Auth Warning] Session updateAge exceeds recommended 24 hours');
+}
 
 export default NextAuth(authOptions);
