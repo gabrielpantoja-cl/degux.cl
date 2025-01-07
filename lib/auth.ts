@@ -55,6 +55,7 @@ if (!googleClientId || !googleClientSecret) {
 }
 
 export const authOptions: AuthOptions = {
+  debug: process.env.NODE_ENV === 'development',
   adapter: PrismaAdapter(prisma),
   providers: [
     GoogleProvider({
@@ -66,7 +67,10 @@ export const authOptions: AuthOptions = {
           prompt: "select_account",
           access_type: "offline",
           response_type: "code",
-          scope: "openid email profile"
+          scope: "openid email profile",
+           // Agregar estos parámetros
+      include_granted_scopes: true,
+      state: Date.now().toString(), // Forzar estado único
         }
       }
     }),
@@ -178,7 +182,6 @@ export const authOptions: AuthOptions = {
     error: "/auth/error",
   },
   secret: process.env.NEXTAUTH_SECRET,
-  debug: process.env.NODE_ENV === 'development',
   cookies: {
     sessionToken: {
       name: isProd ? '__Secure-next-auth.session-token' : 'next-auth.session-token',
