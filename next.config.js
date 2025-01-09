@@ -1,34 +1,10 @@
-import path from 'path';
-import { fileURLToPath } from 'url';
-
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: 'lh3.googleusercontent.com',
-        port: '',
-        pathname: '/**',
-      },
-      {
-        protocol: 'http',
-        hostname: 'localhost',
-        port: '3000',
-        pathname: '/**',
-      },
-      {
-        protocol: 'http',
-        hostname: 'localhost',
-        port: '',
-        pathname: '/**',
-      },
-      {
-        protocol: 'https',
-        hostname: 'referenciales.cl',
-        port: '',
-        pathname: '/**',
-      }
+    domains: [
+      "lh3.googleusercontent.com",
+      "localhost",
+      "referenciales.cl"
     ],
   },
   reactStrictMode: true,
@@ -38,10 +14,9 @@ const nextConfig = {
     NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
   },
   webpack: (config) => {
-    const __dirname = path.dirname(fileURLToPath(import.meta.url));
     config.resolve.alias = {
       ...config.resolve.alias,
-      punycode: path.resolve(__dirname, 'node_modules/punycode')
+      punycode: require.resolve('punycode')
     };
     return config;
   },
@@ -117,4 +92,4 @@ const nextConfig = {
   }
 };
 
-export default nextConfig;
+module.exports = nextConfig;

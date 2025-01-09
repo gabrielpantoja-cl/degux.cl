@@ -1,9 +1,8 @@
-// app/(auth)/login/page.tsx
 "use client";
 
 import { SessionProvider, useSession, signIn } from 'next-auth/react';
 import React, { useState, useEffect, useCallback, Suspense } from 'react';
-import { useSearchParams } from 'next/navigation'; // Eliminada importación de useRouter
+import { useSearchParams } from 'next/navigation';
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import {
@@ -16,29 +15,7 @@ import {
 } from "@/components/ui/card";
 import { LoaderCircle } from "lucide-react";
 
-interface User {
-  id?: string;
-  email: string;
-  name: string;
-  image?: string;
-  createdAt?: Date;
-  updatedAt?: Date;
-}
-
-interface UserResponse {
-  user: User;
-  isNewUser: boolean;
-}
-
-type AuthError = 
-  | "AccessDenied"
-  | "OAuthSignin"
-  | "UserNotFound"
-  | "DatabaseError"
-  | "UserCreationError"
-  | "NetworkError";
-
-const ERROR_MESSAGES: Record<AuthError | 'default', string> = {
+const ERROR_MESSAGES = {
   AccessDenied: "No tienes permiso para acceder a esta aplicación.",
   OAuthSignin: "Ocurrió un error durante el inicio de sesión con Google.",
   UserNotFound: "Usuario no encontrado.",
@@ -46,63 +23,8 @@ const ERROR_MESSAGES: Record<AuthError | 'default', string> = {
   UserCreationError: "Error al crear el usuario.",
   NetworkError: "Error de conexión. Por favor, intenta de nuevo.",
   default: "Ocurrió un error durante el inicio de sesión."
-} as const;
-
-const MAX_RETRIES = 3;
-const RETRY_DELAY = 1000;
-
-const userService = {
-  async verifyOrCreateUser(userData: Partial<User>, retryCount = 0): Promise<UserResponse> {
-    try {
-      const response = await fetch('/api/users/verify', {
-        method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json',
-          'Cache-Control': 'no-cache'
-        },
-        body: JSON.stringify(userData),
-      });
-
-      if (!response.ok) {
-        if (response.status === 404) {
-          // Si el usuario no existe, intentamos crearlo
-          return this.createUser(userData);
-        }
-        throw new Error(response.statusText);
-      }
-
-      const data = await response.json();
-      return { user: data, isNewUser: false };
-
-    } catch (error) {
-      console.error('Error in verifyOrCreateUser:', error);
-      
-      if (retryCount < MAX_RETRIES) {
-        await new Promise(resolve => setTimeout(resolve, RETRY_DELAY));
-        return this.verifyOrCreateUser(userData, retryCount + 1);
-      }
-      
-      throw new Error(ERROR_MESSAGES.UserCreationError);
-    }
-  },
-
-  async createUser(userData: Partial<User>): Promise<UserResponse> {
-    const response = await fetch('/api/users', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(userData),
-    });
-
-    if (!response.ok) {
-      throw new Error(ERROR_MESSAGES.UserCreationError);
-    }
-
-    const user = await response.json();
-    return { user, isNewUser: true };
-  }
 };
 
-// Componentes
 const LoadingFallback: React.FC = () => (
   <div className="min-h-screen flex justify-center items-center">
     <LoaderCircle className="h-6 w-6 animate-spin" />
@@ -143,14 +65,10 @@ const LoginPageContent: React.FC = () => {
         try {
           setIsLoading(true);
           
-          const { isNewUser } = await userService.verifyOrCreateUser({
-            email: session.user.email!,
-            name: session.user.name!,
-            image: session.user.image!,
-          });
+          // Aquí puedes agregar lógica adicional si es necesario
 
           if (isSubscribed) {
-            const redirectPath = isNewUser ? "/onboarding" : "/dashboard";
+            const redirectPath = "/dashboard";
             window.location.href = redirectPath; // Usar window.location para navegación completa
           }
         } catch (error) {
@@ -180,7 +98,6 @@ const LoginPageContent: React.FC = () => {
   
       await signIn("google", {
         redirect: false,
-        // Agregar estos parámetros
         callbackUrl: "/dashboard",
         prompt: "select_account"
       });

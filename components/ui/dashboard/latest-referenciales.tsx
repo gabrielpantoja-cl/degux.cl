@@ -1,8 +1,7 @@
-// app/ui/dashboard/latest-referenciales.tsx
+// components/ui/dashboard/latest-referenciales.tsx
 import { ArrowPathIcon } from '@heroicons/react/24/outline';
 import clsx from 'clsx';
 import { lusitana } from '@/components/ui/fonts';
-import { fetchLatestReferenciales } from '@/lib/referenciales';
 
 type LatestReferencial = {
   id: string;
@@ -28,13 +27,11 @@ type LatestReferencial = {
   };
 };
 
-export default async function LatestReferenciales() {
-  const data = await fetchLatestReferenciales();
-  const latestReferenciales = data.map(ref => ({
-    ...ref,
-    fojas: ref.fojas.toString()
-  })) as LatestReferencial[];
+interface LatestReferencialesProps {
+  data: LatestReferencial[];
+}
 
+const LatestReferenciales: React.FC<LatestReferencialesProps> = ({ data }) => {
   return (
     <div className="flex w-full flex-col md:col-span-4 lg:col-span-4">
       <h2 className={`${lusitana.className} mb-4 text-xl md:text-2xl`}>
@@ -42,7 +39,7 @@ export default async function LatestReferenciales() {
       </h2>
       <div className="flex grow flex-col justify-between rounded-xl bg-gray-50 p-4">
         <div className="bg-white px-6">
-          {latestReferenciales.map((referencial, i) => {
+          {data.map((referencial, i) => {
             return (
               <div
                 key={referencial.id}
@@ -80,4 +77,6 @@ export default async function LatestReferenciales() {
       </div>
     </div>
   );
-}
+};
+
+export default LatestReferenciales;
