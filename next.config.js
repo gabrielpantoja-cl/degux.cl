@@ -2,10 +2,19 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    domains: [
-      "lh3.googleusercontent.com",
-      "localhost",
-      "referenciales.cl"
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'lh3.googleusercontent.com',
+      },
+      {
+        protocol: 'http',
+        hostname: 'localhost',
+      },
+      {
+        protocol: 'https',
+        hostname: 'referenciales.cl',
+      }
     ],
   },
   reactStrictMode: true,
@@ -13,13 +22,6 @@ const nextConfig = {
     GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
     GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
     NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
-  },
-  webpack: (config) => {
-    config.resolve.alias = {
-      ...config.resolve.alias,
-      punycode: require.resolve('punycode')
-    };
-    return config;
   },
   async headers() {
     return [
@@ -30,16 +32,12 @@ const nextConfig = {
             key: 'Content-Security-Policy',
             value: [
               "default-src 'self'",
-              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://accounts.google.com https://*.googleusercontent.com https://gabriel-pantojas-projects.vercel.app https://*.vercel.app",
-              "style-src 'self' 'unsafe-inline' https://accounts.google.com https://gabriel-pantojas-projects.vercel.app https://*.vercel.app",
-              "img-src 'self' data: blob: https: https://*.googleusercontent.com https://gabriel-pantojas-projects.vercel.app https://*.vercel.app",
-              "frame-src 'self' https://accounts.google.com https://gabriel-pantojas-projects.vercel.app https://*.vercel.app",
-              "connect-src 'self' https://accounts.google.com https://*.google.com https://gabriel-pantojas-projects.vercel.app https://*.vercel.app",
-              "font-src 'self' data: https://fonts.gstatic.com https://gabriel-pantojas-projects.vercel.app https://*.vercel.app",
-              "form-action 'self' https://accounts.google.com",
-              "base-uri 'self'",
-              "object-src 'none'",
-              "frame-ancestors 'self'"
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://accounts.google.com",
+              "style-src 'self' 'unsafe-inline'",
+              "img-src 'self' data: blob: https://*.googleusercontent.com",
+              "font-src 'self' data:",
+              "connect-src 'self' https://accounts.google.com",
+              "frame-src 'self' https://accounts.google.com"
             ].join('; ')
           },
           {
@@ -49,43 +47,6 @@ const nextConfig = {
           {
             key: 'X-Frame-Options',
             value: 'SAMEORIGIN'
-          },
-          {
-            key: 'X-XSS-Protection',
-            value: '1; mode=block'
-          },
-          {
-            key: 'Referrer-Policy',
-            value: 'strict-origin-when-cross-origin'
-          },
-          {
-            key: 'Permissions-Policy',
-            value: 'camera=(), microphone=(), geolocation=(self "https://referenciales.cl/dashboard/mapa")'
-          },
-          {
-            key: 'Strict-Transport-Security',
-            value: 'max-age=31536000; includeSubDomains'
-          }
-        ]
-      },
-      {
-        source: '/api/:path*',
-        headers: [
-          {
-            key: 'Access-Control-Allow-Credentials',
-            value: 'true'
-          },
-          {
-            key: 'Access-Control-Allow-Origin',
-            value: process.env.NEXTAUTH_URL || '*'
-          },
-          {
-            key: 'Access-Control-Allow-Methods',
-            value: 'GET,POST,PUT,DELETE,OPTIONS'
-          },
-          {
-            key: 'Access-Control-Allow-Headers',
-            value: 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version'
           }
         ]
       }
