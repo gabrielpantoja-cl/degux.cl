@@ -96,7 +96,7 @@ export const authOptions: AuthOptions = {
           response_type: "code",
           scope: "openid email profile",
           include_granted_scopes: true,
-          state: Date.now().toString() // Forzar estado único
+          state: Date.now().toString() 
         }
       }
     }),
