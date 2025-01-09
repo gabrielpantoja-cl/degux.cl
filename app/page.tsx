@@ -70,7 +70,7 @@ export default function Page() {
             <button
               onClick={() => {
                 if (acceptedTerms) {
-                  signIn();
+                  signIn('google', { callbackUrl: '/dashboard' });
                 }
               }}
               className={`flex items-center gap-5 self-start rounded-lg px-6 py-3 text-sm font-medium text-white transition-colors md:text-base ${
