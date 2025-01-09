@@ -2,8 +2,7 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { prisma } from '@/lib/prisma';
-import nodemailer from 'nodemailer';
-import { authOptions } from '@/lib/auth';
+import { authOptions } from '@/pages/api/auth/[...nextauth]';
 
 export async function DELETE() {
   try {
