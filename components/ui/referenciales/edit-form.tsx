@@ -12,7 +12,7 @@ import { useSession } from 'next-auth/react';
 import { toast } from 'react-hot-toast';
 import { Dialog } from '@/components/ui/dialog';
 import { sanitizeInput } from '@/lib/sanitize';
-import { usePermissions } from '@/hooks/usePermissions';
+import { usePermissions } from '@/lib/hooks/usePermissions';
 
 interface User {
   id: string;
