@@ -1,3 +1,4 @@
+// middleware.ts
 import { NextResponse, type NextRequest } from "next/server";
 import { getToken } from "next-auth/jwt";
 
@@ -19,8 +20,7 @@ REQUIRED_ENV_VARS.forEach(envVar => {
 const publicRoutes = ["/", "/privacy", "/terms", "/about", "/contact"];
 const authRoutes = ["/login", "/register", "/auth/error"];
 const apiAuthPrefix = "/api/auth";
-const protectedApiRoutes = ["/api/delete-account"]; 
-const apiRoutes = [...protectedApiRoutes]; 
+const protectedApiRoutes = ["/api/delete-account"];
 const staticRoutes = [
   "/_next",
   "/favicon.ico",
@@ -103,7 +103,7 @@ export default async function middleware(req: AuthenticatedRequest) {
       isCallback: pathname.includes('/callback'),
       isAuthRoute: pathname.startsWith(apiAuthPrefix),
       isProtectedApi: protectedApiRoutes.includes(pathname),
-      isApi: apiRoutes.includes(pathname)
+      isApi: pathname.startsWith('/api')
     });
 
     // Permitir todas las rutas OAuth
