@@ -18,6 +18,15 @@ export default function SideNav() {
     handleConfirmDelete 
   } = useDeleteAccount();
 
+  const handleSignOut = async () => {
+    try {
+      await signOut();
+      console.log("✅ Sesión cerrada exitosamente");
+    } catch (error) {
+      console.warn("⚠️ Error al cerrar sesión:", error);
+    }
+  };
+
   return (
     <>
       <div className="flex h-full flex-col px-3 py-4 md:px-2">
@@ -33,7 +42,7 @@ export default function SideNav() {
           <NavLinks />
           <div className="hidden h-auto w-full grow rounded-md bg-gray-50 md:block"></div>
           <button
-            onClick={signOut}
+            onClick={handleSignOut}
             disabled={isSigningOut || isDeleting}
             aria-label={isSigningOut ? 'Cerrando sesión...' : 'Cerrar sesión'}
             className={`flex h-[48px] grow items-center justify-center gap-2 rounded-md bg-gray-50 p-3 text-sm font-medium 

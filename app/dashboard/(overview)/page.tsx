@@ -1,39 +1,36 @@
 // app/dashboard/(overview)/page.tsx
-import LatestReferenciales from '@/components/ui/dashboard/latest-referenciales';
-import { lusitana } from '@/components/ui/fonts';
-import { Suspense } from 'react';
-import dynamic from 'next/dynamic';
-import { CardsSkeleton, LatestReferencialesSkeleton } from '@/components/ui/skeletons';
-import { Metadata } from 'next';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth';
+import { redirect } from 'next/navigation';
+import DashboardContent from './DashboardContent';
+import { prisma } from '@/lib/prisma';
 
-// Importar TopCommunesChart de forma dinámica con SSR deshabilitado
-const TopCommunesChart = dynamic(
-    () => import('@/components/ui/dashboard/TopComunasChart'),
-    { ssr: false }
-);
-
-export const metadata: Metadata = {
-    title: 'Home',
+export const metadata = {
+  title: 'Home',
 };
 
 export default async function Page() {
-    return (
-        <main>
-            <h1 className={`${lusitana.className} mb-4 text-xl md:text-2xl`}>
-                Inicio
-            </h1>
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-                <Suspense fallback={<CardsSkeleton />}>
-                </Suspense>
-            </div>
-            <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-4 lg:grid-cols-8">
-                <Suspense fallback={<LatestReferencialesSkeleton />}>
-                    <LatestReferenciales />
-                </Suspense>
-                <Suspense fallback={<LatestReferencialesSkeleton />}>
-                    <TopCommunesChart />
-                </Suspense>
-            </div>
-        </main>
-    );
+  const session = await getServerSession(authOptions);
+
+  if (!session) {
+    redirect('/login');
+  }
+
+  // Obtener datos necesarios en el servidor
+  const latestReferenciales = await prisma.referenciales.findMany({
+    take: 5,
+    orderBy: { fechaescritura: 'desc' }, // Cambiado a fechaescritura según el esquema de Prisma
+    include: {
+      user: {
+        select: { name: true }
+      }
+    }
+  });
+
+  return (
+    <DashboardContent 
+      session={session} 
+      latestReferenciales={latestReferenciales} 
+    />
+  );
 }
