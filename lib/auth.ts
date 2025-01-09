@@ -88,7 +88,7 @@ export const authOptions: AuthOptions = {
     GoogleProvider({
       clientId: googleClientId,
       clientSecret: googleClientSecret,
-      allowDangerousEmailAccountLinking: true,
+      allowDangerousEmailAccountLinking: false, // Cambiado a false para mayor seguridad
       authorization: {
         params: {
           prompt: "select_account",
@@ -96,7 +96,7 @@ export const authOptions: AuthOptions = {
           response_type: "code",
           scope: "openid email profile",
           include_granted_scopes: true,
-          state: Date.now().toString() 
+          state: Date.now().toString() // Forzar estado único
         }
       }
     }),
@@ -119,14 +119,7 @@ export const authOptions: AuthOptions = {
           session.user.id = token.id as string;
           session.user.role = (token.role as string) || DEFAULT_ROLE;
           
-          await prisma.auditLog.create({
-            data: {
-              userId: token.id as string,
-              action: 'session.created',
-              metadata: { email: session.user.email }
-            }
-          }).catch(error => authLogger.error('Session audit failed', error as Error));
-
+          // Remover temporalmente el registro de auditoría
           authLogger.debug('Session created', { userId: token.id, role: token.role });
         }
         return session as ExtendedSession;
@@ -187,16 +180,8 @@ export const authOptions: AuthOptions = {
           }
         }
 
-        await prisma.auditLog.create({
-          data: {
-            userId: user.id,
-            action: existingUser ? 'signIn' : 'userCreated',
-            metadata: { 
-              email: user.email,
-              provider: account?.provider 
-            }
-          }
-        });
+        // Remover temporalmente el registro de auditoría
+        authLogger.debug('User signed in', { userId: user.id, provider: account?.provider });
 
       } catch (error) {
         authLogger.error('SignIn/Create user failed', error as Error);
