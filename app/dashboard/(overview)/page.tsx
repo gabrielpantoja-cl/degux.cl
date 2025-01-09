@@ -6,31 +6,39 @@ import DashboardContent from './DashboardContent';
 import { prisma } from '@/lib/prisma';
 
 export const metadata = {
-  title: 'Home',
+  title: 'Dashboard',
 };
 
 export default async function Page() {
   const session = await getServerSession(authOptions);
 
   if (!session) {
-    redirect('/login');
+    // Redirigir a la ruta correcta de autenticación de NextAuth
+    redirect('/api/auth/signin');
   }
 
-  // Obtener datos necesarios en el servidor
-  const latestReferenciales = await prisma.referenciales.findMany({
-    take: 5,
-    orderBy: { fechaescritura: 'desc' }, // Cambiado a fechaescritura según el esquema de Prisma
-    include: {
-      user: {
-        select: { name: true }
+  try {
+    // Obtener datos necesarios en el servidor
+    const latestReferenciales = await prisma.referenciales.findMany({
+      take: 5,
+      orderBy: { fechaescritura: 'desc' },
+      include: {
+        user: {
+          select: { name: true }
+        }
       }
-    }
-  });
+    });
 
-  return (
-    <DashboardContent 
-      session={session} 
-      latestReferenciales={latestReferenciales} 
-    />
-  );
+    return (
+      <DashboardContent 
+        session={session} 
+        latestReferenciales={latestReferenciales} 
+      />
+    );
+  } catch (error) {
+    console.error('Error loading dashboard data:', error);
+    return (
+      <div>Error cargando el dashboard. Por favor, intente nuevamente.</div>
+    );
+  }
 }

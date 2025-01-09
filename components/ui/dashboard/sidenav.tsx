@@ -5,8 +5,8 @@ import Link from 'next/link';
 import NavLinks from '@/components/ui/dashboard/nav-links';
 import AcmeLogo from '@/components/ui/acme-logo';
 import { PowerIcon, ExclamationTriangleIcon } from '@heroicons/react/24/outline';
-import { useDeleteAccount } from '@/hooks/useDeleteAccount';
-import { useSignOut } from '@/hooks/useSignOut';
+import { useDeleteAccount } from '@/lib/hooks/useDeleteAccount';
+import { useSignOut } from '@/lib/hooks/useSignOut';
 
 export default function SideNav() {
   const { signOut, isLoading: isSigningOut } = useSignOut();
