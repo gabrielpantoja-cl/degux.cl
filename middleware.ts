@@ -95,6 +95,7 @@ export default async function middleware(req: AuthenticatedRequest) {
     const pathname = nextUrl.pathname;
     const host = req.headers.get('host');
 
+    // Debugging
     console.log("[Middleware Detailed Debug]:", {
       path: pathname,
       isProd,
@@ -106,15 +107,13 @@ export default async function middleware(req: AuthenticatedRequest) {
       isApi: pathname.startsWith('/api')
     });
 
-    // Permitir todas las rutas OAuth
-    if (pathname.startsWith(apiAuthPrefix)) {
-      console.log("[OAuth Flow]:", pathname);
+    // Permitir rutas OAuth y callback
+    if (pathname.startsWith(apiAuthPrefix) || pathname.includes('/callback')) {
       return NextResponse.next();
     }
 
     // Validación de host permitidos
     if (!ALLOWED_HOSTS.includes(host || '')) {
-      console.error("[Security Error]: Invalid host", host);
       return NextResponse.redirect(new URL("/auth/error", nextUrl));
     }
 
@@ -128,13 +127,17 @@ export default async function middleware(req: AuthenticatedRequest) {
       return setSecurityHeaders(NextResponse.next());
     }
 
-    // Autenticación de usuario
+    // Obtener el estado de autenticación
     const isLoggedIn = await isAuthenticated(req);
+
+    // Si el usuario está autenticado y está en una ruta de auth, redirigir al dashboard
+    if (isLoggedIn && authRoutes.includes(pathname)) {
+      return NextResponse.redirect(new URL("/dashboard", nextUrl));
+    }
 
     // Rutas API protegidas
     if (protectedApiRoutes.includes(pathname)) {
       if (!isLoggedIn) {
-        console.log("[API Auth Error]:", pathname);
         return setSecurityHeaders(
           NextResponse.json(
             { 
@@ -151,11 +154,10 @@ export default async function middleware(req: AuthenticatedRequest) {
 
     // Rutas que requieren autenticación
     if (!isLoggedIn && !authRoutes.includes(pathname)) {
-      const loginUrl = new URL("/login", nextUrl);
-      if (pathname !== '/login') {
-        loginUrl.searchParams.set("callbackUrl", pathname);
-      }
-      return setSecurityHeaders(NextResponse.redirect(loginUrl));
+      const callbackUrl = encodeURIComponent(pathname);
+      return setSecurityHeaders(
+        NextResponse.redirect(new URL(`/api/auth/signin?callbackUrl=${callbackUrl}`, nextUrl))
+      );
     }
 
     return setSecurityHeaders(NextResponse.next());
@@ -171,6 +173,6 @@ export default async function middleware(req: AuthenticatedRequest) {
 export const config = {
   matcher: [
     "/((?!_next/static|_next/image|favicon.ico|public/|assets/|images/).*)",
-    "/api/:path*"  // Añadir matcher para rutas API
+    "/api/:path*"
   ],
 };
