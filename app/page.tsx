@@ -67,7 +67,7 @@ export default function Page() {
               </label>
             </div>
             <Link
-              href="/login"
+              href="/api/auth/signin"
               className={`flex items-center gap-5 self-start rounded-lg px-6 py-3 text-sm font-medium text-white transition-colors md:text-base ${
                 acceptedTerms ? 'bg-blue-500 hover:bg-blue-400' : 'bg-gray-300 cursor-not-allowed'
               }`}
