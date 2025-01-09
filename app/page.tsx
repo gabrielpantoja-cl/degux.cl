@@ -7,6 +7,7 @@ import AcmeLogo from '@/components/ui/acme-logo';
 import { lusitana } from '@/components/ui/fonts';
 import Image from 'next/image';
 import Link from 'next/link';
+import { signIn } from 'next-auth/react';
 
 export default function Page() {
   const [showBanner, setShowBanner] = useState(true);
@@ -66,19 +67,19 @@ export default function Page() {
                 He leído y acepto los <Link href="/terms" className="text-blue-500 underline">Términos de Servicio</Link> y <Link href="/privacy" className="text-blue-500 underline">Política de Privacidad</Link>
               </label>
             </div>
-            <Link
-              href="/api/auth/signin"
+            <button
+              onClick={() => {
+                if (acceptedTerms) {
+                  signIn();
+                }
+              }}
               className={`flex items-center gap-5 self-start rounded-lg px-6 py-3 text-sm font-medium text-white transition-colors md:text-base ${
                 acceptedTerms ? 'bg-blue-500 hover:bg-blue-400' : 'bg-gray-300 cursor-not-allowed'
               }`}
-              onClick={(e) => {
-                if (!acceptedTerms) {
-                  e.preventDefault();
-                }
-              }}
+              disabled={!acceptedTerms}
             >
               <span>Log in</span>
-            </Link>
+            </button>
           </div>
         </div>
         <div className="flex items-center justify-center p-6 md:w-3/5 md:px-28 md:py-12">

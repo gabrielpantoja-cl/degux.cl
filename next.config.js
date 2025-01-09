@@ -34,7 +34,7 @@ const nextConfig = {
               "default-src 'self'",
               "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://accounts.google.com",
               "style-src 'self' 'unsafe-inline'",
-              "img-src 'self' data: blob: https://*.googleusercontent.com",
+              "img-src 'self' data: blob: https://*.googleusercontent.com https://authjs.dev",
               "font-src 'self' data:",
               "connect-src 'self' https://accounts.google.com",
               "frame-src 'self' https://accounts.google.com"

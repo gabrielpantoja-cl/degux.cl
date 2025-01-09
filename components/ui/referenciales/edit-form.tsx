@@ -63,7 +63,7 @@ export default function EditReferencialForm({
   useEffect(() => {
     if (status === 'unauthenticated') {
       toast.error('No estás autenticado');
-      router.push('/login');
+      router.push('/api/auth/signin');
     }
   }, [status, router]);
 
