@@ -1,5 +1,4 @@
 // lib/email/sender.ts
-import nodemailer from 'nodemailer';
 import { emailTemplates } from './templates';
 
 // Crear un logger simple para mantener la funcionalidad
@@ -14,33 +13,22 @@ const emailLogger = {
   }
 };
 
-// Configurar el transporte de correo
-const transporter = nodemailer.createTransport({
-  service: 'Gmail',
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
-  },
-});
-
+// Función provisional que registra el intento de envío pero no envía realmente
 export async function sendWelcomeEmail(user: { email: string, name?: string }) {
   try {
-    const template = emailTemplates.welcome(user.name || '');
-    
-    await transporter.sendMail({
-      from: {
-        name: 'Referenciales',
-        address: process.env.EMAIL_USER!
-      },
-      to: user.email,
-      subject: template.subject,
-      html: template.html
+    // Solo registrar el intento de envío
+    emailLogger.debug('Welcome email would be sent', { 
+      email: user.email,
+      name: user.name 
     });
-
-    emailLogger.debug('Welcome email sent', { email: user.email });
     return true;
   } catch (error) {
-    emailLogger.error('Failed to send welcome email', error as Error);
+    emailLogger.error('Error in welcome email handler', error as Error);
     return false;
   }
 }
+
+// TODO: Implementar el sistema de correos después de resolver la autenticación
+// export async function configureEmailTransport() {
+//   // Futura implementación del transporte de correo
+// }

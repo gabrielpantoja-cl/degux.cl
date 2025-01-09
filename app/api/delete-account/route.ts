@@ -57,37 +57,6 @@ export async function DELETE() {
       where: { id: session.user.id }
     });
 
-    // Enviar correo de confirmación
-    if (process.env.EMAIL_USER && process.env.EMAIL_PASS) {
-      const transporter = nodemailer.createTransport({
-        service: 'Gmail',
-        auth: {
-          user: process.env.EMAIL_USER,
-          pass: process.env.EMAIL_PASS,
-        },
-      });
-
-      try {
-        await transporter.sendMail({
-          from: process.env.EMAIL_USER,
-          to: deletedUser.email || '',
-          subject: 'Cuenta Eliminada',
-          text: `
-            Hola,
-            
-            Tu cuenta ha sido eliminada exitosamente de nuestra plataforma.
-            
-            Si no realizaste esta acción, por favor contáctanos inmediatamente.
-            
-            Saludos,
-            El equipo de soporte
-          `,
-        });
-      } catch (emailError) {
-        console.error('Error al enviar correo:', emailError);
-      }
-    }
-
     return NextResponse.json(
       { 
         success: true,
