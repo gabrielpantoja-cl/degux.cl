@@ -37,10 +37,19 @@ export const authOptions: AuthOptions = {
   ],
   callbacks: {
     async redirect({ url, baseUrl }) {
-      // Asegurar redirecciones seguras
-      return url.startsWith(baseUrl) ? url : baseUrl;
+      // Asegurar que después del login vaya al dashboard
+      if (url.startsWith(baseUrl)) {
+        if (url.includes('/api/auth/signin')) {
+          return `${baseUrl}/dashboard`;
+        }
+        return url;
+      }
+      if (url.startsWith('/dashboard')) {
+        return `${baseUrl}/dashboard`;
+      }
+      return baseUrl;
     },
-    async session({ session, token }) {
+    async session({ session, token, user }) {
       if (session?.user) {
         session.user.id = token.sub as string;
         session.user.role = token.role as string || 'user';
@@ -54,12 +63,12 @@ export const authOptions: AuthOptions = {
       return token;
     }
   },
-  debug: process.env.NODE_ENV === 'development',
-  session: {
-    strategy: "jwt",
-    maxAge: TIME.MONTH,
-    updateAge: TIME.DAY
-  }
+  pages: {
+    signIn: '/api/auth/signin',
+    error: '/auth/error',
+    // Especificar página después del login
+    newUser: '/dashboard'
+  },
 };
 
 export default NextAuth(authOptions);
