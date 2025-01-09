@@ -12,12 +12,6 @@ if (!googleClientId || !googleClientSecret) {
   throw new Error("Missing Google OAuth credentials");
 }
 
-// Constantes de tiempo
-const TIME = {
-  DAY: 24 * 60 * 60,    // 24 horas en segundos
-  MONTH: 30 * 24 * 60 * 60  // 30 días en segundos
-};
-
 export const authOptions: AuthOptions = {
   adapter: PrismaAdapter(prisma),
   secret: process.env.NEXTAUTH_SECRET,
@@ -36,20 +30,7 @@ export const authOptions: AuthOptions = {
     })
   ],
   callbacks: {
-    async redirect({ url, baseUrl }) {
-      // Asegurar que después del login vaya al dashboard
-      if (url.startsWith(baseUrl)) {
-        if (url.includes('/api/auth/signin')) {
-          return `${baseUrl}/dashboard`;
-        }
-        return url;
-      }
-      if (url.startsWith('/dashboard')) {
-        return `${baseUrl}/dashboard`;
-      }
-      return baseUrl;
-    },
-    async session({ session, token, user }) {
+    async session({ session, token }) {
       if (session?.user) {
         session.user.id = token.sub as string;
         session.user.role = token.role as string || 'user';
@@ -63,12 +44,12 @@ export const authOptions: AuthOptions = {
       return token;
     }
   },
-  pages: {
-    signIn: '/api/auth/signin',
-    error: '/auth/error',
-    // Especificar página después del login
-    newUser: '/dashboard'
+  session: {
+    strategy: "jwt",
+    maxAge: 30 * 24 * 60 * 60, // 30 días
+    updateAge: 24 * 60 * 60 // 24 horas
   },
+  debug: process.env.NODE_ENV === 'development'
 };
 
 export default NextAuth(authOptions);
