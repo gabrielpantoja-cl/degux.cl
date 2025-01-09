@@ -1,3 +1,4 @@
+// app/(auth)/login/page.tsx
 "use client";
 
 import { SessionProvider, useSession, signIn } from 'next-auth/react';
