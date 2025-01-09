@@ -1,7 +1,7 @@
 // app/dashboard/(overview)/page.tsx
 import { getServerSession } from 'next-auth/next';
 import { redirect } from 'next/navigation';
-import { authOptions } from '@/app/api/auth/[...nextauth]/route';
+import { authOptions } from '@/pages/api/auth/[...nextauth]';
 import DashboardContent from './DashboardContent';
 import { prisma } from '@/lib/prisma';
 import type { referenciales, User } from '@prisma/client';
