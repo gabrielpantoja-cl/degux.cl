@@ -3,30 +3,85 @@
 
 import { useState, useEffect } from 'react';
 import { toast } from 'react-hot-toast';
+import { useRouter } from 'next/navigation';
+import { signIn, useSession } from 'next-auth/react';
 import AcmeLogo from '@/components/ui/acme-logo';
 import { lusitana } from '@/components/ui/fonts';
 import Image from 'next/image';
 import Link from 'next/link';
-import { signIn } from 'next-auth/react';
 
 export default function Page() {
-  const [showBanner, setShowBanner] = useState(true);
+  const router = useRouter();
+  const { data: session, status } = useSession();
+  const [isLoading, setIsLoading] = useState(false);
+  const [showBanner, setShowBanner] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return !localStorage.getItem('cookiesAccepted');
+    }
+    return true;
+  });
   const [acceptedTerms, setAcceptedTerms] = useState(false);
+
+  useEffect(() => {
+    if (session) {
+      router.push('/dashboard');
+    }
+  }, [session, router]);
 
   useEffect(() => {
     const signOutMessage = localStorage.getItem('signOutMessage');
     if (signOutMessage) {
-      toast.success(signOutMessage, { duration: 5000 }); // Duración de 5 segundos
+      toast.success(signOutMessage, { 
+        duration: 5000,
+        position: 'bottom-center'
+      });
       localStorage.removeItem('signOutMessage');
     }
   }, []);
+
+  const handleCookiesAccept = () => {
+    setShowBanner(false);
+    localStorage.setItem('cookiesAccepted', 'true');
+  };
+
+  const handleAuth = async () => {
+    if (!acceptedTerms) return;
+    try {
+      setIsLoading(true);
+      const result = await signIn('google', {
+        callbackUrl: '/dashboard',
+        redirect: false
+      });
+
+      if (result?.error) {
+        toast.error('Error al iniciar sesión');
+        return;
+      }
+
+      if (result?.url) {
+        router.push(result.url);
+      }
+    } catch (error) {
+      console.error('Error en inicio de sesión:', error);
+      toast.error('Error inesperado al iniciar sesión');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Mostrar loading mientras se verifica la sesión
+  if (status === "loading") {
+    return <div className="flex justify-center items-center min-h-screen">
+      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500" />
+    </div>;
+  }
 
   return (
     <main className="flex min-h-screen flex-col p-6">
       {showBanner && (
         <div className="fixed bottom-0 left-0 right-0 flex items-center justify-between bg-yellow-200 p-4 rounded-t-lg mb-0 z-50">
           <p className="text-yellow-800">
-            Usamos cookies para mejorar tu experiencia. Revisa la sección dedicada al final de la <Link href="/privacy" className="text-blue-500 underline">Política de Privacidad</Link>.
+            Sitio web optimizado para Google Chrome Desktop. Usamos cookies para mejorar tu experiencia, revisa la sección dedicada al final de la <Link href="/privacy" className="text-blue-500 underline">Política de Privacidad</Link>.
           </p>
           <div className="flex gap-2">
             <button
@@ -36,7 +91,7 @@ export default function Page() {
               Cerrar
             </button>
             <button
-              onClick={() => setShowBanner(false)}
+              onClick={handleCookiesAccept}
               className="rounded bg-yellow-300 px-3 py-1 text-yellow-800 hover:bg-yellow-400"
             >
               Aceptar
@@ -68,17 +123,17 @@ export default function Page() {
               </label>
             </div>
             <button
-              onClick={() => {
-                if (acceptedTerms) {
-                  signIn('google', { callbackUrl: '/dashboard' });
-                }
-              }}
+              onClick={handleAuth}
               className={`flex items-center gap-5 self-start rounded-lg px-6 py-3 text-sm font-medium text-white transition-colors md:text-base ${
-                acceptedTerms ? 'bg-blue-500 hover:bg-blue-400' : 'bg-gray-300 cursor-not-allowed'
+                acceptedTerms && !isLoading ? 'bg-blue-500 hover:bg-blue-400' : 'bg-gray-300 cursor-not-allowed'
               }`}
-              disabled={!acceptedTerms}
+              disabled={!acceptedTerms || isLoading}
             >
-              <span>Log in</span>
+              {isLoading ? (
+                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" />
+              ) : (
+                <span>Log in</span>
+              )}
             </button>
           </div>
         </div>
