@@ -40,9 +40,6 @@ export default async function DashboardPage() {
   try {
     const latestReferenciales = await prisma.referenciales.findMany({
       take: 5,
-      where: {
-        userId: session.user.id
-      },
       orderBy: { 
         fechaescritura: 'desc' 
       },

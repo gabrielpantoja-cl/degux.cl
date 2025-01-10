@@ -26,7 +26,7 @@ export default function DashboardContent({ session, latestReferenciales }: Dashb
       </h1>
       {session?.user && (
         <div className="mb-4 text-lg text-blue-600">
-          👋 ¡Hola! <span className="font-bold">{session.user.name || session.user.email}</span>, bienvenid@ a tu panel de control.
+          👋 ¡Hola! <span className="font-bold">{session.user.name || session.user.email}</span>, bienvenid@ a referenciales.cl
           </div>
       )}
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
