@@ -25,9 +25,17 @@ export default function DashboardContent({ session, latestReferenciales }: Dashb
         Inicio
       </h1>
       {session?.user && (
-        <div className="mb-4 text-lg text-blue-600">
-          👋 ¡Hola! <span className="font-bold">{session.user.name || session.user.email}</span>, bienvenid@ a referenciales.cl
+        <div className="mb-4 space-y-2">
+          <div className="text-lg text-blue-600">
+            👋 ¡Hola! <span className="font-bold">{session.user.name}</span>
           </div>
+          <div className="text-sm text-gray-600">
+            Cuenta: <span className="font-medium">{session.user.email}</span>
+          </div>
+          <div className="text-base text-blue-600">
+            Bienvenid@ a referenciales.cl
+          </div>
+        </div>
       )}
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
         <Suspense fallback={<CardsSkeleton />}>
