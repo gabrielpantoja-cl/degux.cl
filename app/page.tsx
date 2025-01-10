@@ -14,12 +14,6 @@ export default function Page() {
   const router = useRouter();
   const { data: session, status } = useSession();
   const [isLoading, setIsLoading] = useState(false);
-  const [showBanner, setShowBanner] = useState(() => {
-    if (typeof window !== 'undefined') {
-      return !localStorage.getItem('cookiesAccepted');
-    }
-    return true;
-  });
   const [acceptedTerms, setAcceptedTerms] = useState(false);
 
   useEffect(() => {
@@ -39,10 +33,39 @@ export default function Page() {
     }
   }, []);
 
-  const handleCookiesAccept = () => {
-    setShowBanner(false);
-    localStorage.setItem('cookiesAccepted', 'true');
-  };
+  useEffect(() => {
+    const showCookiesToast = () => {
+      if (!localStorage.getItem('cookiesAccepted')) {
+        toast((t) => (
+          <div className="flex flex-col gap-2">
+            <p>
+              Sitio web optimizado para Google Chrome Desktop. Usamos cookies para mejorar tu experiencia, revisa la sección dedicada al final de la <Link href="/privacy" className="text-blue-500 underline">Política de Privacidad</Link>.
+            </p>
+            <div className="flex gap-2">
+              <button
+                onClick={() => toast.dismiss(t.id)}
+                className="rounded bg-yellow-300 px-3 py-1 text-yellow-800 hover:bg-yellow-400"
+              >
+                Cerrar
+              </button>
+              <button
+                onClick={() => {
+                  localStorage.setItem('cookiesAccepted', 'true');
+                  toast.dismiss(t.id);
+                }}
+                className="rounded bg-yellow-300 px-3 py-1 text-yellow-800 hover:bg-yellow-400"
+              >
+                Aceptar
+              </button>
+            </div>
+          </div>
+        ), { duration: 10000, position: 'bottom-center' });
+      }
+    };
+
+    const timer = setTimeout(showCookiesToast, 100);
+    return () => clearTimeout(timer);
+  }, []);
 
   const handleAuth = async () => {
     if (!acceptedTerms) return;
@@ -78,27 +101,6 @@ export default function Page() {
 
   return (
     <main className="flex min-h-screen flex-col p-6">
-      {showBanner && (
-        <div className="fixed bottom-0 left-0 right-0 flex items-center justify-between bg-yellow-200 p-4 rounded-t-lg mb-0 z-50">
-          <p className="text-yellow-800">
-            Sitio web optimizado para Google Chrome Desktop. Usamos cookies para mejorar tu experiencia, revisa la sección dedicada al final de la <Link href="/privacy" className="text-blue-500 underline">Política de Privacidad</Link>.
-          </p>
-          <div className="flex gap-2">
-            <button
-              onClick={() => setShowBanner(false)}
-              className="rounded bg-yellow-300 px-3 py-1 text-yellow-800 hover:bg-yellow-400"
-            >
-              Cerrar
-            </button>
-            <button
-              onClick={handleCookiesAccept}
-              className="rounded bg-yellow-300 px-3 py-1 text-yellow-800 hover:bg-yellow-400"
-            >
-              Aceptar
-            </button>
-          </div>
-        </div>
-      )}
       <div className="flex h-20 shrink-0 items-end rounded-lg bg-blue-500 p-4 md:h-52">
         <AcmeLogo />
       </div>
