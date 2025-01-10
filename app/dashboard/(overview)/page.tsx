@@ -6,6 +6,7 @@ import DashboardContent from './DashboardContent';
 import { prisma } from '@/lib/prisma';
 import type { referenciales, User } from '@prisma/client';
 import { Suspense } from 'react';
+import ProgressBar from './ProgressBar';
 
 // Tipos mejorados
 interface LatestReferencial extends Pick<referenciales, 'id' | 'fechaescritura'> {
@@ -38,36 +39,32 @@ export default async function DashboardPage() {
   }
 
   try {
-    const latestReferenciales = await prisma.referenciales.findMany({
-      take: 5,
-      orderBy: { 
-        fechaescritura: 'desc' 
-      },
-      select: {
-        id: true,
-        fechaescritura: true,
-        fojas: true,
-        numero: true,
-        anio: true,
-        cbr: true,
-        user: {
-          select: { 
-            name: true 
+    const [latestReferenciales, totalReferenciales] = await Promise.all([
+      prisma.referenciales.findMany({
+        take: 5,
+        orderBy: { 
+          fechaescritura: 'desc' 
+        },
+        select: {
+          id: true,
+          fechaescritura: true,
+          fojas: true,
+          numero: true,
+          anio: true,
+          cbr: true,
+          user: {
+            select: { 
+              name: true 
+            }
           }
         }
-      }
-    });
-
-    if (!latestReferenciales?.length) {
-      return (
-        <div className="p-4 text-gray-600">
-          No hay referencias disponibles. ¡Comienza agregando una!
-        </div>
-      );
-    }
+      }),
+      prisma.referenciales.count()
+    ]);
 
     return (
       <Suspense fallback={<div>Cargando panel de control...</div>}>
+        <ProgressBar totalReferenciales={totalReferenciales} />
         <DashboardContent 
           session={session}
           latestReferenciales={latestReferenciales as LatestReferencial[]}
