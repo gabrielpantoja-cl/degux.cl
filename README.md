@@ -1,37 +1,39 @@
-# Base de Datos de Referenciales para Tasación
-Proyecto desarrollado con Next.js 14 App Router
+# Reference Database for Appraisal
+Project developed with Next.js 14 App Router
 
-## Estado del Proyecto
-🚧 **En desarrollo activo** 🚧
+## Project Status
+🚧 **Under active development** 🚧
 
-### Actualmente Trabajando en:
-- Robustecimiento del sistema de autenticación con Google
-- Optimización del formulario de ingreso de referenciales
+### Currently Working On:
+- Strengthening the authentication system with Google
+- Optimizing the reference entry form
 
-## Descripción
-Sistema de gestión de referenciales para tasación inmobiliaria con:
-- Autenticación mediante Google OAuth 2.0
-- Panel de administración protegido
-- Gestión de referenciales (crear/editar)
-- Base de datos PostgreSQL con Prisma ORM
+## Description
+Management system for real estate appraisal references with:
+- Authentication via Google OAuth 2.0
+- Protected admin panel
+- Reference management (create/edit)
+- PostgreSQL database with Prisma ORM
 
-## Estructura Actual del Proyecto
+## Current Project Structure
+
 
 / ├── app/ │ ├── (auth)/ │ │ ├── login/ │ │ └── register/ │ ├── dashboard/ │ │ ├── referenciales/ │ │ └── profile/ │ ├── api/ │ ├── lib/ │ └── ui/ ├── prisma/ ├── public/ └── components/
 
-## Instalación y Configuración
 
-1. Clonar el repositorio:
+## Installation and Configuration
+
+1. Clone the repository:
     ```bash
-    git clone [url-repositorio]
+    git clone [repository-url]
     ```
 
-2. Instalar dependencias:
+2. Install dependencies:
     ```bash
     npm install
     ```
 
-3. Configurar variables de entorno:
+3. Configure environment variables:
     ```
     POSTGRES_PRISMA_URL=
     GOOGLE_CLIENT_ID=
@@ -40,34 +42,35 @@ Sistema de gestión de referenciales para tasación inmobiliaria con:
     NEXTAUTH_SECRET=
     ```
 
-4. Inicializar la base de datos:
+4. Initialize the database:
     ```bash
     npx prisma generate
     npx prisma db push
     ```
 
-## Problemas Conocidos
-- En vista mobil next image no optimiza adecuada la imagen del inicio
-- Al crea nuevo referencial, sale mensaje exitoso duplicadp
-- La redirección post-login requiere optimización.
-- El formulario de creación necesita validación mejorada.
+## Known Issues
+- On mobile view, next image does not optimize the home image properly
+- When creating a new reference, a duplicate success message appears
+- Post-login redirection needs optimization
+- The creation form needs improved validation
 
-## En Desarrollo
-- Implementación de manejo de errores robusto.
-- Mejora del sistema de validación de formularios.
-- Optimización del flujo de autenticación.
-- Sistema de caché para mejorar el rendimiento.
+## In Development
+- Implementation of robust error handling
+- Improvement of form validation system
+- Optimization of the authentication flow
+- Caching system to improve performance
 
-## Base de Datos
-Utilizamos PostgreSQL + Prisma ORM. El esquema actual incluye:
-- **users**: Información de usuarios autenticados.
-- **referenciales**: Datos de referenciales inmobiliarios.
-- **accounts**: Gestión de cuentas OAuth.
+## Database
+We use PostgreSQL + Prisma ORM. The current schema includes:
+- **users**: Information of authenticated users
+- **referenciales**: Real estate reference data
+- **accounts**: OAuth account management
 
-## Contribuciones
-Proyecto inspirado en varios repositorios de código abierto. Contribuciones son bienvenidas mediante pull requests.
+## Contributions
+Project inspired by various open-source repositories. Contributions are welcome via pull requests.
 
-## Licencia Este proyecto está licenciado bajo la [Licencia MIT](https://opensource.org/licenses/MIT).
+## License
+This project is licensed under the [MIT License](https://opensource.org/licenses/MIT).
 
-## Diagrama del Sistema
-![Diagrama del Sistema](public//images/diagrama_sistema.png)
+## System Diagram
+![System Diagram](public/images/diagrama_sistema.png)
