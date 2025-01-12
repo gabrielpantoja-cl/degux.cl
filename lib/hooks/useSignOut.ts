@@ -22,6 +22,7 @@ export const useSignOut = () => {
     } catch (error) {
       console.error('Error al cerrar sesión:', error);
       toast.error('No se pudo cerrar la sesión. Por favor, intenta nuevamente.');
+    } finally {
       setIsLoading(false);
     }
   };
