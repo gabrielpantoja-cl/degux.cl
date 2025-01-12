@@ -9,7 +9,7 @@ import SessionProviderClient from '@/app/dashboard/SessionProviderClient';
 export const metadata: Metadata = {
   title: {
     template: '%s | Dashboard | @referenciales.cl',
-    default: 'referenciales.cl Dashboard',
+    default: 'referenciales.cl',
   },
   description: 'Base de datos colaborativa.',
   metadataBase: new URL('https://next14-postgres.vercel.app/'),
