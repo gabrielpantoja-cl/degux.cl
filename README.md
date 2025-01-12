@@ -67,6 +67,3 @@ Project inspired by various open-source repositories. Contributions are welcome 
 
 ## License 📄
 This project is licensed under the [MIT License](https://opensource.org/licenses/MIT).
-
-## System Diagram 🖼️
-![System Diagram](public/images/diagrama_sistema.png)
