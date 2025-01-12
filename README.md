@@ -15,11 +15,6 @@ Management system for real estate appraisal references with:
 - Reference management (create/edit)
 - PostgreSQL database with Prisma ORM
 
-## Current Project Structure
-
-
-/ ├── app/ │ ├── (auth)/ │ │ ├── login/ │ │ └── register/ │ ├── dashboard/ │ │ ├── referenciales/ │ │ └── profile/ │ ├── api/ │ ├── lib/ │ └── ui/ ├── prisma/ ├── public/ └── components/
-
 
 ## Installation and Configuration
 
