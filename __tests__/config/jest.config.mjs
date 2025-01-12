@@ -17,14 +17,7 @@ const customJestConfig = {
   },
   testMatch: [
     "**/__tests__/**/*.[jt]s?(x)",
-    "**/__tests__/app/(*)/**/*.[jt]s?(x)",
-    "**/?(*.)+(spec|test).[jt]s?(x)",
-    "src/**/__tests__/**/*.[jt]s?(x)",
-    "src/**/?(*.)+(spec|test).[jt]s?(x)",
-    "app/**/__tests__/**/*.[jt]s?(x)",
-    "app/**/?(*.)+(spec|test).[jt]s?(x)",
-    "components/**/__tests__/**/*.[jt]s?(x)",
-    "components/**/?(*.)+(spec|test).[jt]s?(x)"
+    "**/?(*.)+(spec|test).[jt]s?(x)"
   ],
   testPathIgnorePatterns: [
     '<rootDir>/.next/',
@@ -32,20 +25,9 @@ const customJestConfig = {
     '<rootDir>/coverage/',
     '<rootDir>/dist/',
   ],
-  transformIgnorePatterns: [
-    '/node_modules/',
-    '^.+\\.module\\.(css|sass|scss)$',
-  ],
   transform: {
-    '^.+\\.(ts|tsx)$': 'ts-jest',
-    '^.+\\.(js|jsx)$': 'ts-jest',
+    '^.+\\.(js|jsx|ts|tsx|mjs)$': ['next/dist/build/swc/jest-transform']
   },
-  coveragePathIgnorePatterns: [
-    '/node_modules/',
-    'jest.config.js',
-    '.next/',
-    'coverage/',
-  ],
   coverageDirectory: '<rootDir>/coverage/',
   collectCoverage: true,
   collectCoverageFrom: [

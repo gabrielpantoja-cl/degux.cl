@@ -1,14 +1,10 @@
 // __tests__/__helpers__/test-utils.ts
 import { render, RenderOptions } from '@testing-library/react'
-import { ReactElement, ReactNode } from 'react'
+import { ReactElement } from 'react'
 import { Session } from 'next-auth'
 import { SessionProvider } from 'next-auth/react'
 
 // Interfaces
-interface ProvidersWrapperProps {
-  children: ReactNode;
-}
-
 interface MockSession extends Session {
   expires: string;
   user: {
@@ -18,6 +14,26 @@ interface MockSession extends Session {
     name: string | null;
     image: string | null;
   };
+}
+
+interface RouterMockOptions {
+  route?: string;
+  pathname?: string;
+  query?: Record<string, string>;
+  asPath?: string;
+  basePath?: string;
+  push?: jest.Mock;
+  replace?: jest.Mock;
+  reload?: jest.Mock;
+  back?: jest.Mock;
+  prefetch?: jest.Mock;
+  beforePopState?: jest.Mock;
+  events?: {
+    on: jest.Mock;
+    off: jest.Mock;
+    emit: jest.Mock;
+  };
+  isFallback?: boolean;
 }
 
 // Mock de sesión por defecto
@@ -32,14 +48,14 @@ const mockSession: MockSession = {
   }
 }
 
-// Wrapper con providers
-const AllTheProviders = ({ children }: ProvidersWrapperProps): JSX.Element => {
+// Proveedor de todos los contextos necesarios
+const AllTheProviders = ({ children }: { children: ReactElement }) => {
   return (
     <SessionProvider session={mockSession}>
       {children}
     </SessionProvider>
-  );
-};
+  )
+}
 
 // Función de renderizado personalizada con tipos
 const customRender = (
@@ -69,7 +85,7 @@ export const createMockRouter = (options: Partial<RouterMockOptions> = {}) => ({
   events: {
     on: jest.fn(),
     off: jest.fn(),
-    emit: jest.fn() // Corregido de jest.Mock() a jest.fn()
+    emit: jest.fn()
   },
   isFallback: false,
   ...options
@@ -91,3 +107,4 @@ export const handlers = [
 
 // Tipos exportados
 export type RenderWithProvidersOptions = Omit<RenderOptions, 'wrapper'>
+export type { RouterMockOptions, MockSession }
