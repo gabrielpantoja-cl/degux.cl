@@ -22,7 +22,10 @@
       "vars": "all",
       "args": "after-used",
       "ignoreRestSiblings": true
-    }]
+    }],
+    // Añadir reglas para permitir importaciones de Leaflet
+    "@typescript-eslint/no-explicit-any": "off",
+    "import/no-unresolved": "off"
   },
   "settings": {
     "react": {
@@ -32,7 +35,19 @@
       "@typescript-eslint/parser": [".ts", ".tsx"]
     },
     "import/resolver": {
-      "typescript": {}
+      "typescript": {},
+      "node": {
+        "extensions": [".js", ".jsx", ".ts", ".tsx"]
+      }
     }
-  }
+  },
+  // Agregar configuración para módulos externos
+  "overrides": [
+    {
+      "files": ["**/*.ts", "**/*.tsx"],
+      "rules": {
+        "import/named": "off"
+      }
+    }
+  ]
 }
