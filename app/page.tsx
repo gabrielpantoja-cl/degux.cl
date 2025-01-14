@@ -4,7 +4,7 @@
 import { useState, useEffect } from 'react';
 import { toast } from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
-import { signIn, useSession } from 'next-auth/react';
+import { signIn, useSession, signOut } from 'next-auth/react';
 import AcmeLogo from '@/components/ui/acme-logo';
 import { lusitana } from '@/components/ui/fonts';
 import Image from 'next/image';
@@ -16,13 +16,15 @@ export default function Page() {
   const [isLoading, setIsLoading] = useState(false);
   const [acceptedTerms, setAcceptedTerms] = useState(false);
 
+  // Manejar redirección y mensajes
   useEffect(() => {
+    // Si hay sesión activa, redirigir al dashboard
     if (session) {
       router.push('/dashboard');
+      return;
     }
-  }, [session, router]);
 
-  useEffect(() => {
+    // Verificar mensaje de cierre de sesión
     const signOutMessage = localStorage.getItem('signOutMessage');
     if (signOutMessage) {
       toast.success(signOutMessage, { 
@@ -30,45 +32,20 @@ export default function Page() {
         position: 'bottom-center'
       });
       localStorage.removeItem('signOutMessage');
+      
+      // Limpiar cookies y estado local
+      document.cookie.split(';').forEach(cookie => {
+        document.cookie = cookie
+          .replace(/^ +/, '')
+          .replace(/=.*/, `=;expires=${new Date().toUTCString()};path=/`);
+      });
     }
-  }, []);
+  }, [session, router]);
 
-  useEffect(() => {
-    const showCookiesToast = () => {
-      if (!localStorage.getItem('cookiesAccepted')) {
-        toast((t) => (
-          <div className="flex flex-col gap-2">
-            <p>
-              Sitio web optimizado para Google Chrome Desktop. Usamos cookies para mejorar tu experiencia, revisa la sección dedicada al final de la <Link href="/privacy" className="text-blue-500 underline">Política de Privacidad</Link>.
-            </p>
-            <div className="flex gap-2">
-              <button
-                onClick={() => toast.dismiss(t.id)}
-                className="rounded bg-yellow-300 px-3 py-1 text-yellow-800 hover:bg-yellow-400"
-              >
-                Cerrar
-              </button>
-              <button
-                onClick={() => {
-                  localStorage.setItem('cookiesAccepted', 'true');
-                  toast.dismiss(t.id);
-                }}
-                className="rounded bg-yellow-300 px-3 py-1 text-yellow-800 hover:bg-yellow-400"
-              >
-                Aceptar
-              </button>
-            </div>
-          </div>
-        ), { duration: 10000, position: 'bottom-center' });
-      }
-    };
-
-    const timer = setTimeout(showCookiesToast, 100);
-    return () => clearTimeout(timer);
-  }, []);
-
+  // Manejar autenticación
   const handleAuth = async () => {
     if (!acceptedTerms) return;
+    
     try {
       setIsLoading(true);
       const result = await signIn('google', {
@@ -77,7 +54,8 @@ export default function Page() {
       });
 
       if (result?.error) {
-        toast.error('Error al iniciar sesión');
+        console.error('Error de autenticación:', result.error);
+        toast.error('Error al iniciar sesión. Por favor, intente nuevamente.');
         return;
       }
 
@@ -92,11 +70,26 @@ export default function Page() {
     }
   };
 
+  // Manejar cierre de sesión
+  const handleSignOut = async () => {
+    try {
+      await signOut({ 
+        callbackUrl: '/',
+        redirect: true 
+      });
+    } catch (error) {
+      console.error('Error al cerrar sesión:', error);
+      toast.error('Error al cerrar sesión');
+    }
+  };
+
   // Mostrar loading mientras se verifica la sesión
   if (status === "loading") {
-    return <div className="flex justify-center items-center min-h-screen">
-      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500" />
-    </div>;
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500" />
+      </div>
+    );
   }
 
   return (
@@ -125,16 +118,16 @@ export default function Page() {
               </label>
             </div>
             <button
-              onClick={handleAuth}
+              onClick={session ? handleSignOut : handleAuth}
               className={`flex items-center gap-5 self-start rounded-lg px-6 py-3 text-sm font-medium text-white transition-colors md:text-base ${
-                acceptedTerms && !isLoading ? 'bg-blue-500 hover:bg-blue-400' : 'bg-gray-300 cursor-not-allowed'
+                (acceptedTerms || session) && !isLoading ? 'bg-blue-500 hover:bg-blue-400' : 'bg-gray-300 cursor-not-allowed'
               }`}
-              disabled={!acceptedTerms || isLoading}
+              disabled={!acceptedTerms && !session || isLoading}
             >
               {isLoading ? (
                 <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" />
               ) : (
-                <span>Log in</span>
+                <span>{session ? 'Cerrar sesión' : 'Iniciar sesión'}</span>
               )}
             </button>
           </div>
