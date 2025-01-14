@@ -5,52 +5,86 @@ import type { NextRequest } from "next/server";
 
 // Rutas públicas que no requieren autenticación
 const publicRoutes = [
-  '/', 
-  '/api/auth',  // Ruta base de NextAuth
-  '/api/auth/signin', // Ruta de inicio de sesión de NextAuth
-  '/api/auth/signout', // Ruta de cierre de sesión de NextAuth
-  '/api/auth/error', // Ruta de error de NextAuth
-  '/api/auth/verify-request', // Ruta de verificación de NextAuth
-  '/api/auth/callback' // Ruta de callback de NextAuth
+  '/',
+  '/auth/signin',
+  '/auth/signout',
+  '/auth/error',
+  '/api/auth/signin',
+  '/api/auth/signout',
+  '/api/auth/callback/google',
+  '/api/auth/csrf',
+  '/api/auth/session',
 ];
 
-// Función para verificar si una ruta es pública
+// Función mejorada para verificar rutas públicas
 const isPublicRoute = (path: string) => {
-  return publicRoutes.some(route => path.startsWith(route));
+  return publicRoutes.some(route => 
+    path === route || 
+    path.startsWith('/api/auth/') || 
+    path.startsWith('/_next/') ||
+    path.includes('favicon.ico')
+  );
 }
 
 export async function middleware(req: NextRequest) {
   const path = req.nextUrl.pathname;
-  
+
+  // Debug en producción
+  console.log(`[Middleware] Accediendo a ruta: ${path}`);
+
   // Permitir rutas públicas
   if (isPublicRoute(path)) {
     return NextResponse.next();
   }
 
-  // Verificar token usando next-auth
-  const token = await getToken({
-    req,
-    secret: process.env.NEXTAUTH_SECRET,
-  });
+  try {
+    // Verificación mejorada del token
+    const token = await getToken({
+      req,
+      secret: process.env.NEXTAUTH_SECRET,
+      secureCookie: process.env.NODE_ENV === 'production',
+    });
 
-  // Si no hay token y la ruta no es pública, redirigir a signin de NextAuth
-  if (!token && !isPublicRoute(path)) {
-    const url = new URL('/api/auth/signin', req.url);
-    url.searchParams.set('callbackUrl', path);
-    return NextResponse.redirect(url);
+    console.log(`[Middleware] Token encontrado: ${!!token}`);
+
+    // Si no hay token, redirigir a signin
+    if (!token) {
+      console.log('[Middleware] No hay token, redirigiendo a signin');
+      const signInUrl = new URL('/auth/signin', req.url);
+      signInUrl.searchParams.set('callbackUrl', req.url);
+      return NextResponse.redirect(signInUrl);
+    }
+
+    // Verificar si el usuario está activo
+    if (!token.email) {
+      console.log('[Middleware] Token inválido, forzando logout');
+      return NextResponse.redirect(new URL('/auth/signout', req.url));
+    }
+
+    // Configurar respuesta con headers de seguridad
+    const response = NextResponse.next();
+    
+    // Headers de seguridad mejorados
+    response.headers.set('X-Content-Type-Options', 'nosniff');
+    response.headers.set('X-Frame-Options', 'DENY');
+    response.headers.set('X-XSS-Protection', '1; mode=block');
+    response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
+    response.headers.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
+    
+    // Headers de cache para prevenir problemas de persistencia
+    response.headers.set('Cache-Control', 'no-store, max-age=0');
+    response.headers.set('Pragma', 'no-cache');
+    
+    return response;
+
+  } catch (error) {
+    console.error('[Middleware] Error:', error);
+    return NextResponse.redirect(new URL('/auth/error', req.url));
   }
-
-  // Agregar headers de seguridad
-  const response = NextResponse.next();
-  response.headers.set('X-Content-Type-Options', 'nosniff');
-  response.headers.set('X-Frame-Options', 'SAMEORIGIN');
-  response.headers.set('X-XSS-Protection', '1; mode=block');
-
-  return response;
 }
 
 export const config = {
   matcher: [
-    '/((?!_next/static|_next/image|favicon.ico|public/|assets/|api/auth).*)',
+    '/((?!_next/static|_next/image|favicon.ico|public/|assets/).*)',
   ],
 };
