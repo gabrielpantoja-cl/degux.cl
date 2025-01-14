@@ -1,19 +1,34 @@
 // pages/api/auth/[...nextauth].ts
 import NextAuth from "next-auth";
-import type { NextAuthOptions } from "next-auth";
+import type { NextAuthOptions } from "next-auth"; 
 import GoogleProvider from "next-auth/providers/google";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
-import prisma from "../../../lib/prisma";
+import { PrismaClient } from "@prisma/client";
 
-const SIGNIN_ATTEMPTS = 2; // Intentos máximos de login
-const RETRY_DELAY = 1000; // Delay entre intentos en ms
+declare module "next-auth" {
+  interface Session {
+    timestamp?: number;
+    user: {
+      id: string;
+      role: string;
+      email: string;
+      name?: string | null;
+    }
+  }
+}
+
+const prismaClient = new PrismaClient();
+
+const SIGNIN_ATTEMPTS = 2;
+const RETRY_DELAY = 1000;
 
 export const authOptions: NextAuthOptions = {
-  adapter: PrismaAdapter(prisma),
+  adapter: PrismaAdapter(prismaClient),
   secret: process.env.NEXTAUTH_SECRET,
   session: {
     strategy: "jwt",
-    maxAge: 24 * 60 * 60, // 24 horas
+    maxAge: 24 * 60 * 60, 
+    updateAge: 24 * 60 * 60, 
   },
   providers: [
     GoogleProvider({
@@ -21,7 +36,7 @@ export const authOptions: NextAuthOptions = {
       clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
       authorization: {
         params: {
-          prompt: "consent",
+          prompt: "select_account", 
           access_type: "offline",
           response_type: "code",
           scope: "openid email profile",
@@ -30,66 +45,83 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
-    async session({ session, token, user }) {
-      // Asegurar que tenemos toda la información necesaria
+    async session({ session, token }) {
       if (session?.user) {
+        // Asegurar consistencia de datos de sesión
         session.user.id = token.id as string;
         session.user.role = (token.role as string) || 'user';
+        session.user.email = token.email as string;
+        
+        // Ahora timestamp está tipado correctamente
+        session.timestamp = Date.now();
       }
       return session;
     },
-    async jwt({ token, user, account }) {
+    
+    async jwt({ token, user, account, trigger }) {
       if (user) {
+        // Actualizar token con información del usuario
         token.id = user.id;
         token.role = user.role || 'user';
+        token.email = user.email;
         token.provider = account?.provider;
+        token.lastSync = Date.now();
       }
+
+      // Verificar si el token necesita actualización
+      if (trigger === "update" && token.lastSync) {
+        const timeSinceLastSync = Date.now() - (token.lastSync as number);
+        if (timeSinceLastSync > 1000 * 60 * 60) { // 1 hora
+          // Forzar revalidación de token
+          token.lastSync = Date.now();
+        }
+      }
+
       return token;
     },
     async signIn({ user, account }) {
       try {
         if (!user.email) {
-          console.log("No email provided");
+          console.log("[SignIn] No email provided");
           return false;
         }
 
-        // Implementar retry logic para nuevos usuarios
         let attempts = 0;
         while (attempts < SIGNIN_ATTEMPTS) {
           try {
-            const existingUser = await prisma.user.findUnique({
+            const existingUser = await prismaClient.user.findUnique({
               where: { email: user.email }
             });
 
             if (!existingUser && account?.provider === 'google') {
-              console.log("Creating new user:", user.email);
-              await prisma.user.create({
+              console.log("[SignIn] Creating new user:", user.email);
+              
+              // Crear nuevo usuario con timestamp
+              const newUser = await prismaClient.user.create({
                 data: {
                   email: user.email,
                   name: user.name || '',
-                  role: 'user',
-                  emailVerified: new Date(), // Marcar email como verificado
+                  role: 'USER',
+                  emailVerified: new Date(),
                 }
               });
               
-              // Esperar un momento para asegurar que la BD se actualice
-              await new Promise(resolve => setTimeout(resolve, RETRY_DELAY));
-              
-              // Verificar que el usuario se creó correctamente
-              const newUser = await prisma.user.findUnique({
-                where: { email: user.email }
-              });
-              
               if (newUser) {
-                console.log("User created successfully:", newUser.email);
+                console.log("[SignIn] User created successfully:", newUser.email);
                 return true;
               }
             } else if (existingUser) {
-              console.log("Existing user found:", existingUser.email);
+              // Actualizar último login
+              await prismaClient.user.update({
+                where: { email: user.email },
+                data: {} // Solo para trigger el @updatedAt
+              });
+              
+              console.log("[SignIn] Existing user logged in:", existingUser.email);
               return true;
             }
           } catch (error) {
-            console.error(`Attempt ${attempts + 1} failed:`, error);
+            console.error(`[SignIn] Attempt ${attempts + 1} failed:`, error);
             attempts++;
             if (attempts < SIGNIN_ATTEMPTS) {
               await new Promise(resolve => setTimeout(resolve, RETRY_DELAY));
@@ -97,9 +129,9 @@ export const authOptions: NextAuthOptions = {
           }
         }
         
-        throw new Error("Max signin attempts reached");
+        throw new Error("[SignIn] Max signin attempts reached");
       } catch (error) {
-        console.error('Fatal error in signIn:', error);
+        console.error('[SignIn] Fatal error:', error);
         return false;
       }
     }
@@ -107,25 +139,29 @@ export const authOptions: NextAuthOptions = {
   pages: {
     signIn: '/auth/signin',
     error: '/auth/error',
+    signOut: '/auth/signout', // Agregar página de signout explícita
   },
   debug: process.env.NODE_ENV === 'development',
   events: {
     async signIn(message) {
-      console.log("Signin event:", message);
+      console.log("[Event] Signin:", message);
+    },
+    async signOut(message) {
+      console.log("[Event] Signout:", message);
     },
     async createUser(message) {
-      console.log("Create user event:", message);
+      console.log("[Event] Create user:", message);
     }
   },
   logger: {
     error: (code, ...message) => {
-      console.error(code, ...message);
+      console.error('[NextAuth]', code, ...message);
     },
     warn: (code, ...message) => {
-      console.warn(code, ...message);
+      console.warn('[NextAuth]', code, ...message);
     },
     debug: (code, ...message) => {
-      console.debug(code, ...message);
+      console.debug('[NextAuth]', code, ...message);
     },
   }
 };
