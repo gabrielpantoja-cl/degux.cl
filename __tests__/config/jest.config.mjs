@@ -26,7 +26,7 @@ const customJestConfig = {
     '<rootDir>/dist/',
   ],
   transform: {
-    '^.+\\.(js|jsx|ts|tsx|mjs)$': ['next/dist/build/swc/jest-transform']
+    '^.+\\.(js|jsx|ts|tsx)$': 'ts-jest',
   },
   coverageDirectory: '<rootDir>/coverage/',
   collectCoverage: true,
