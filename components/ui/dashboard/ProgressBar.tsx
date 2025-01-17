@@ -1,4 +1,4 @@
-// app/dashboard/(overview)/ProgressBar.tsx
+// components/ui/dashboard/ProgressBar.tsx
 'use client';
 
 import { useEffect, useState } from 'react';

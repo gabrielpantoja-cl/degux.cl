@@ -1,4 +1,3 @@
-// app/dashboard/(overview)/page.tsx
 import { getServerSession } from 'next-auth/next';
 import { redirect } from 'next/navigation';
 import { authOptions } from '@/pages/api/auth/[...nextauth]';
@@ -6,7 +5,6 @@ import DashboardContent from './DashboardContent';
 import { prisma } from '@/lib/prisma';
 import type { referenciales, User } from '@prisma/client';
 import { Suspense } from 'react';
-import ProgressBar from './ProgressBar';
 
 // Tipos mejorados
 interface LatestReferencial extends Pick<referenciales, 'id' | 'fechaescritura'> {
@@ -64,10 +62,10 @@ export default async function DashboardPage() {
 
     return (
       <Suspense fallback={<div>Cargando panel de control...</div>}>
-        <ProgressBar totalReferenciales={totalReferenciales} />
         <DashboardContent 
           session={session}
           latestReferenciales={latestReferenciales as LatestReferencial[]}
+          totalReferenciales={totalReferenciales}
         />
       </Suspense>
     );

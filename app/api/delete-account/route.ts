@@ -1,4 +1,3 @@
-// app/api/delete-account/route.ts
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { prisma } from '@/lib/prisma';
@@ -51,8 +50,8 @@ export async function DELETE() {
       );
     }
 
-    // Eliminar usuario
-    const deletedUser = await prisma.user.delete({
+    // Eliminar usuario y verificar resultado
+    await prisma.user.delete({
       where: { id: session.user.id }
     });
 
