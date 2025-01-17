@@ -1,14 +1,17 @@
 // components/ui/dashboard/sidenav.tsx
 "use client";
 
+import { useState } from 'react'; // Importar useState
 import Link from 'next/link';
 import NavLinks from '@/components/ui/dashboard/nav-links';
 import AcmeLogo from '@/components/ui/acme-logo';
-import { PowerIcon, ExclamationTriangleIcon } from '@heroicons/react/24/outline';
+import { PowerIcon, ExclamationTriangleIcon, QuestionMarkCircleIcon } from '@heroicons/react/24/outline';
 import { useDeleteAccount } from '@/lib/hooks/useDeleteAccount';
 import { useSignOut } from '@/lib/hooks/useSignOut';
+import Chatbot from '@/components/ui/Chatbot'; // Importar Chatbot
 
 export default function SideNav() {
+  const [showChatbot, setShowChatbot] = useState(false);
   const { signOut, isLoading: isSigningOut } = useSignOut();
   const { 
     deleteAccount, 
@@ -41,6 +44,18 @@ export default function SideNav() {
         <div className="flex grow flex-row justify-between space-x-2 md:flex-col md:space-x-0 md:space-y-2">
           <NavLinks />
           <div className="hidden h-auto w-full grow rounded-md bg-gray-50 md:block"></div>
+          
+          {/* Botón de Ayuda */}
+          <button
+            onClick={() => setShowChatbot(!showChatbot)}
+            aria-label="Ayuda"
+            className="flex h-[48px] grow items-center justify-center gap-2 rounded-md bg-gray-50 p-3 text-sm font-medium hover:bg-emerald-100 hover:text-emerald-600 md:flex-none md:justify-start md:p-2 md:px-3"
+          >
+            <QuestionMarkCircleIcon className="w-6" />
+            <div className="hidden md:block">Ayuda</div>
+          </button>
+
+          {/* Botón de Cerrar Sesión */}
           <button
             onClick={handleSignOut}
             disabled={isSigningOut || isDeleting}
@@ -52,6 +67,8 @@ export default function SideNav() {
             <PowerIcon className={`w-6 ${isSigningOut ? 'animate-pulse' : ''}`} />
             <div className="hidden md:block">{isSigningOut ? 'Saliendo...' : 'Cerrar Sesión'}</div>
           </button>
+
+          {/* Botón de Eliminar Cuenta */}
           <button
             onClick={deleteAccount}
             disabled={isDeleting || isSigningOut}
@@ -92,6 +109,9 @@ export default function SideNav() {
           </div>
         </div>
       )}
+
+      {/* Chatbot */}
+      {showChatbot && <Chatbot />}
     </>
   );
 }
