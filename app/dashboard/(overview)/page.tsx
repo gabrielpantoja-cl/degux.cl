@@ -2,6 +2,7 @@ import { getServerSession } from 'next-auth/next';
 import { redirect } from 'next/navigation';
 import { authOptions } from '@/pages/api/auth/[...nextauth]';
 import DashboardContent from './DashboardContent';
+import DisclaimerPopup from '@/components/ui/dashboard/DisclaimerPopup';
 import { prisma } from '@/lib/prisma';
 import type { referenciales, User } from '@prisma/client';
 import { Suspense } from 'react';
@@ -61,13 +62,16 @@ export default async function DashboardPage() {
     ]);
 
     return (
-      <Suspense fallback={<div>Cargando panel de control...</div>}>
-        <DashboardContent 
-          session={session}
-          latestReferenciales={latestReferenciales as LatestReferencial[]}
-          totalReferenciales={totalReferenciales}
-        />
-      </Suspense>
+      <>
+        <DisclaimerPopup />
+        <Suspense fallback={<div>Cargando panel de control...</div>}>
+          <DashboardContent 
+            session={session}
+            latestReferenciales={latestReferenciales as LatestReferencial[]}
+            totalReferenciales={totalReferenciales}
+          />
+        </Suspense>
+      </>
     );
 
   } catch (error) {
