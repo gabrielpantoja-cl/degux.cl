@@ -1,30 +1,40 @@
-import NextAuth from "next-auth";
-import type { NextAuthOptions } from "next-auth";
-import type { Adapter } from "next-auth/adapters";
-import GoogleProvider from "next-auth/providers/google";
-import { PrismaAdapter } from "@auth/prisma-adapter";
-import { prisma } from "@/lib/prisma";
+import { NextAuthOptions } from "next-auth"
+import GoogleProvider from "next-auth/providers/google"
+import { PrismaAdapter } from "@next-auth/prisma-adapter"
+import { prisma } from "@/lib/prisma"
+import { Adapter } from "next-auth/adapters"
 
-// Tipos movidos a /types/next-auth.d.ts
+// Tipos compartidos
+export type UserType = {
+  id: string
+  role: string
+  email: string
+  name?: string | null
+}
+
 declare module "next-auth" {
   interface Session {
-    timestamp?: number;
-    user: {
-      id: string;
-      role: string;
-      email: string;
-      name?: string | null;
-    }
+    timestamp?: number
+    user: UserType
+  }
+  
+  interface User {
+    id: string
+    role?: string // Mantenemos role opcional
+    email: string
+    name?: string | null
+    emailVerified?: Date | null
+    image?: string | null
   }
 }
 
-export const authOptions: NextAuthOptions = {
-  adapter: PrismaAdapter(prisma) as Adapter,  // Aseguramos el tipo correcto
+export const authConfig: NextAuthOptions = {
+  adapter: PrismaAdapter(prisma) as Adapter,
   secret: process.env.NEXTAUTH_SECRET,
   session: {
     strategy: "jwt",
-    maxAge: 24 * 60 * 60, // 24 horas
-    updateAge: 24 * 60 * 60, // 24 horas
+    maxAge: 24 * 60 * 60,
+    updateAge: 24 * 60 * 60,
   },
   providers: [
     GoogleProvider({
@@ -40,15 +50,9 @@ export const authOptions: NextAuthOptions = {
       }
     }),
   ],
-  pages: {
-    signIn: '/',
-    signOut: '/',
-    error: '/auth/error',
-  },
   callbacks: {
     async session({ session, token }) {
-      if (!session?.user) throw new Error("No session user");
-
+      if (!session?.user) throw new Error("No session user")
       return {
         ...session,
         user: {
@@ -58,26 +62,24 @@ export const authOptions: NextAuthOptions = {
           name: session.user.name,
         },
         timestamp: Date.now(),
-      };
+      }
     },
     async jwt({ token, user, account }) {
       if (user) {
-        token.id = user.id;
-        token.role = user.role || 'USER';
-        token.email = user.email;
-        token.provider = account?.provider;
+        token.id = user.id
+        token.role = user.role || 'USER'
+        token.email = user.email
+        token.provider = account?.provider
       }
-      return token;
+      return token
     },
     async signIn({ user, account }) {
-      if (!user?.email) return false;
-      
+      if (!user?.email) return false
       try {
         const existingUser = await prisma.user.findUnique({
           where: { email: user.email },
           select: { id: true, role: true }
-        });
-
+        })
         if (!existingUser && account?.provider === 'google') {
           const newUser = await prisma.user.create({
             data: {
@@ -87,38 +89,20 @@ export const authOptions: NextAuthOptions = {
               emailVerified: new Date(),
             },
             select: { id: true }
-          });
-          return !!newUser;
+          })
+          return !!newUser
         }
-        
-        return !!existingUser;
+        return !!existingUser
       } catch (error) {
-        console.error('[SignIn] Error:', error);
-        return false;
+        console.error('[SignIn] Error:', error)
+        return false
       }
     }
   },
-  events: {
-    async signOut() {
-      if (typeof window !== 'undefined') {
-        const cookies = document.cookie.split(';');
-        
-        for (const cookie of cookies) {
-          const [name] = cookie.split('=');
-          document.cookie = `${name.trim()}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/;`;
-        }
-        
-        // Limpiar localStorage
-        localStorage.clear();
-        
-        // Limpiar sessionStorage
-        sessionStorage.clear();
-      }
-    }
+  pages: {
+    signIn: '/',
+    signOut: '/',
+    error: '/auth/error',
   },
   debug: process.env.NODE_ENV === 'development',
-};
-
-const handler = NextAuth(authOptions);
-
-export { handler as GET, handler as POST };
+}
