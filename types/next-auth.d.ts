@@ -1,33 +1,30 @@
-// lib/types/next-auth.d.ts
-import { DefaultSession } from "next-auth";
-import "next-auth/jwt";
+import { DefaultSession, DefaultUser } from "next-auth"
+import "next-auth/jwt"
+
+// Tipo base compartido
+interface UserBase {
+  id: string
+  role?: string
+  email: string
+  name?: string | null
+}
 
 declare module "next-auth" {
   interface Session {
-    user: {
-      id: string;
-      role?: string;
-      email: string;
-      name?: string | null;
-    } & DefaultSession["user"];
+    user: UserBase & DefaultSession["user"]
+    expires: string
   }
 
-  interface User {
-    id: string;
-    role?: string;
-    email: string;
-    name?: string | null;
-    emailVerified?: Date | null;
-    image?: string | null;
+  interface User extends DefaultUser, UserBase {
+    emailVerified?: Date | null
   }
 }
 
 declare module "next-auth/jwt" {
-  interface JWT {
-    id?: string;
-    role?: string;
-    email?: string;
-    name?: string | null;
-    picture?: string | null;
+  interface JWT extends UserBase {
+    iat: number
+    exp: number
+    jti: string
+    picture?: string | null
   }
 }
