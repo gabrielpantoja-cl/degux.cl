@@ -10,7 +10,7 @@ import { ReferencialesTableSkeleton } from '@/components/ui/skeletons';
 import { Suspense, useState, useEffect } from 'react';
 import { fetchReferencialesPages, fetchFilteredReferenciales } from '@/lib/referenciales';
 import { exportReferencialesToXlsx } from '@/lib/exportToXlsx';
-import { Referencial } from '@/app/types/referenciales'; // Asegúrate de que la ruta sea correcta
+import { Referencial } from '@/lib/types/referenciales'; // Asegúrate de que la ruta sea correcta
 
 // Definición de VISIBLE_HEADERS
 const VISIBLE_HEADERS: { key: "id" | "lat" | "lng" | "fojas" | "numero" | "anio" | "cbr" | "comprador" | "vendedor" | "predio" | "comuna" | "rol" | "fechaescritura" | "superficie" | "monto" | "observaciones" | "userId"; label: string }[] = [
