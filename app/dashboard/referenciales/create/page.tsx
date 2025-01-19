@@ -4,7 +4,7 @@ import Breadcrumbs from '@/components/ui/referenciales/breadcrumbs';
 import CsvUploader from '@/components/ui/referenciales/CsvUploader';
 import { fetchUsers } from '@/lib/users';
 import { getServerSession } from 'next-auth/next';
-import { authOptions } from '@/pages/api/auth/[...nextauth]';
+import { authOptions } from '@/lib/auth'; // Actualizada la ruta de importación
 
 export default async function Page() {
   // Obtener sesión del usuario actual
