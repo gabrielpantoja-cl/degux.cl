@@ -4,33 +4,9 @@ import { PrismaAdapter } from "@next-auth/prisma-adapter"
 import { prisma } from "@/lib/prisma"
 import { Adapter } from "next-auth/adapters"
 
-// Tipos compartidos y configuración se mantienen igual
-export type UserType = {
-  id: string
-  role?: string
-  email: string
-  name?: string | null
-}
-
-declare module "next-auth" {
-  interface Session {
-    timestamp?: number
-    user: UserType
-  }
-  
-  interface User {
-    id: string
-    role?: string
-    email: string
-    name?: string | null
-    emailVerified?: Date | null
-    image?: string | null
-  }
-} 
-
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma) as Adapter,
-  secret: process.env.NEXTAUTH_SECRET,              
+  secret: process.env.NEXTAUTH_SECRET,
   session: {
     strategy: "jwt",
     maxAge: 24 * 60 * 60,
@@ -105,4 +81,4 @@ export const authOptions: NextAuthOptions = {
     error: '/auth/error',
   },
   debug: process.env.NODE_ENV === 'development',
-} 
+}
