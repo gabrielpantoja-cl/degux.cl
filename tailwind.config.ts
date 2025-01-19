@@ -1,10 +1,10 @@
-export default {
-  darkMode: ['class'],
+import type { Config } from 'tailwindcss'
+
+const config = {
   content: [
-    './pages/**/*.{ts,tsx}',
-    './components/**/*.{ts,tsx}',
-    './app/**/*.{ts,tsx}',
-    './src/**/*.{ts,tsx}'
+    './pages/**/*.{js,ts,jsx,tsx,mdx}',
+    './components/**/*.{js,ts,jsx,tsx,mdx}',
+    './app/**/*.{js,ts,jsx,tsx,mdx}',
   ],
   theme: {
     extend: {
@@ -25,4 +25,6 @@ export default {
     }
   },
   plugins: [require('tailwindcss-animate')]
-};
+} as const;
+
+export default config;

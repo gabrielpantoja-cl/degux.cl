@@ -1,14 +1,14 @@
 // components/ui/dashboard/sidenav.tsx
 "use client";
 
-import { useState } from 'react'; // Importar useState
+import { useState } from 'react';
 import Link from 'next/link';
 import NavLinks from '@/components/ui/dashboard/nav-links';
 import AcmeLogo from '@/components/ui/acme-logo';
 import { PowerIcon, ExclamationTriangleIcon, QuestionMarkCircleIcon } from '@heroicons/react/24/outline';
 import { useDeleteAccount } from '@/lib/hooks/useDeleteAccount';
 import { useSignOut } from '@/lib/hooks/useSignOut';
-import Chatbot from '@/components/ui/Chatbot'; // Importar Chatbot
+import Chatbot from '@/components/ui/Chatbot';
 
 export default function SideNav() {
   const [showChatbot, setShowChatbot] = useState(false);
@@ -48,7 +48,7 @@ export default function SideNav() {
           {/* Botón de Ayuda */}
           <button
             onClick={() => setShowChatbot(!showChatbot)}
-            aria-label="Ayuda"
+            aria-label="Ayuda IA"
             className="flex h-[48px] grow items-center justify-center gap-2 rounded-md bg-gray-50 p-3 text-sm font-medium hover:bg-emerald-100 hover:text-emerald-600 md:flex-none md:justify-start md:p-2 md:px-3"
           >
             <QuestionMarkCircleIcon className="w-6" />

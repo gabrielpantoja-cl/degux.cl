@@ -71,8 +71,8 @@ export default function Page({
       </div>
       <button 
         onClick={handleExport} 
-        className="fixed bottom-4 right-4 mb-4 rounded bg-blue-200 px-3 py-1 text-xs text-blue-700 hover:bg-blue-300"
-      >
+        className="fixed bottom-4 right-4 mb-4 rounded bg-blue-200 px-3 py-1 text-xs text-blue-700 hover:bg-blue-300 z-[8888]"
+        >
         Exportar a XLSX
       </button>
     </div>

@@ -10,10 +10,10 @@ export default function DisclaimerPopup() {
     const hasAccepted = localStorage.getItem('disclaimerAccepted');
     
     if (!hasAccepted) {
-      // Retrasar la aparición 3 segundos
+      // Retrasar la aparición 4 segundos
       const timer = setTimeout(() => {
         setIsVisible(true);
-      }, 3000);
+      }, 4000);
 
       return () => clearTimeout(timer);
     }

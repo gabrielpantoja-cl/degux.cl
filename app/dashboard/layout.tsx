@@ -6,7 +6,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     <div className="flex h-screen flex-col md:flex-row md:overflow-hidden bg-gray-50">
       {/* Navegación lateral */}
       <div className="w-full flex-none md:w-64 border-r border-gray-200 bg-white shadow-sm">
-        <div className="fixed w-64 h-full">
+        <div className="sticky top-0 w-64 h-full">
           <SideNav />
         </div>
       </div>
