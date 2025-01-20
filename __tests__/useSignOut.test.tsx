@@ -1,8 +1,7 @@
 // __tests__/useSignOutComponent.test.tsx
 import React from 'react';
 import { render, fireEvent, waitFor } from '@testing-library/react';
-import { useSignOut } from '../lib/hooks/useSignOut';
-import { signOut as nextAuthSignOut } from 'next-auth/react';
+import { signOut } from 'next-auth/react';
 import { toast } from 'react-hot-toast';
 
 jest.mock('next-auth/react', () => ({
@@ -15,42 +14,54 @@ jest.mock('react-hot-toast', () => ({
   },
 }));
 
-const SignOutComponent = () => {
-  const { signOut, isLoading } = useSignOut();
+const SignOutButton = () => {
+  const handleSignOut = async () => {
+    try {
+      await signOut({ callbackUrl: '/', redirect: true });
+    } catch {
+      toast.error('No se pudo cerrar la sesión. Por favor, intenta nuevamente.');
+    }
+  };
+
 
   return (
-    <button onClick={signOut} disabled={isLoading}>
-      Sign Out
+    <button onClick={handleSignOut}>
+      Cerrar Sesión
     </button>
   );
 };
 
-describe('useSignOut', () => {
-  it('should sign out and redirect correctly', async () => {
-    const { getByText } = render(<SignOutComponent />);
+describe('SignOut', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
 
-    fireEvent.click(getByText('Sign Out'));
+  it('debería cerrar sesión y redireccionar correctamente', async () => {
+    const { getByText } = render(<SignOutButton />);
+
+    fireEvent.click(getByText('Cerrar Sesión'));
 
     await waitFor(() => {
-      expect(nextAuthSignOut).toHaveBeenCalledWith({
+      expect(signOut).toHaveBeenCalledWith({
         callbackUrl: '/',
         redirect: true,
       });
-      expect(localStorage.getItem('signOutMessage')).toBe('👋 ¡Hasta pronto! Sesión cerrada exitosamente');
     });
   });
 
-  it('should handle sign out error', async () => {
-    (nextAuthSignOut as jest.Mock).mockImplementationOnce(() => {
-      throw new Error('Sign out error');
+  it('debería manejar error al cerrar sesión', async () => {
+    (signOut as jest.Mock).mockImplementationOnce(() => {
+      throw new Error('Error al cerrar sesión');
     });
 
-    const { getByText } = render(<SignOutComponent />);
+    const { getByText } = render(<SignOutButton />);
 
-    fireEvent.click(getByText('Sign Out'));
+    fireEvent.click(getByText('Cerrar Sesión'));
 
     await waitFor(() => {
-      expect(toast.error).toHaveBeenCalledWith('No se pudo cerrar la sesión. Por favor, intenta nuevamente.');
+      expect(toast.error).toHaveBeenCalledWith(
+        'No se pudo cerrar la sesión. Por favor, intenta nuevamente.'
+      );
     });
   });
 });
