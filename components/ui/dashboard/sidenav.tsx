@@ -3,16 +3,15 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { signOut } from 'next-auth/react';
 import NavLinks from '@/components/ui/dashboard/nav-links';
 import AcmeLogo from '@/components/ui/acme-logo';
 import { PowerIcon, ExclamationTriangleIcon, QuestionMarkCircleIcon } from '@heroicons/react/24/outline';
 import { useDeleteAccount } from '@/lib/hooks/useDeleteAccount';
-import { useSignOut } from '@/lib/hooks/useSignOut';
 import Chatbot from '@/components/ui/Chatbot';
 
 export default function SideNav() {
   const [showChatbot, setShowChatbot] = useState(false);
-  const { signOut, isLoading: isSigningOut } = useSignOut();
   const { 
     deleteAccount, 
     isDeleting, 
@@ -23,7 +22,7 @@ export default function SideNav() {
 
   const handleSignOut = async () => {
     try {
-      await signOut();
+      await signOut({ callbackUrl: '/' });
       console.log("✅ Sesión cerrada exitosamente");
     } catch (error) {
       console.warn("⚠️ Error al cerrar sesión:", error);
@@ -58,23 +57,23 @@ export default function SideNav() {
           {/* Botón de Cerrar Sesión */}
           <button
             onClick={handleSignOut}
-            disabled={isSigningOut || isDeleting}
-            aria-label={isSigningOut ? 'Cerrando sesión...' : 'Cerrar sesión'}
+            disabled={isDeleting}
+            aria-label="Cerrar sesión"
             className={`flex h-[48px] grow items-center justify-center gap-2 rounded-md bg-gray-50 p-3 text-sm font-medium 
-              ${(isSigningOut || isDeleting) ? 'opacity-50 cursor-not-allowed' : 'hover:bg-sky-100 hover:text-blue-600'} 
+              ${isDeleting ? 'opacity-50 cursor-not-allowed' : 'hover:bg-sky-100 hover:text-blue-600'} 
               md:flex-none md:justify-start md:p-2 md:px-3`}
           >
-            <PowerIcon className={`w-6 ${isSigningOut ? 'animate-pulse' : ''}`} />
-            <div className="hidden md:block">{isSigningOut ? 'Saliendo...' : 'Cerrar Sesión'}</div>
+            <PowerIcon className="w-6" />
+            <div className="hidden md:block">Cerrar Sesión</div>
           </button>
 
           {/* Botón de Eliminar Cuenta */}
           <button
             onClick={deleteAccount}
-            disabled={isDeleting || isSigningOut}
+            disabled={isDeleting}
             aria-label={isDeleting ? 'Eliminando cuenta...' : 'Eliminar cuenta'}
             className={`flex h-[48px] grow items-center justify-center gap-2 rounded-md bg-red-50 p-3 text-sm font-medium 
-              ${(isDeleting || isSigningOut) ? 'opacity-50 cursor-not-allowed' : 'hover:bg-red-100 hover:text-red-600'} 
+              ${isDeleting ? 'opacity-50 cursor-not-allowed' : 'hover:bg-red-100 hover:text-red-600'} 
               md:flex-none md:justify-start md:p-2 md:px-3`}
           >
             <ExclamationTriangleIcon className={`w-6 ${isDeleting ? 'animate-pulse' : ''}`} />
