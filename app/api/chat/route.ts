@@ -1,3 +1,4 @@
+// app/api/chat/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import OpenAI from 'openai';
 
@@ -17,6 +18,25 @@ interface ChatMessage {
   role: 'user' | 'assistant';
   content: string;
 }
+
+// Interfaz para las FAQs
+interface FAQs {
+  [key: string]: string;
+}
+
+// Preguntas frecuentes (FAQs) y sus respuestas
+const faqs: FAQs = {
+  "¿De qué se trata referenciales.cl?": "Referenciales.cl es una base de datos colaborativa para peritos tasadores.",
+  "¿Cómo puedo registrarme?": "Al iniciar sesión con Google te registras automáticamente en nuestra aplicación.",
+  "¿Cuáles son los servicios que ofrecen?": "Ofrecemos acceso a una base de datos colaborativa, incluyendo consultas personalizadas, vista por mapa y más.",
+  "¿Cuál es el correo o teléfono de contacto?": "El canal oficial de comunicación es el WhatsApp: +56 9 3176 9472."
+};
+
+// Prompt inicial para orientar al asistente
+const promptInitial = `
+Eres un asistente virtual para referenciales.cl. Responde a las preguntas de los usuarios de manera clara y concisa, y limita tus respuestas a temas relacionados con las tasaciones inmobiliarias. Aquí hay algunas preguntas frecuentes y sus respuestas:
+${Object.entries(faqs).map(([question, answer]) => `- "${question}": "${answer}"`).join('\n')}
+`;
 
 export async function POST(req: NextRequest) {
   try {
@@ -43,9 +63,18 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    // Check if the last user message matches any FAQ
+    const lastMessage = messages[messages.length - 1].content;
+    if (faqs.hasOwnProperty(lastMessage)) {
+      return NextResponse.json({ message: faqs[lastMessage] });
+    }
+
+    // Crear el prompt completo con el prompt inicial y los mensajes del usuario
+    const prompt = `${promptInitial}\n${messages.map((msg: any) => `${msg.role === 'user' ? 'Usuario' : 'Asistente'}: ${msg.content}`).join('\n')}\nAsistente:`;
+
     const completion = await openai.chat.completions.create({
       model: 'gpt-3.5-turbo',
-      messages,
+      messages: [{ role: 'system', content: prompt }],
       max_tokens: 1000,
       temperature: 0.7,
     });
