@@ -55,7 +55,7 @@ const Chatbot: React.FC<ChatbotProps> = ({ onClose }) => {
   };
 
   return (
-    <div className="fixed bottom-4 right-4 w-96 h-[600px] bg-white shadow-2xl rounded-lg overflow-hidden chatbot-container flex flex-col animate-slide-up">
+    <div className="w-full h-full bg-white flex flex-col">
       {/* Header */}
       <div className="bg-blue-600 text-white p-4 flex justify-between items-center">
         <h3 className="font-semibold">Asistente Virtual</h3>
