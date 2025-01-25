@@ -1,10 +1,9 @@
-// app/layout.tsx
-
 import React from 'react';
 import '@/app/globals.css';
 import { Metadata } from 'next';
 import { Toaster } from 'react-hot-toast';
 import SessionProviderClient from '@/app/dashboard/SessionProviderClient';
+import { Analytics } from '@vercel/analytics/react';
 
 export const metadata: Metadata = {
   title: {
@@ -64,6 +63,7 @@ export default function RootLayout({
               },
             }}
           />
+          <Analytics />
         </SessionProviderClient>
       </body>
     </html>
