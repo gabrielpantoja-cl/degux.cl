@@ -1,3 +1,5 @@
+"use client";
+
 import Chatbot from '@/components/ui/Chatbot';
 
 export default function ChatbotPage() {
