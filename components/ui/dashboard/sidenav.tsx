@@ -1,17 +1,13 @@
-// components/ui/dashboard/sidenav.tsx
 "use client";
 
-import { useState } from 'react';
 import Link from 'next/link';
 import { signOut } from 'next-auth/react';
 import NavLinks from '@/components/ui/dashboard/nav-links';
 import AcmeLogo from '@/components/ui/acme-logo';
 import { PowerIcon, ExclamationTriangleIcon, QuestionMarkCircleIcon } from '@heroicons/react/24/outline';
 import { useDeleteAccount } from '@/lib/hooks/useDeleteAccount';
-import Chatbot from '@/components/ui/Chatbot';
 
 export default function SideNav() {
-  const [showChatbot, setShowChatbot] = useState(false);
   const { 
     deleteAccount, 
     isDeleting, 
@@ -27,6 +23,10 @@ export default function SideNav() {
     } catch (error) {
       console.warn("⚠️ Error al cerrar sesión:", error);
     }
+  };
+
+  const handleOpenChatbot = () => {
+    window.open('/chatbot', '_blank', 'width=800,height=600');
   };
 
   return (
@@ -46,7 +46,7 @@ export default function SideNav() {
           
           {/* Botón de Ayuda */}
           <button
-            onClick={() => setShowChatbot(!showChatbot)}
+            onClick={handleOpenChatbot}
             aria-label="Ayuda IA"
             className="flex h-[48px] grow items-center justify-center gap-2 rounded-md bg-gray-50 p-3 text-sm font-medium hover:bg-emerald-100 hover:text-emerald-600 md:flex-none md:justify-start md:p-2 md:px-3"
           >
@@ -108,9 +108,6 @@ export default function SideNav() {
           </div>
         </div>
       )}
-
-      {/* Chatbot */}
-      {showChatbot && <Chatbot />}
     </>
   );
 }

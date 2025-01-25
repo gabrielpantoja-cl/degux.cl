@@ -290,3 +290,9 @@ progress {
 .leaflet-container {
   z-index: 1;
 }
+
+/* Asegurar que el chatbot tenga un z-index alto */
+.chatbot-container {
+  z-index: 10000;
+}
+
