@@ -83,8 +83,8 @@ export default function SideNav() {
       </div>
 
       {showModal && (
-        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black bg-opacity-50">
-          <div className="rounded-lg bg-white p-6 shadow-xl z-[10000]">
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="rounded-lg bg-white p-6 shadow-xl">
             <h3 className="mb-4 text-lg font-semibold">¿Estás seguro?</h3>
             <p className="mb-6 text-sm text-gray-600">
               Esta acción eliminará permanentemente tu cuenta y todos tus datos. Esta acción no se puede deshacer.
