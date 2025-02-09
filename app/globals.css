@@ -283,16 +283,10 @@ progress {
 
 /* Asegurar que el modal tenga un z-index alto */
 .fixed.inset-0.z-50 {
-  z-index: 9999;
+  z-index: 3; /* Incrementar el z-index para asegurar que el modal esté por encima de otros elementos */
 }
 
 /* Asegurar que el contenedor del mapa tenga un z-index bajo */
 .leaflet-container {
   z-index: 1;
 }
-
-/* Asegurar que el chatbot tenga un z-index alto */
-.chatbot-container {
-  z-index: 10000;
-}
-
