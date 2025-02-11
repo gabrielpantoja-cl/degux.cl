@@ -6,6 +6,7 @@ import NavLinks from '@/components/ui/dashboard/nav-links';
 import AcmeLogo from '@/components/ui/acme-logo';
 import { PowerIcon, ExclamationTriangleIcon, QuestionMarkCircleIcon } from '@heroicons/react/24/outline';
 import { useDeleteAccount } from '@/lib/hooks/useDeleteAccount';
+import { Dialog } from '@/components/ui/dialog';
 
 export default function SideNav() {
   const { 
@@ -82,32 +83,24 @@ export default function SideNav() {
         </div>
       </div>
 
-      {showModal && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="rounded-lg bg-white p-6 shadow-xl">
-            <h3 className="mb-4 text-lg font-semibold">¿Estás seguro?</h3>
-            <p className="mb-6 text-sm text-gray-600">
-              Esta acción eliminará permanentemente tu cuenta y todos tus datos. Esta acción no se puede deshacer.
-            </p>
-            <div className="flex justify-end space-x-4">
-              <button
-                onClick={() => setShowModal(false)}
-                className="rounded-md bg-gray-100 px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-200"
-              >
-                Cancelar
-              </button>
-              <button
-                onClick={handleConfirmDelete}
-                disabled={isDeleting}
-                className={`rounded-md bg-red-500 px-4 py-2 text-sm font-medium text-white
-                  ${isDeleting ? 'opacity-50 cursor-not-allowed' : 'hover:bg-red-600'}`}
-              >
-                {isDeleting ? 'Eliminando...' : 'Eliminar Cuenta'}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <Dialog
+        open={showModal}
+        onClose={() => setShowModal(false)}
+        title="¿Estás seguro?"
+        description="Esta acción eliminará permanentemente tu cuenta y todos tus datos. Esta acción no se puede deshacer."
+        buttons={[
+          {
+            label: "Cancelar",
+            onClick: () => setShowModal(false),
+            variant: "secondary"
+          },
+          {
+            label: isDeleting ? "Eliminando..." : "Eliminar Cuenta",
+            onClick: handleConfirmDelete,
+            variant: "danger"
+          }
+        ]}
+      />
     </>
   );
 }
