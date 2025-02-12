@@ -1,7 +1,6 @@
-// components/ui/mapa/mapa.tsx
 'use client';
 import React, { useEffect, useState } from 'react';
-import { MapContainer, TileLayer, useMap } from 'react-leaflet';
+import { MapContainer, TileLayer, useMap, MapContainerProps } from 'react-leaflet';
 import { GeoSearchControl, OpenStreetMapProvider } from 'leaflet-geosearch';
 import 'leaflet/dist/leaflet.css';
 import 'leaflet-geosearch/dist/geosearch.css';
@@ -9,7 +8,7 @@ import './mapa.css'; // Importa el archivo CSS personalizado
 import { fetchReferencialesForMap } from '@/lib/mapData';
 import { MapMarker, Point } from '@/components/ui/mapa/MapMarker';
 import LocationButton from '@/components/ui/mapa/LocationButton'; // Importa el componente LocationButton
-import { Icon } from 'leaflet'; // Elimina L de la importación
+import { Icon, Map } from 'leaflet'; // Importa el tipo Map de leaflet
 
 // Configura el icono del marcador personalizado
 const redIcon = new Icon({
@@ -63,6 +62,7 @@ const SearchField = (): null => {
 
 const Mapa = () => {
     const [filteredData, setFilteredData] = useState<Point[]>([]);
+    const [mapInstance, setMapInstance] = useState<Map | null>(null);
 
     useEffect(() => {
         fetchReferencialesForMap()
@@ -86,6 +86,14 @@ const Mapa = () => {
             });
     }, []);
 
+    useEffect(() => {
+        return () => {
+            if (mapInstance) {
+                mapInstance.remove();
+            }
+        };
+    }, [mapInstance]);
+
     return (
         <div className="relative w-full">
             <MapContainer 
@@ -96,6 +104,15 @@ const Mapa = () => {
                     width: "90%",      
                     margin: "auto",    
                     borderRadius: "8px" 
+                }}
+                whenReady={() => {
+                    // Accede a la instancia del mapa directamente desde el componente
+                    // 'event.target' ya no está disponible aquí
+                    // En su lugar, usa 'mapInstance' que se actualiza después de que el mapa se inicializa
+                    if (mapInstance) {
+                        // Puedes realizar acciones con la instancia del mapa aquí
+                        console.log('Mapa listo', mapInstance);
+                    }
                 }}
             >          
                 <SearchField />

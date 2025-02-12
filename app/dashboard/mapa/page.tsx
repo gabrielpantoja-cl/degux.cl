@@ -1,7 +1,6 @@
-// app/dashboard/mapa/page.tsx
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import dynamic from 'next/dynamic';
 
 const Mapa = dynamic(() => import('@/components/ui/mapa/mapa'), {
@@ -9,8 +8,18 @@ const Mapa = dynamic(() => import('@/components/ui/mapa/mapa'), {
 });
 
 const MapPage = () => {
+    useEffect(() => {
+        return () => {
+            // Limpia el contenedor del mapa cuando el componente se desmonte
+            const mapContainer = document.getElementById('map-container');
+            if (mapContainer) {
+                mapContainer.innerHTML = '';
+            }
+        };
+    }, []);
+
     return (
-        <div>
+        <div id="map-container">
             <Mapa />
         </div>
     );
