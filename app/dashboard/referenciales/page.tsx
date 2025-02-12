@@ -27,17 +27,16 @@ const VISIBLE_HEADERS: { key: "id" | "lat" | "lng" | "fojas" | "numero" | "anio"
   { key: 'observaciones', label: 'Observaciones' },
 ];
 
-export default function Page(
-  props: {
-    searchParams?: {
-      query?: string;
-      page?: string;
-    };
-  }
-) {
-  const searchParams = props.searchParams || {};
-  const query = searchParams.query || '';
-  const currentPage = Number(searchParams.page) || 1;
+interface PageProps {
+  searchParams?: {
+    query?: string;
+    page?: string;
+  };
+}
+
+export default function Page({ searchParams }: PageProps) {
+  const query = searchParams?.query || '';
+  const currentPage = Number(searchParams?.page) || 1;
   const [referenciales, setReferenciales] = useState<Referencial[]>([]);
   const [totalPages, setTotalPages] = useState<number>(0);
 
