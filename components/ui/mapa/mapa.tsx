@@ -1,6 +1,6 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-import { MapContainer, TileLayer, useMap, MapContainerProps } from 'react-leaflet';
+import { MapContainer, TileLayer, useMap } from 'react-leaflet';
 import { GeoSearchControl, OpenStreetMapProvider } from 'leaflet-geosearch';
 import 'leaflet/dist/leaflet.css';
 import 'leaflet-geosearch/dist/geosearch.css';
@@ -62,7 +62,7 @@ const SearchField = (): null => {
 
 const Mapa = () => {
     const [filteredData, setFilteredData] = useState<Point[]>([]);
-    const [mapInstance, setMapInstance] = useState<Map | null>(null);
+    const [mapInstance] = useState<Map | null>(null);
 
     useEffect(() => {
         fetchReferencialesForMap()
