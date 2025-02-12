@@ -6,7 +6,13 @@ import { fetchReferencialById } from '@/lib/referenciales';
 import { fetchUsers } from '@/lib/users';
 import { notFound } from 'next/navigation';
 
-export default async function Page({ params }: { params: { id: string } }) {
+interface PageProps {
+    params: {
+        id: string;
+    };
+}
+
+export default async function Page({ params }: PageProps) {
     const id = params.id;
     const referencial: any = await fetchReferencialById(id);
     const users: any = await fetchUsers(); 
