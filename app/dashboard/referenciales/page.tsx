@@ -7,7 +7,7 @@ import Table from '@/components/ui/referenciales/table';
 import { CreateReferencial } from '@/components/ui/referenciales/buttons';
 import { lusitana } from '@/components/ui/fonts';
 import { ReferencialesTableSkeleton } from '@/components/ui/skeletons';
-import { Suspense, useState, useEffect, use } from 'react';
+import { Suspense, useState, useEffect } from 'react';
 import { fetchReferencialesPages, fetchFilteredReferenciales } from '@/lib/referenciales';
 import { exportReferencialesToXlsx } from '@/lib/exportToXlsx';
 import { Referencial } from '@/types/referenciales'; // Asegúrate de que la ruta sea correcta
@@ -29,15 +29,15 @@ const VISIBLE_HEADERS: { key: "id" | "lat" | "lng" | "fojas" | "numero" | "anio"
 
 export default function Page(
   props: {
-    searchParams?: Promise<{
+    searchParams?: {
       query?: string;
       page?: string;
-    }>;
+    };
   }
 ) {
-  const searchParams = use(props.searchParams);
-  const query = searchParams?.query || '';
-  const currentPage = Number(searchParams?.page) || 1;
+  const searchParams = props.searchParams || {};
+  const query = searchParams.query || '';
+  const currentPage = Number(searchParams.page) || 1;
   const [referenciales, setReferenciales] = useState<Referencial[]>([]);
   const [totalPages, setTotalPages] = useState<number>(0);
 
