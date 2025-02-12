@@ -37,6 +37,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        {/* Custom fonts deberia moverse a document.tsx (no movido) */}
         {/* Aquí puedes agregar otras etiquetas de enlace o meta si es necesario */}
       </head>
       <body className="antialiased">
