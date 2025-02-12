@@ -28,27 +28,30 @@ const VISIBLE_HEADERS: { key: "id" | "lat" | "lng" | "fojas" | "numero" | "anio"
 ];
 
 interface PageProps {
-  searchParams?: {
+  searchParams?: Promise<{
     query?: string;
     page?: string;
-  };
+  }>;
 }
 
 export default function Page({ searchParams }: PageProps) {
-  const query = searchParams?.query || '';
-  const currentPage = Number(searchParams?.page) || 1;
+  const [query, setQuery] = useState<string>('');
+  const [currentPage, setCurrentPage] = useState<number>(1);
   const [referenciales, setReferenciales] = useState<Referencial[]>([]);
   const [totalPages, setTotalPages] = useState<number>(0);
 
   useEffect(() => {
     const fetchData = async () => {
+      const params = await searchParams;
+      setQuery(params?.query || '');
+      setCurrentPage(Number(params?.page) || 1);
       const data = await fetchFilteredReferenciales(query, currentPage);
       setReferenciales(data);
       const pages = await fetchReferencialesPages();
       setTotalPages(pages);
     };
     fetchData();
-  }, [query, currentPage]);
+  }, [searchParams, currentPage, query]);
 
   const handleExport = () => {
     exportReferencialesToXlsx(referenciales, VISIBLE_HEADERS);
