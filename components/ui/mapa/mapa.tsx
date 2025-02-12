@@ -9,11 +9,10 @@ import './mapa.css'; // Importa el archivo CSS personalizado
 import { fetchReferencialesForMap } from '@/lib/mapData';
 import { MapMarker, Point } from '@/components/ui/mapa/MapMarker';
 import LocationButton from '@/components/ui/mapa/LocationButton'; // Importa el componente LocationButton
-import L from 'leaflet';
-
+import { Icon } from 'leaflet'; // Elimina L de la importación
 
 // Configura el icono del marcador personalizado
-const redIcon = new L.Icon({
+const redIcon = new Icon({
   iconUrl: '/images/marker-icon.png',
   iconSize: [25, 41], // Tamaño del icono
   iconAnchor: [12, 41], // Punto del icono que corresponde a la ubicación del marcador
