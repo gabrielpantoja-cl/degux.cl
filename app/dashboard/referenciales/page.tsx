@@ -27,10 +27,10 @@ const VISIBLE_HEADERS: { key: "id" | "lat" | "lng" | "fojas" | "numero" | "anio"
 ];
 
 interface PageProps {
-  searchParams?: {
+  searchParams?: Promise<{
     query?: string;
     page?: string;
-  };
+  }>;
 }
 
 export default function Page({ searchParams }: PageProps) {
@@ -41,7 +41,7 @@ export default function Page({ searchParams }: PageProps) {
 
   useEffect(() => {
     const fetchData = async () => {
-      const params = searchParams;
+      const params = await searchParams;
       setQuery(params?.query || '');
       setCurrentPage(Number(params?.page) || 1);
       const data = await fetchFilteredReferenciales(query, currentPage);
