@@ -1,5 +1,5 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { MapContainer, TileLayer, useMap } from 'react-leaflet';
 import { GeoSearchControl, OpenStreetMapProvider } from 'leaflet-geosearch';
 import 'leaflet/dist/leaflet.css';
@@ -62,7 +62,7 @@ const SearchField = (): null => {
 
 const Mapa = () => {
     const [filteredData, setFilteredData] = useState<Point[]>([]);
-    const [mapInstance] = useState<Map | null>(null);
+    const mapRef = useRef<Map | null>(null);
 
     useEffect(() => {
         fetchReferencialesForMap()
@@ -84,15 +84,14 @@ const Mapa = () => {
             .catch(error => {
                 console.error('Error fetching data: ', error);
             });
-    }, []);
 
-    useEffect(() => {
+        // Cleanup function
         return () => {
-            if (mapInstance) {
-                mapInstance.remove();
+            if (mapRef.current) {
+                mapRef.current.remove();
             }
         };
-    }, [mapInstance]);
+    }, []);
 
     return (
         <div className="relative w-full">
@@ -106,12 +105,9 @@ const Mapa = () => {
                     borderRadius: "8px" 
                 }}
                 whenReady={() => {
-                    // Accede a la instancia del mapa directamente desde el componente
-                    // 'event.target' ya no está disponible aquí
-                    // En su lugar, usa 'mapInstance' que se actualiza después de que el mapa se inicializa
-                    if (mapInstance) {
-                        // Puedes realizar acciones con la instancia del mapa aquí
-                        console.log('Mapa listo', mapInstance);
+                    const map = mapRef.current;
+                    if (map) {
+                        console.log('Mapa inicializado');
                     }
                 }}
             >          
