@@ -65,6 +65,9 @@ const Mapa = () => {
     const mapRef = useRef<Map | null>(null);
 
     useEffect(() => {
+        // Capturamos la referencia actual del mapa
+        const map = mapRef.current;
+        
         fetchReferencialesForMap()
             .then(response => {
                 const points = response
@@ -85,10 +88,10 @@ const Mapa = () => {
                 console.error('Error fetching data: ', error);
             });
 
-        // Cleanup function
+        // Cleanup function usando la variable local
         return () => {
-            if (mapRef.current) {
-                mapRef.current.remove();
+            if (map) {
+                map.remove();
             }
         };
     }, []);
