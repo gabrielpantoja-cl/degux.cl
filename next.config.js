@@ -36,7 +36,7 @@ const nextConfig = {
               "style-src 'self' 'unsafe-inline'",
               "img-src 'self' data: blob: https://*.googleusercontent.com https://authjs.dev https://*.openstreetmap.org https://*.tile.openstreetmap.org",
               "font-src 'self' data:",
-              "connect-src 'self' https://accounts.google.com",
+              "connect-src 'self' https://accounts.google.com https://va.vercel-scripts.com",
               "frame-src 'self' https://accounts.google.com"
             ].join('; ')
           },
