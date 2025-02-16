@@ -1,4 +1,3 @@
-// next.config.js
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
@@ -24,21 +23,30 @@ const nextConfig = {
     NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
   },
   async headers() {
+    const isDev = process.env.NODE_ENV === 'development';
+    
+    const cspDirectives = [
+      "default-src 'self'",
+      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://accounts.google.com https://vercel.com https://va.vercel-scripts.com",
+      "style-src 'self' 'unsafe-inline'",
+      `img-src 'self' data: blob: https://*.googleusercontent.com https://authjs.dev https://*.openstreetmap.org https://a.tile.openstreetmap.org https://b.tile.openstreetmap.org https://c.tile.openstreetmap.org`,
+      "font-src 'self' data:",
+      `connect-src 'self' https://*.openstreetmap.org https://a.tile.openstreetmap.org https://b.tile.openstreetmap.org https://c.tile.openstreetmap.org https://accounts.google.com https://va.vercel-scripts.com`,
+      "frame-src 'self' https://accounts.google.com"
+    ];
+
+    if (isDev) {
+      cspDirectives.push("connect-src 'self' *");
+      cspDirectives.push("img-src 'self' data: blob: *");
+    }
+
     const headers = [
       {
         source: '/:path*',
         headers: [
           {
             key: 'Content-Security-Policy',
-            value: [
-              "default-src 'self'",
-              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://accounts.google.com https://vercel.com https://va.vercel-scripts.com",
-              "style-src 'self' 'unsafe-inline'",
-              "img-src 'self' data: blob: https://*.googleusercontent.com https://authjs.dev https://*.openstreetmap.org https://*.tile.openstreetmap.org",
-              "font-src 'self' data:",
-              "connect-src 'self' https://*.tile.openstreetmap.org https://accounts.google.com https://va.vercel-scripts.com",
-              "frame-src 'self' https://accounts.google.com"
-            ].join('; ')
+            value: cspDirectives.join('; ')
           },
           {
             key: 'X-Content-Type-Options',
@@ -51,7 +59,7 @@ const nextConfig = {
         ]
       }
     ];
-    
+
     return headers;
   }
 };
