@@ -284,7 +284,7 @@ progress {
 /* Asegurar que el modal tenga un z-index alto */
 .fixed.inset-0 {
   position: fixed;
-  z-index: 3; /* Incrementar el z-index para asegurar que el modal esté por encima de otros elementos */
+  z-index: 4; /* Incrementar el z-index para asegurar que el modal esté por encima de otros elementos */
 }
 
 /* Asegurar que el contenedor del mapa tenga un z-index bajo */
