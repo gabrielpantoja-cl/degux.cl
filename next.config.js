@@ -24,7 +24,7 @@ const nextConfig = {
     NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
   },
   async headers() {
-    return [
+    const headers = [
       {
         source: '/:path*',
         headers: [
@@ -51,6 +51,15 @@ const nextConfig = {
         ]
       }
     ];
+
+    if (process.env.NODE_ENV === 'development') {
+      headers[0].headers.push({
+        key: 'Access-Control-Allow-Origin',
+        value: '*'
+      });
+    }
+
+    return headers;
   }
 };
 
