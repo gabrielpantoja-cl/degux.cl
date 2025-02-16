@@ -36,7 +36,7 @@ const nextConfig = {
               "style-src 'self' 'unsafe-inline'",
               "img-src 'self' data: blob: https://*.googleusercontent.com https://authjs.dev https://*.openstreetmap.org https://*.tile.openstreetmap.org",
               "font-src 'self' data:",
-              "connect-src 'self' https://accounts.google.com https://va.vercel-scripts.com",
+              "connect-src 'self' https://*.tile.openstreetmap.org https://accounts.google.com https://va.vercel-scripts.com",
               "frame-src 'self' https://accounts.google.com"
             ].join('; ')
           },
@@ -51,14 +51,7 @@ const nextConfig = {
         ]
       }
     ];
-
-    if (process.env.NODE_ENV === 'development') {
-      headers[0].headers.push({
-        key: 'Access-Control-Allow-Origin',
-        value: '*'
-      });
-    }
-
+    
     return headers;
   }
 };
