@@ -7,6 +7,13 @@ datasource db {
   url      = env("POSTGRES_PRISMA_URL")
 }
 
+// Descomentamos y actualizamos el enum Role
+enum Role {
+  user
+  admin
+  superadmin
+}
+
 model AuditLog {
   id        String   @id @default(cuid())
   userId    String
@@ -16,8 +23,22 @@ model AuditLog {
   user      User     @relation(fields: [userId], references: [id])
 }
 
+model conservadores {
+  id            String         @id @default(uuid())
+  nombre        String
+  direccion     String
+  comuna        String
+  region        String
+  telefono      String?
+  email         String?
+  sitioWeb      String?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  referenciales referenciales[]
+}
+
 model referenciales {
-  id             String                   @id @default(uuid())
+  id             String        @id @default(uuid())
   lat            Float
   lng            Float
   fojas          String
@@ -34,8 +55,10 @@ model referenciales {
   monto          Int
   observaciones  String?
   userId         String
+  conservadorId  String        // Nuevo campo para la relación
   geom           Unsupported("geometry")?
-  user           User                     @relation(fields: [userId], references: [id])
+  user           User          @relation(fields: [userId], references: [id])
+  conservador    conservadores @relation(fields: [conservadorId], references: [id]) // Relación inversa
 }
 
 model User {
@@ -47,11 +70,11 @@ model User {
   image         String?
   createdAt     DateTime        @default(now())
   updatedAt     DateTime        @updatedAt
-  role          String          @default("USER")
+  role          Role            @default(user)  // Cambiamos String por Role
   accounts      Account[]
   sessions      Session[]
   referenciales referenciales[]
-  auditLogs     AuditLog[]     // Agregamos la relación inversa aquí
+  auditLogs     AuditLog[] 
 }
 
 model Account {
@@ -67,7 +90,7 @@ model Account {
   id_token          String?
   session_state     String?
   createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt      // Agregamos la anotación @updatedAt
+  updatedAt         DateTime @updatedAt 
   id                String   @id @default(cuid())
   user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -99,8 +122,3 @@ model spatial_ref_sys {
   proj4text String? @db.VarChar(2048)
 }
 
-enum Role {
-  user
-  admin
-  superadmin
-}
