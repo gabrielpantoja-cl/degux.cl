@@ -4,7 +4,7 @@ import Breadcrumbs from '@/components/ui/referenciales/breadcrumbs';
 import CsvUploader from '@/components/ui/referenciales/CsvUploader';
 import { fetchUsers } from '@/lib/users';
 import { getServerSession } from 'next-auth/next';
-import { authOptions } from '@/lib/auth'; // Actualizada la ruta de importación
+import { authOptions } from '@/lib/auth.config'; // Importa authOptions desde auth.config.ts
 
 export default async function Page() {
   // Obtener sesión del usuario actual

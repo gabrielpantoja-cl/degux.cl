@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { prisma } from '@/lib/prisma';
-import { authOptions } from '@/lib/auth'; // Actualizada la ruta de importación
+import { authOptions } from '@/lib/auth.config'; // Importa authOptions desde auth.config.ts
 
 export async function DELETE() {
   try {

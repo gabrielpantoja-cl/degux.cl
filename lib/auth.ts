@@ -1,5 +1,7 @@
-import NextAuth from "next-auth"
-import { authConfig } from "./auth.config"
+import { getServerSession } from "next-auth"
+import { authOptions } from "./auth.config"
 
-export const { auth, signIn, signOut } = NextAuth(authConfig)
-export { authConfig as authOptions }
+export const auth = async () => {
+  const session = await getServerSession(authOptions)
+  return session
+}
