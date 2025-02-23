@@ -24,6 +24,7 @@ type ReferencialForm = Prisma.referencialesUncheckedCreateInput & { id: string }
 
 interface FormState extends ReferencialForm {
   userId: string;
+  conservadorId: string; // Agregamos este campo
 }
 
 export default function EditReferencialForm({
@@ -39,9 +40,8 @@ export default function EditReferencialForm({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { canEdit, canDelete } = usePermissions();
 
-  // Estado del formulario actualizado
   const [formState, setFormState] = useState<FormState>({
-    id: referencial.id, // Agregamos el id del referencial
+    id: referencial.id,
     userId: referencial.userId,
     fojas: referencial.fojas,
     numero: referencial.numero,
@@ -58,6 +58,7 @@ export default function EditReferencialForm({
     lat: referencial.lat,
     lng: referencial.lng,
     observaciones: referencial.observaciones,
+    conservadorId: referencial.conservadorId, // Agregamos el campo
   });
 
   useEffect(() => {
