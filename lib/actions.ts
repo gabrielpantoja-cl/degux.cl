@@ -23,6 +23,7 @@ const ReferencialSchema = z.object({
   monto: z.number(),
   rolAvaluo: z.string(),
   observaciones: z.string().optional(),
+  conservadorId: z.string(), // Añadir campo conservadorId
 });
 
 export type State = {
@@ -65,6 +66,7 @@ export async function createReferencial(formData: FormData) {
     monto: Number(formData.get('monto')),
     rolAvaluo: formData.get('rolAvaluo'),
     observaciones: formData.get('observaciones') || undefined,
+    conservadorId: formData.get('conservadorId'), // Obtener conservadorId
   });
 
   if (!validatedFields.success) {
@@ -74,13 +76,14 @@ export async function createReferencial(formData: FormData) {
     };
   }
 
-  const { userId, fojas, numero, anno, cbr, comuna, fechaEscritura, latitud, longitud, predio, vendedor, comprador, superficie, monto, rolAvaluo, observaciones } = validatedFields.data;
+  const { userId, fojas, numero, anno, cbr, comuna, fechaEscritura, latitud, longitud, 
+    predio, vendedor, comprador, superficie, monto, rolAvaluo, observaciones, conservadorId } = validatedFields.data;
 
   try {
     await prisma.referenciales.create({
       data: {
         userId,
-        fojas, // Mantener fojas como string
+        fojas,
         numero,
         anio: anno,
         cbr,
@@ -95,6 +98,7 @@ export async function createReferencial(formData: FormData) {
         monto,
         rol: rolAvaluo,
         observaciones,
+        conservadorId, // Añadir conservadorId
       },
     });
 
@@ -144,7 +148,7 @@ export async function updateReferencial(formData: FormData) {
       where: { id: formData.get('id') as string },
       data: {
         userId,
-        fojas, // Mantener fojas como string
+        fojas, 
         numero,
         anio: anno,
         cbr,
@@ -159,6 +163,7 @@ export async function updateReferencial(formData: FormData) {
         monto,
         rol: rolAvaluo,
         observaciones,
+        conservadorId: formData.get('conservadorId') as string, // Añadir conservadorId
       },
     });
 
