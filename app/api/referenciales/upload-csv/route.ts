@@ -23,7 +23,19 @@ export async function POST(request: NextRequest) {
     });
 
     const createdReferenciales = await prisma.$transaction(
-      records.map((record: any) => {
+      records.map(async (record: any) => {
+        // Primero buscar o crear el conservador
+        const conservador = await prisma.conservadores.findFirst({
+          where: { nombre: record.cbr }
+        }) || await prisma.conservadores.create({
+          data: {
+            nombre: record.cbr,
+            direccion: 'Por definir',
+            comuna: record.comuna,
+            region: 'Por definir'
+          }
+        });
+
         return prisma.referenciales.create({
           data: {
             lat: parseFloat(record.lat),
@@ -41,7 +53,8 @@ export async function POST(request: NextRequest) {
             superficie: parseFloat(record.superficie),
             monto: parseFloat(record.monto),
             observaciones: record.observaciones,
-            userId: userId
+            userId: userId,
+            conservadorId: conservador.id  // Añadimos el ID del conservador
           }
         });
       })
