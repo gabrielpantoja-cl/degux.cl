@@ -11,8 +11,23 @@ import { fetchReferencialesPages, fetchFilteredReferenciales } from '@/lib/refer
 import { exportReferencialesToXlsx } from '@/lib/exportToXlsx';
 import { Referencial } from '@/types/referenciales'; // Asegúrate de que la ruta sea correcta
 
-// Definición de VISIBLE_HEADERS
-const VISIBLE_HEADERS: { key: "id" | "lat" | "lng" | "fojas" | "numero" | "anio" | "cbr" | "comprador" | "vendedor" | "predio" | "comuna" | "rol" | "fechaescritura" | "superficie" | "monto" | "observaciones" | "userId"; label: string }[] = [
+// Definimos un tipo específico para las claves exportables
+type ExportableKeys = 
+  | 'cbr' 
+  | 'fojas' 
+  | 'numero' 
+  | 'anio' 
+  | 'predio' 
+  | 'comuna' 
+  | 'rol' 
+  | 'fechaescritura' 
+  | 'monto' 
+  | 'superficie' 
+  | 'observaciones' 
+  | 'conservadorId';
+
+// Actualizamos VISIBLE_HEADERS para usar ExportableKeys
+const VISIBLE_HEADERS: { key: ExportableKeys; label: string }[] = [
   { key: 'cbr', label: 'CBR' },
   { key: 'fojas', label: 'Fojas' },
   { key: 'numero', label: 'Número' },
@@ -24,6 +39,7 @@ const VISIBLE_HEADERS: { key: "id" | "lat" | "lng" | "fojas" | "numero" | "anio"
   { key: 'monto', label: 'Monto ($)' },
   { key: 'superficie', label: 'Superficie (m²)' },
   { key: 'observaciones', label: 'Observaciones' },
+  { key: 'conservadorId', label: 'ID Conservador' }
 ];
 
 interface PageProps {
