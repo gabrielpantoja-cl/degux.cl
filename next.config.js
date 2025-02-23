@@ -25,20 +25,27 @@ const nextConfig = {
   async headers() {
     const isDev = process.env.NODE_ENV === 'development';
     
-    const cspDirectives = [
-      "default-src 'self'",
-      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://accounts.google.com https://vercel.com https://va.vercel-scripts.com",
-      "style-src 'self' 'unsafe-inline'",
-      `img-src 'self' data: blob: https://*.googleusercontent.com https://authjs.dev https://*.openstreetmap.org https://a.tile.openstreetmap.org https://b.tile.openstreetmap.org https://c.tile.openstreetmap.org`,
-      "font-src 'self' data:",
-      `connect-src 'self' https://*.openstreetmap.org https://a.tile.openstreetmap.org https://b.tile.openstreetmap.org https://c.tile.openstreetmap.org https://accounts.google.com https://va.vercel-scripts.com`,
-      "frame-src 'self' https://accounts.google.com"
-    ];
+    // Base CSP directives
+    const cspDirectives = {
+      'default-src': ["'self'"],
+      'script-src': ["'self'", "'unsafe-inline'", "'unsafe-eval'", "https://accounts.google.com", "https://vercel.com", "https://va.vercel-scripts.com"],
+      'style-src': ["'self'", "'unsafe-inline'"],
+      'img-src': ["'self'", "data:", "blob:", "https://*.googleusercontent.com", "https://authjs.dev", "https://*.openstreetmap.org", "https://a.tile.openstreetmap.org", "https://b.tile.openstreetmap.org", "https://c.tile.openstreetmap.org"],
+      'font-src': ["'self'", "data:"],
+      'connect-src': ["'self'", "https://*.openstreetmap.org", "https://a.tile.openstreetmap.org", "https://b.tile.openstreetmap.org", "https://c.tile.openstreetmap.org", "https://accounts.google.com", "https://va.vercel-scripts.com"],
+      'frame-src': ["'self'", "https://accounts.google.com"]
+    };
 
+    // Add development-specific rules
     if (isDev) {
-      cspDirectives.push("connect-src 'self' *");
-      cspDirectives.push("img-src 'self' data: blob: *");
+      cspDirectives['connect-src'] = ["'self'", "*"];
+      cspDirectives['img-src'] = ["'self'", "data:", "blob:", "*"];
     }
+
+    // Convert directives object to string
+    const cspString = Object.entries(cspDirectives)
+      .map(([key, values]) => `${key} ${values.join(' ')}`)
+      .join('; ');
 
     const headers = [
       {
@@ -46,7 +53,7 @@ const nextConfig = {
         headers: [
           {
             key: 'Content-Security-Policy',
-            value: cspDirectives.join('; ')
+            value: cspString
           },
           {
             key: 'X-Content-Type-Options',
