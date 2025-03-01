@@ -7,7 +7,7 @@
     "ecmaFeatures": {
       "jsx": true
     },
-    "project": "./tsconfig.json"
+    "project": ["tsconfig.json", "tsconfig.seed.json"]
   },
   "extends": [
     "next/core-web-vitals",

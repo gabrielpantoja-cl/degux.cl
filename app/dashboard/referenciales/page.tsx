@@ -78,15 +78,23 @@ useEffect(() => {
       setQuery(queryParam);
       setCurrentPage(pageParam);
       
-      // Make sure we're passing valid values
+      // Make sure we're passing valid values and handle potential null/undefined
       const data = await fetchFilteredReferenciales(queryParam, pageParam);
-      setReferenciales(data as ReferencialWithRelations[]);
+      
+      // Verificar que los datos sean válidos antes de actualizar el estado
+      if (data && Array.isArray(data)) {
+        setReferenciales(data as ReferencialWithRelations[]);
+      } else {
+        console.error('Datos de referenciales inválidos:', data);
+        setReferenciales([]);
+      }
       
       const pages = await fetchReferencialesPages(queryParam);
-      setTotalPages(pages);
+      setTotalPages(typeof pages === 'number' ? pages : 1);
     } catch (error) {
       console.error('Error al cargar datos:', error);
-      // Show some error state to the user
+      setReferenciales([]);
+      setTotalPages(1);
     }
   };
   
