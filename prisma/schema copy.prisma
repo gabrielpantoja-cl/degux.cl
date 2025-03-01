@@ -1,0 +1,126 @@
+generator client {
+  provider = "prisma-client-js"
+  previewFeatures = ["postgresqlExtensions"]
+}
+
+datasource db {
+  provider   = "postgresql"
+  url        = env("POSTGRES_PRISMA_URL")
+  extensions = [postgis]
+}
+
+// Descomentamos y actualizamos el enum Role
+enum Role {
+  user
+  admin
+  superadmin
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  userId    String
+  action    String
+  metadata  Json?
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+model conservadores {
+  id            String         @id @default(uuid())
+  nombre        String
+  direccion     String
+  comuna        String
+  region        String
+  telefono      String?
+  email         String?
+  sitioWeb      String?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  referenciales referenciales[]
+}
+
+model referenciales {
+  id             String        @id @default(uuid())
+  lat            Float
+  lng            Float
+  fojas          String
+  numero         Int
+  anio           Int
+  cbr            String
+  comprador      String
+  vendedor       String
+  predio         String
+  comuna         String
+  rol            String
+  fechaescritura DateTime
+  superficie     Float
+  monto          Int
+  observaciones  String?
+  userId         String
+  conservadorId  String        // Nuevo campo para la relación
+  geom           Unsupported("geometry")?
+  user           User          @relation(fields: [userId], references: [id])
+  conservador    conservadores @relation(fields: [conservadorId], references: [id]) // Relación inversa
+}
+
+model User {
+  id            String          @id @default(cuid())
+  name          String?
+  email         String          @unique
+  password      String?
+  emailVerified DateTime?
+  image         String?
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  role          Role            @default(user)  // Cambiamos String por Role
+  accounts      Account[]
+  sessions      Session[]
+  referenciales referenciales[]
+  auditLogs     AuditLog[] 
+}
+
+model Account {
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt 
+  id                String   @id @default(cuid())
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String   @unique
+  token      String
+  expires    DateTime
+
+  @@id([identifier, token])
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model spatial_ref_sys {
+  srid      Int     @id
+  auth_name String? @db.VarChar(256)
+  auth_srid Int?
+  srtext    String? @db.VarChar(2048)
+  proj4text String? @db.VarChar(2048)
+}
+
