@@ -1,10 +1,12 @@
 generator client {
   provider = "prisma-client-js"
+  previewFeatures = ["postgresqlExtensions"]
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("POSTGRES_PRISMA_URL")
+  provider   = "postgresql"
+  url        = env("POSTGRES_PRISMA_URL")
+  extensions = [postgis]
 }
 
 // Descomentamos y actualizamos el enum Role
