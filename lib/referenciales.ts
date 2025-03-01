@@ -1,5 +1,3 @@
-// lib/referenciales.ts
-
 'use server';
 
 import { prisma } from '@/lib/prisma';
@@ -17,48 +15,42 @@ export async function fetchLatestReferenciales() {
         fechaescritura: 'desc',
       },
       include: {
-        user: true, 
+        user: true,
+        conservador: true, // Incluir relación con conservadores
       },
     });
 
-    if (!Array.isArray(data)) {
-      throw new Error('Unexpected response from the database.');
+    if (!data || !Array.isArray(data)) {
+      throw new Error('Respuesta inesperada de la base de datos.');
     }
 
-    const latestReferenciales = data.map((referencial) => {
-      if (typeof referencial.monto !== 'number') {
-        throw new Error('Unexpected data type for "monto".');
-      }
-
-      return {
-        ...referencial,
-        amount: formatCurrency(referencial.monto),
-      };
-    });
+    const latestReferenciales = data.map((referencial) => ({
+      ...referencial,
+      amount: formatCurrency(referencial.monto),
+    }));
 
     return latestReferenciales;
   } catch (error) {
-    console.error('Database Error:', error);
-
-    if (error instanceof Error) {
-      console.error('Error Message:', error.message);
-      throw new Error('Failed to fetch the latest referenciales. Original error: ' + error.message);
-    } else {
-      throw error;
-    }
+    console.error('Error de base de datos:', error);
+    throw error instanceof Error 
+      ? new Error(`Error al obtener últimas referencias: ${error.message}`)
+      : new Error('Error desconocido al obtener referencias');
   }
 }
 
 export async function fetchFilteredReferenciales(query: string, currentPage: number) {
-  console.log('Iniciando fetchFilteredReferenciales con query:', query, 'y currentPage:', currentPage);
   noStore();
   const offset = (currentPage - 1) * ITEMS_PER_PAGE;
 
   try {
-    console.log('Iniciando consulta a la base de datos...');
     const referenciales = await prisma.referenciales.findMany({
       where: {
-        // Agrega tus condiciones de filtro aquí
+        OR: [
+          { comuna: { contains: query, mode: 'insensitive' } },
+          { predio: { contains: query, mode: 'insensitive' } },
+          { comprador: { contains: query, mode: 'insensitive' } },
+          { vendedor: { contains: query, mode: 'insensitive' } }
+        ]
       },
       orderBy: {
         fechaescritura: 'desc',
@@ -72,29 +64,40 @@ export async function fetchFilteredReferenciales(query: string, currentPage: num
             email: true,
           },
         },
+        conservador: {
+          select: {
+            nombre: true,
+            comuna: true,
+          },
+        },
       },
     });
 
-    console.log('Consulta a la base de datos completada. Referenciales obtenidos:', referenciales);
-    return referenciales;
+    return referenciales || []; // Asegurar que nunca retornamos null
+
   } catch (error) {
     console.error('Error en la base de datos:', error);
-    throw error;
+    throw new Error('Error al obtener referenciales: ' + (error instanceof Error ? error.message : 'Error desconocido'));
   }
 }
 
-export async function fetchReferencialesPages() {
+export async function fetchReferencialesPages(query: string = '') {
   noStore();
 
   try {
     const count = await prisma.referenciales.count({
       where: {
-        // Agrega tus condiciones de filtro aquí
+        OR: query ? [
+          { comuna: { contains: query, mode: 'insensitive' } },
+          { predio: { contains: query, mode: 'insensitive' } },
+          { comprador: { contains: query, mode: 'insensitive' } },
+          { vendedor: { contains: query, mode: 'insensitive' } }
+        ] : undefined
       },
     });
 
     const totalPages = Math.ceil(count / ITEMS_PER_PAGE);
-    return totalPages;
+    return totalPages || 1; // Asegurar que siempre hay al menos 1 página
   } catch (error) {
     console.error('Database Error:', error);
     throw new Error('Failed to fetch total number of referenciales.');
@@ -108,6 +111,10 @@ export async function fetchReferencialById(id: string) {
       where: {
         id: id,
       },
+      include: {
+        conservador: true, // Incluir la relación con conservador
+        user: true
+      }
     });
 
     if (!referencial) {
@@ -116,15 +123,27 @@ export async function fetchReferencialById(id: string) {
 
     return {
       ...referencial,
-      amount: referencial.monto / 100,
+      amount: formatCurrency(referencial.monto),
     };
   } catch (error) {
     console.error('Database Error:', error);
-    throw error;
+    throw error instanceof Error 
+      ? new Error(`Error al obtener referencial: ${error.message}`)
+      : new Error('Error desconocido al obtener referencial');
   }
 }
 
-// Agregar a lib/referenciales.ts
+interface ComunaGroupResult {
+  comuna: string;
+  _count: {
+    comuna: number;
+  } | null;
+}
+
+interface FormattedComuna {
+  comuna: string;
+  count: number;
+}
 
 export async function fetchTopComunas() {
   noStore();
@@ -147,10 +166,10 @@ export async function fetchTopComunas() {
       }
     });
 
-    // Formatear datos para el gráfico
-    const formattedData = comunasData.map(item => ({
+    // Formatear datos para el gráfico con tipos seguros
+    const formattedData = comunasData.map((item: ComunaGroupResult): FormattedComuna => ({
       comuna: item.comuna,
-      count: item._count?.comuna ?? 0 // Uso de optional chaining y valor por defecto
+      count: item._count?.comuna ?? 0
     }));
 
     console.log('Top comunas obtenidas:', formattedData);
