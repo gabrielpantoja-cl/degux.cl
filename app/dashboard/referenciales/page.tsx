@@ -67,29 +67,31 @@ export default function Page({ searchParams }: PageProps) {
   const [referenciales, setReferenciales] = useState<ReferencialWithRelations[]>([]);
   const [totalPages, setTotalPages] = useState<number>(0);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const params = await searchParams;
-        const queryParam = params?.query || '';
-        const pageParam = Number(params?.page) || 1;
-        
-        setQuery(queryParam);
-        setCurrentPage(pageParam);
-        
-        const data = await fetchFilteredReferenciales(queryParam, pageParam);
-        setReferenciales(data as ReferencialWithRelations[]);
-        
-        const pages = await fetchReferencialesPages(queryParam);
-        setTotalPages(pages);
-      } catch (error) {
-        console.error('Error al cargar datos:', error);
-        // Puedes manejar el error mostrando una notificación o mensaje
-      }
-    };
-    
-    fetchData();
-  }, [searchParams]);
+  // In app/dashboard/referenciales/page.tsx
+useEffect(() => {
+  const fetchData = async () => {
+    try {
+      const params = await searchParams;
+      const queryParam = params?.query || '';
+      const pageParam = Number(params?.page) || 1;
+      
+      setQuery(queryParam);
+      setCurrentPage(pageParam);
+      
+      // Make sure we're passing valid values
+      const data = await fetchFilteredReferenciales(queryParam, pageParam);
+      setReferenciales(data as ReferencialWithRelations[]);
+      
+      const pages = await fetchReferencialesPages(queryParam);
+      setTotalPages(pages);
+    } catch (error) {
+      console.error('Error al cargar datos:', error);
+      // Show some error state to the user
+    }
+  };
+  
+  fetchData();
+}, [searchParams]);
 
   const handleExport = () => {
     // Convertir el formato si es necesario antes de exportar
