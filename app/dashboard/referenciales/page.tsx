@@ -42,6 +42,18 @@ const VISIBLE_HEADERS: { key: ExportableKeys; label: string }[] = [
   { key: 'conservadorId', label: 'ID Conservador' }
 ];
 
+// Definimos un tipo específico para los datos que devuelve fetchFilteredReferenciales
+interface ReferencialWithRelations extends Omit<Referencial, 'conservador'> {
+  user: {
+    name: string | null;
+    email: string;
+  };
+  conservador: {
+    nombre: string;
+    comuna: string;
+  };
+}
+
 interface PageProps {
   searchParams?: Promise<{
     query?: string;
@@ -52,24 +64,47 @@ interface PageProps {
 export default function Page({ searchParams }: PageProps) {
   const [query, setQuery] = useState<string>('');
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [referenciales, setReferenciales] = useState<Referencial[]>([]);
+  const [referenciales, setReferenciales] = useState<ReferencialWithRelations[]>([]);
   const [totalPages, setTotalPages] = useState<number>(0);
 
   useEffect(() => {
     const fetchData = async () => {
-      const params = await searchParams;
-      setQuery(params?.query || '');
-      setCurrentPage(Number(params?.page) || 1);
-      const data = await fetchFilteredReferenciales(query, currentPage);
-      setReferenciales(data);
-      const pages = await fetchReferencialesPages();
-      setTotalPages(pages);
+      try {
+        const params = await searchParams;
+        const queryParam = params?.query || '';
+        const pageParam = Number(params?.page) || 1;
+        
+        setQuery(queryParam);
+        setCurrentPage(pageParam);
+        
+        const data = await fetchFilteredReferenciales(queryParam, pageParam);
+        setReferenciales(data as ReferencialWithRelations[]);
+        
+        const pages = await fetchReferencialesPages(queryParam);
+        setTotalPages(pages);
+      } catch (error) {
+        console.error('Error al cargar datos:', error);
+        // Puedes manejar el error mostrando una notificación o mensaje
+      }
     };
+    
     fetchData();
-  }, [searchParams, currentPage, query]);
+  }, [searchParams]);
 
   const handleExport = () => {
-    exportReferencialesToXlsx(referenciales, VISIBLE_HEADERS);
+    // Convertir el formato si es necesario antes de exportar
+    const exportableData = referenciales.map(ref => {
+      // Extrae solo las propiedades necesarias para exportar
+      // Ignora las propiedades no utilizadas con _
+      const { conservador, ...rest } = ref;
+      return {
+        ...rest,
+        conservadorNombre: conservador?.nombre || '',
+        conservadorComuna: conservador?.comuna || '',
+      };
+    });
+    
+    exportReferencialesToXlsx(exportableData, VISIBLE_HEADERS);
   };
 
   return (
