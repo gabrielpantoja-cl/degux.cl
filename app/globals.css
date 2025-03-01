@@ -281,10 +281,15 @@ progress {
   overflow: hidden; /* Asegura que no haya contenido adicional visible */
 }
 
-/* Asegurar que el modal tenga un z-index alto */
-.fixed.inset-0 {
-  position: fixed;
-  z-index: 4; /* Incrementar el z-index para asegurar que el modal esté por encima de otros elementos */
+/* Configuración para modales usando portales */
+body.dialog-open .leaflet-container,
+body.dialog-open [class^="leaflet-"] {
+  z-index: 0 !important;
+}
+
+/* Garantizar que el contenido renderizado con portales aparezca por encima */
+#__next ~ div[role="dialog"] {
+  z-index: 9000;
 }
 
 /* Asegurar que el contenedor del mapa tenga un z-index bajo */

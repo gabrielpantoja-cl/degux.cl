@@ -1,8 +1,16 @@
 import * as React from 'react';
+import { createPortal } from 'react-dom';
 import { cn } from '@/lib/utils';
 import type { DialogProps } from './types';
 
 export function DialogClient({ open, onClose, title, description, buttons }: DialogProps) {
+  const [mounted, setMounted] = React.useState(false);
+  
+  React.useEffect(() => {
+    setMounted(true);
+    return () => setMounted(false);
+  }, []);
+
   React.useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose();
@@ -11,24 +19,44 @@ export function DialogClient({ open, onClose, title, description, buttons }: Dia
     return () => document.removeEventListener('keydown', handleEscape);
   }, [onClose]);
 
-  if (!open) return null;
+  React.useEffect(() => {
+    if (open) {
+      document.body.style.overflow = 'hidden';
+      
+      // Add a class to body that can be used to handle any conflicts
+      document.body.classList.add('dialog-open');
+    } else {
+      document.body.style.overflow = '';
+      document.body.classList.remove('dialog-open');
+    }
+    
+    return () => {
+      document.body.style.overflow = '';
+      document.body.classList.remove('dialog-open');
+    };
+  }, [open]);
 
-  return (
+  if (!open || !mounted) return null;
+  
+  // Construct the dialog markup
+  const dialogContent = (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center"
+      className="fixed inset-0 flex items-center justify-center"
       role="dialog"
       aria-modal="true"
     >
+      {/* Backdrop */}
       <div 
         className="fixed inset-0 bg-black/50 transition-opacity" 
         onClick={onClose}
-        onKeyDown={(e) => e.key === 'Escape' && onClose()}
+        onKeyDown={(e) => e.key === 'Enter' && onClose()}
         role="button"
         tabIndex={0}
         aria-label="Cerrar diálogo"
       />
       
-      <div className="relative z-50 w-full max-w-md rounded-lg bg-white p-6 shadow-lg">
+      {/* Dialog content */}
+      <div className="relative w-full max-w-md rounded-lg bg-white p-6 shadow-lg">
         <h2 className="text-xl font-semibold text-gray-900">{title}</h2>
         <p className="mt-2 text-gray-600">{description}</p>
         
@@ -51,4 +79,8 @@ export function DialogClient({ open, onClose, title, description, buttons }: Dia
       </div>
     </div>
   );
+  
+  // Use createPortal to render the dialog at the end of the document body
+  // This ensures it's outside of any stacking contexts created by parent elements
+  return createPortal(dialogContent, document.body);
 }
