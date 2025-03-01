@@ -39,16 +39,20 @@ export async function fetchLatestReferenciales() {
   }
 }
 
-export async function fetchFilteredReferenciales(query: string, currentPage: number) {
+export async function fetchFilteredReferenciales(query: string | null | undefined, currentPage: number | null | undefined) {
   noStore();
   
-  // Validación y sanitización de parámetros
-  const safeQuery = typeof query === 'string' ? query : '';
-  const safePage = Math.max(1, Number(currentPage) || 1);
+  // Validación exhaustiva y sanitización de parámetros para evitar el error de null payload
+  const safeQuery = query != null && typeof query === 'string' ? query : '';
+  
+  // Aseguramos que currentPage sea un número válido
+  const page = currentPage != null ? Number(currentPage) : 1;
+  const safePage = Number.isNaN(page) ? 1 : Math.max(1, page);
   const offset = (safePage - 1) * ITEMS_PER_PAGE;
 
   try {
     // Construir whereCondition con tipos correctos de Prisma
+    // Solo incluir la condición OR si hay un query válido
     const whereCondition: Prisma.referencialesWhereInput = safeQuery.trim() 
       ? {
           OR: [
@@ -77,6 +81,7 @@ export async function fetchFilteredReferenciales(query: string, currentPage: num
         },
         conservador: {
           select: {
+            id: true, // Importante: incluir el id para que coincida con el tipo esperado
             nombre: true,
             comuna: true,
           },
@@ -85,30 +90,34 @@ export async function fetchFilteredReferenciales(query: string, currentPage: num
     });
 
     // Validar resultado
-    if (!Array.isArray(referenciales)) {
-      throw new Error('Respuesta inesperada de la base de datos');
+    if (!referenciales || !Array.isArray(referenciales)) {
+      console.error('Respuesta inesperada de la base de datos:', referenciales);
+      return []; // Devolver array vacío en caso de error
     }
 
     return referenciales;
 
   } catch (error) {
     console.error('Error en la base de datos:', error);
-    // Retornar array vacío en lugar de null
+    // Retornar array vacío en lugar de null para evitar errores al deserializar
     return [];
   }
 }
 
-export async function fetchReferencialesPages(query: string = '') {
+export async function fetchReferencialesPages(query: string | null | undefined = '') {
   noStore();
+
+  // Validación adicional para el argumento query
+  const safeQuery = query != null && typeof query === 'string' ? query : '';
 
   try {
     const count = await prisma.referenciales.count({
       where: {
-        OR: query ? [
-          { comuna: { contains: query, mode: 'insensitive' } },
-          { predio: { contains: query, mode: 'insensitive' } },
-          { comprador: { contains: query, mode: 'insensitive' } },
-          { vendedor: { contains: query, mode: 'insensitive' } }
+        OR: safeQuery.trim() ? [
+          { comuna: { contains: safeQuery, mode: 'insensitive' } },
+          { predio: { contains: safeQuery, mode: 'insensitive' } },
+          { comprador: { contains: safeQuery, mode: 'insensitive' } },
+          { vendedor: { contains: safeQuery, mode: 'insensitive' } }
         ] : undefined
       },
     });
@@ -117,12 +126,18 @@ export async function fetchReferencialesPages(query: string = '') {
     return totalPages || 1; // Asegurar que siempre hay al menos 1 página
   } catch (error) {
     console.error('Database Error:', error);
-    throw new Error('Failed to fetch total number of referenciales.');
+    return 1; // Devolver 1 página en caso de error
   }
 }
 
-export async function fetchReferencialById(id: string) {
+export async function fetchReferencialById(id: string | null | undefined) {
   noStore();
+  
+  // Validación del id
+  if (!id) {
+    throw new Error('ID no proporcionado');
+  }
+  
   try {
     const referencial = await prisma.referenciales.findUnique({
       where: {
@@ -189,11 +204,10 @@ export async function fetchTopComunas() {
       count: item._count?.comuna ?? 0
     }));
 
-    console.log('Top comunas obtenidas:', formattedData);
     return formattedData;
 
   } catch (error) {
     console.error('Error al obtener top comunas:', error);
-    throw new Error('Error al obtener las comunas con más referenciales');
+    return []; // Devolver array vacío en caso de error para evitar problemas de renderizado
   }
 }

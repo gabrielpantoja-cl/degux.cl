@@ -1,28 +1,44 @@
 // app/ui/referenciales/table.tsx
 "use client";
 
-import { referenciales } from '@prisma/client';
 import { formatDateToLocal } from '@/lib/utils';
 import { fetchFilteredReferenciales } from '@/lib/referenciales';
 import { useState, useEffect } from 'react';
+import { Referencial } from '@/types/referenciales';
 
 // Mantener la definición de campos sensibles
 const SENSITIVE_FIELDS = ['comprador', 'vendedor'];
 const isSensitiveField = (key: string) => SENSITIVE_FIELDS.includes(key);
 
+// Definir tipo para referencial con relaciones
+interface ReferencialWithRelations extends Omit<Referencial, 'conservador'> {
+  user: {
+    name: string | null;
+    email: string;
+  };
+  conservador: {
+    id: string;
+    nombre: string;
+    comuna: string;
+  } | null;
+}
+
 // Función helper para manejar la visualización de datos sensibles
-const formatFieldValue = (key: string, value: any) => {
+const formatFieldValue = (key: string, value: any, referencial?: ReferencialWithRelations) => {
   if (isSensitiveField(key)) {
     return '• • • • •';
   }
 
   if (key === 'fechaescritura' && value) {
-    return formatDateToLocal(value.toISOString());
+    return formatDateToLocal(new Date(value).toISOString());
   }
-  if ((key === 'monto' || key === 'superficie') && value) {
+  if ((key === 'monto' || key === 'superficie') && value !== undefined) {
     return value.toLocaleString('es-CL');
   }
-  return value;
+  if (key === 'conservador' && referencial?.conservador) {
+    return referencial.conservador.nombre;
+  }
+  return value || '';
 };
 
 interface ReferencialTableProps {
@@ -30,10 +46,11 @@ interface ReferencialTableProps {
   currentPage: number;
 }
 
-type ReferencialKeys = keyof referenciales;
+type BaseKeys = keyof Omit<Referencial, 'user' | 'conservador'>;
+type DisplayKeys = BaseKeys | 'conservador';
 
 // Campos alineados con schema.prisma
-const ALL_TABLE_HEADERS: { key: ReferencialKeys, label: string }[] = [
+const ALL_TABLE_HEADERS: { key: DisplayKeys, label: string }[] = [
   { key: 'cbr', label: 'CBR' },
   { key: 'fojas', label: 'Fojas' },
   { key: 'numero', label: 'Número' },
@@ -45,6 +62,7 @@ const ALL_TABLE_HEADERS: { key: ReferencialKeys, label: string }[] = [
   { key: 'monto', label: 'Monto ($)' },
   { key: 'superficie', label: 'Superficie (m²)' },
   { key: 'observaciones', label: 'Observaciones' },
+  { key: 'conservador', label: 'Conservador' },
 ];
 
 // Filtrar headers excluyendo campos sensibles
@@ -56,12 +74,33 @@ export default function ReferencialesTable({
   query,
   currentPage,
 }: ReferencialTableProps) {
-  const [referenciales, setReferenciales] = useState<referenciales[]>([]);
+  const [referenciales, setReferenciales] = useState<ReferencialWithRelations[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
-      const data = await fetchFilteredReferenciales(query, currentPage);
-      setReferenciales(data);
+      try {
+        // Asegurarse de que query y currentPage sean válidos antes de pasar a la función
+        const safeQuery = typeof query === 'string' ? query : '';
+        const safePage = typeof currentPage === 'number' && !isNaN(currentPage) ? currentPage : 1;
+        
+        const data = await fetchFilteredReferenciales(safeQuery, safePage);
+        
+        // Asegurarse de que data es un array antes de actualizar el estado
+        if (data && Array.isArray(data)) {
+          // Asegurar que cada referencial tiene las propiedades necesarias
+          const validReferenciales = data.filter(ref => 
+            ref && typeof ref === 'object' && 'id' in ref
+          ) as ReferencialWithRelations[];
+          
+          setReferenciales(validReferenciales);
+        } else {
+          console.error('Los datos recibidos no son un array:', data);
+          setReferenciales([]);
+        }
+      } catch (error) {
+        console.error('Error al cargar referenciales:', error);
+        setReferenciales([]);
+      }
     };
     fetchData();
   }, [query, currentPage]);
@@ -72,13 +111,17 @@ export default function ReferencialesTable({
         <div className="rounded-lg bg-gray-50 p-2 md:pt-0">
           {/* Vista móvil */}
           <div className="md:hidden">
-            {referenciales?.map((referencial: referenciales) => (
+            {referenciales?.map((referencial) => (
               <div key={referencial.id} className="mb-2 w-full rounded-md bg-white p-4">
                 <div className="flex items-center justify-between border-b pb-4">
                   <div>
                     {VISIBLE_HEADERS.map(({ key, label }) => (
                       <p key={key} className={key === 'cbr' ? 'font-medium' : ''}>
-                        {label}: {formatFieldValue(key, referencial[key])}
+                        {label}: {
+                          key === 'conservador' 
+                            ? (referencial.conservador?.nombre || '-') 
+                            : formatFieldValue(key, (referencial as any)[key], referencial)
+                        }
                       </p>
                     ))}
                   </div>
@@ -100,12 +143,15 @@ export default function ReferencialesTable({
                 </tr>
               </thead>
               <tbody className="bg-white">
-                {referenciales?.map((referencial: referenciales) => (
+                {referenciales?.map((referencial) => (
                   <tr key={referencial.id} 
                       className="w-full border-b py-3 text-sm last-of-type:border-none [&:first-child>td:first-child]:rounded-tl-lg [&:first-child>td:last-child]:rounded-tr-lg [&:last-child>td:first-child]:rounded-bl-lg [&:last-child>td:last-child]:rounded-br-lg">
                     {VISIBLE_HEADERS.map(({ key }) => (
                       <td key={key} className="whitespace-nowrap px-3 py-3">
-                        {formatFieldValue(key, referencial[key])}
+                        {key === 'conservador' 
+                          ? (referencial.conservador?.nombre || '-') 
+                          : formatFieldValue(key, (referencial as any)[key], referencial)
+                        }
                       </td>
                     ))}
                   </tr>
