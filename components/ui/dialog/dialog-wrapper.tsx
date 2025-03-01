@@ -5,17 +5,8 @@ import type { DialogProps } from './types';
 import { DialogClient } from './dialog-client';
 
 export function DialogWrapper(props: DialogProps) {
-  const { onClose } = props;
-
-  React.useEffect(() => {
-    const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
-    };
-    document.addEventListener('keydown', handleEscape);
-    return () => document.removeEventListener('keydown', handleEscape);
-  }, [onClose]);
-
+  // We can simplify this component since DialogClient now handles all the effects
+  // This is just a pass-through component for client-side rendering
   if (!props.open) return null;
-
   return <DialogClient {...props} />;
 }
