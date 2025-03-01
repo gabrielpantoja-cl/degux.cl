@@ -1,6 +1,7 @@
 'use server';
 
 import { prisma } from '@/lib/prisma';
+import { Prisma } from '@prisma/client';
 import { formatCurrency } from './utils';
 import { unstable_noStore as noStore } from 'next/cache';
 
@@ -40,18 +41,28 @@ export async function fetchLatestReferenciales() {
 
 export async function fetchFilteredReferenciales(query: string, currentPage: number) {
   noStore();
-  const offset = (currentPage - 1) * ITEMS_PER_PAGE;
+  
+  // Validación y sanitización de parámetros
+  const safeQuery = typeof query === 'string' ? query : '';
+  const safePage = Math.max(1, Number(currentPage) || 1);
+  const offset = (safePage - 1) * ITEMS_PER_PAGE;
 
   try {
+    // Construir whereCondition con tipos correctos de Prisma
+    const whereCondition: Prisma.referencialesWhereInput = safeQuery.trim() 
+      ? {
+          OR: [
+            { comuna: { contains: safeQuery, mode: 'insensitive' } },
+            { predio: { contains: safeQuery, mode: 'insensitive' } },
+            { comprador: { contains: safeQuery, mode: 'insensitive' } },
+            { vendedor: { contains: safeQuery, mode: 'insensitive' } }
+          ]
+        } 
+      : {};
+
+    // Ejecutar consulta con manejo de errores mejorado
     const referenciales = await prisma.referenciales.findMany({
-      where: {
-        OR: [
-          { comuna: { contains: query, mode: 'insensitive' } },
-          { predio: { contains: query, mode: 'insensitive' } },
-          { comprador: { contains: query, mode: 'insensitive' } },
-          { vendedor: { contains: query, mode: 'insensitive' } }
-        ]
-      },
+      where: whereCondition,
       orderBy: {
         fechaescritura: 'desc',
       },
@@ -73,11 +84,17 @@ export async function fetchFilteredReferenciales(query: string, currentPage: num
       },
     });
 
-    return referenciales || []; // Asegurar que nunca retornamos null
+    // Validar resultado
+    if (!Array.isArray(referenciales)) {
+      throw new Error('Respuesta inesperada de la base de datos');
+    }
+
+    return referenciales;
 
   } catch (error) {
     console.error('Error en la base de datos:', error);
-    throw new Error('Error al obtener referenciales: ' + (error instanceof Error ? error.message : 'Error desconocido'));
+    // Retornar array vacío en lugar de null
+    return [];
   }
 }
 
