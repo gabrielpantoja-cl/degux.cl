@@ -1,29 +1,26 @@
-// lib/prisma.ts
-
-/**
- * Configuración del cliente Prisma para la aplicación
- * Implementa el patrón Singleton para evitar múltiples instancias en desarrollo
- */
-
 import { PrismaClient } from '@prisma/client';
 
-// Añadir tipado más específico para el objeto global
+// Declarar correctamente la propiedad prisma en el objeto global
 declare global {
+  // Para Node.js con Prisma, necesitamos usar var aquí específicamente
+  // eslint-disable-next-line no-var
   var prisma: PrismaClient | undefined;
 }
 
-// Crear una única instancia de PrismaClient
-const prisma = global.prisma || new PrismaClient();
+// Crear instancia singleton de PrismaClient
+let prisma: PrismaClient;
 
-// Solo asignar prisma al objeto global en desarrollo
-if (process.env.NODE_ENV !== 'production') {
-  global.prisma = prisma;
+if (process.env.NODE_ENV === 'production') {
+  prisma = new PrismaClient();
+} else {
+  if (!global.prisma) {
+    global.prisma = new PrismaClient();
+  }
+  prisma = global.prisma;
 }
 
-// Exportar la instancia de prisma con diferentes nombres para mantener compatibilidad
+// Exportaciones
 export const db = prisma;
 export const prismaClient = prisma;
 export { prisma };
-
-// Exportación por defecto para casos especiales
 export default prisma;
