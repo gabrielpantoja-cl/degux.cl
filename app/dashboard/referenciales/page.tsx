@@ -7,6 +7,7 @@ import { CreateReferencial } from '@/components/ui/referenciales/buttons';
 import { lusitana } from '@/components/ui/fonts';
 import { ReferencialesTableSkeleton } from '@/components/ui/skeletons';
 import { Suspense, useState, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { fetchReferencialesPages, fetchFilteredReferenciales } from '@/lib/referenciales';
 import { exportReferencialesToXlsx } from '@/lib/exportToXlsx';
 import { Referencial } from '@/types/referenciales'; // Asegúrate de que la ruta sea correcta
@@ -54,21 +55,28 @@ interface ReferencialWithRelations extends Omit<Referencial, 'conservador'> {
   };
 }
 
+// In Next.js, page.tsx components receive searchParams as a prop
+// But it's better to use the useSearchParams hook in client components
 interface PageProps {
-  searchParams?: {
-    query?: string;
-    page?: string;
-  };
+  searchParams?: { [key: string]: string | string[] | undefined };
 }
 
 export default function Page({ searchParams }: PageProps) {
-  // Get the query and page parameters from searchParams with proper type safety
-  const queryParam = searchParams?.query || '';
-  const pageParam = Number(searchParams?.page) || 1;
+  // Use the hook to access search params client-side
+  const searchParamsHook = useSearchParams();
+  
+  // Get initial values from props (server-side) or hook (client-side)
+  const queryParam = 
+    searchParamsHook?.get('query') || 
+    (typeof searchParams?.query === 'string' ? searchParams.query : '');
+    
+  const pageParam = 
+    Number(searchParamsHook?.get('page')) || 
+    (typeof searchParams?.page === 'string' ? Number(searchParams.page) : 1);
 
   // Initialize state with URL parameters
   const [query, setQuery] = useState<string>(queryParam);
-  const [currentPage, setCurrentPage] = useState<number>(pageParam);
+  const [currentPage, setCurrentPage] = useState<number>(pageParam || 1);
   const [referenciales, setReferenciales] = useState<ReferencialWithRelations[]>([]);
   const [totalPages, setTotalPages] = useState<number>(0);
 
@@ -76,18 +84,18 @@ export default function Page({ searchParams }: PageProps) {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Get parameters directly from searchParams
-        const queryParam = searchParams?.query || '';
-        const pageParam = Number(searchParams?.page) || 1;
+        // Get the current values from the URL using the hook
+        const currentQuery = searchParamsHook?.get('query') || '';
+        const currentPage = Number(searchParamsHook?.get('page')) || 1;
         
         // Update state with the current URL parameters
-        setQuery(queryParam);
-        setCurrentPage(pageParam);
+        setQuery(currentQuery);
+        setCurrentPage(currentPage);
         
-        console.log(`Fetching data with query: "${queryParam}", page: ${pageParam}`);
+        console.log(`Fetching data with query: "${currentQuery}", page: ${currentPage}`);
         
         // Make sure we're passing valid values and handle potential null/undefined
-        const data = await fetchFilteredReferenciales(queryParam, pageParam);
+        const data = await fetchFilteredReferenciales(currentQuery, currentPage);
         
         // Verificar que los datos sean válidos antes de actualizar el estado
         if (data && Array.isArray(data)) {
@@ -97,7 +105,7 @@ export default function Page({ searchParams }: PageProps) {
           setReferenciales([]);
         }
         
-        const pages = await fetchReferencialesPages(queryParam);
+        const pages = await fetchReferencialesPages(currentQuery);
         setTotalPages(typeof pages === 'number' ? pages : 1);
       } catch (error) {
         console.error('Error al cargar datos:', error);
@@ -107,7 +115,7 @@ export default function Page({ searchParams }: PageProps) {
     };
     
     fetchData();
-  }, [searchParams]);
+  }, [searchParamsHook]); // React to changes in searchParams hook
 
   const handleExport = () => {
     // Convertir el formato si es necesario antes de exportar
