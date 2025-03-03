@@ -27,7 +27,7 @@ const nextConfig = {
     // Mejora la consistencia de hidratación
     optimizeCss: true,
     // Previene errores de hidratación
-    scrollRestoration: true,
+    scrollRestoration: false, // Cambia a false para probar
   },
   // Configuración para mejor manejo de SSR
   compiler: {
@@ -82,24 +82,30 @@ const nextConfig = {
       .map(([key, values]) => `${key} ${Array.from(new Set(values)).join(' ')}`)
       .join('; ');
 
-    return [{
-      source: '/:path*',
-      headers: [
+      return [
         {
-          key: 'Content-Security-Policy',
-          value: cspString
+          source: '/:path*',
+          headers: [
+            { key: 'Content-Security-Policy', value: cspString },
+            { key: 'X-Content-Type-Options', value: 'nosniff' },
+            { key: 'X-Frame-Options', value: 'SAMEORIGIN' },
+            { key: 'Vary', value: 'Accept' }, // Mejora compatibilidad con respuestas dinámicas
+          ],
         },
         {
-          key: 'X-Content-Type-Options',
-          value: 'nosniff'
+          source: '/dashboard/referenciales',
+          headers: [
+            { key: 'Cache-Control', value: 'no-store, no-cache, must-revalidate' }, // Evita caché en la paginación
+          ],
         },
         {
-          key: 'X-Frame-Options',
-          value: 'SAMEORIGIN'
-        }
-      ]
-    }];
-  }
-};
+          source: '/_next/static/:path*', // Recursos estáticos
+          headers: [
+            { key: 'Cache-Control', value: 'public, max-age=31536000, immutable' }, // Cachea recursos estáticos por un año
+          ],
+        },
+      ];
+    },
+  };
 
 module.exports = nextConfig;
