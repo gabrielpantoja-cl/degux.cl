@@ -11,7 +11,6 @@ import { fetchReferencialesPages, fetchFilteredReferenciales } from '@/lib/refer
 import { exportReferencialesToXlsx } from '@/lib/exportToXlsx';
 import { Referencial } from '@/types/referenciales';
 
-// Definimos un tipo específico para las claves exportables
 type ExportableKeys =
   | 'cbr'
   | 'fojas'
@@ -26,7 +25,6 @@ type ExportableKeys =
   | 'observaciones'
   | 'conservadorId';
 
-// Actualizamos VISIBLE_HEADERS para usar ExportableKeys
 const VISIBLE_HEADERS: { key: ExportableKeys; label: string }[] = [
   { key: 'cbr', label: 'CBR' },
   { key: 'fojas', label: 'Fojas' },
@@ -42,7 +40,6 @@ const VISIBLE_HEADERS: { key: ExportableKeys; label: string }[] = [
   { key: 'conservadorId', label: 'ID Conservador' },
 ];
 
-// Definimos un tipo específico para los datos que devuelve fetchFilteredReferenciales
 interface ReferencialWithRelations extends Omit<Referencial, 'conservador'> {
   user: {
     name: string | null;
@@ -54,7 +51,6 @@ interface ReferencialWithRelations extends Omit<Referencial, 'conservador'> {
   };
 }
 
-// Actualizamos PageProps para que searchParams pueda ser una Promise
 interface PageProps {
   searchParams?: Promise<{ query?: string; page?: string }>;
 }
@@ -68,18 +64,15 @@ export default function Page({ searchParams }: PageProps) {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Resolvemos searchParams si es una Promise
         const resolvedSearchParams = await searchParams;
         const queryParam = resolvedSearchParams?.query || '';
         const pageParam = Number(resolvedSearchParams?.page) || 1;
 
-        // Actualizamos el estado con los parámetros resueltos
         setQuery(queryParam);
         setCurrentPage(pageParam);
 
         console.log(`Fetching data with query: "${queryParam}", page: ${pageParam}`);
 
-        // Obtenemos los datos filtrados
         const data = await fetchFilteredReferenciales(queryParam, pageParam);
 
         if (data && Array.isArray(data)) {
@@ -89,7 +82,6 @@ export default function Page({ searchParams }: PageProps) {
           setReferenciales([]);
         }
 
-        // Obtenemos el total de páginas
         const pages = await fetchReferencialesPages(queryParam);
         setTotalPages(typeof pages === 'number' ? pages : 1);
       } catch (error) {
