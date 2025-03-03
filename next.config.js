@@ -22,16 +22,12 @@ const nextConfig = {
     GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
     NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
   },
-  // Optimizaciones para SSR
   experimental: {
-    // Mejora la consistencia de hidratación
     optimizeCss: true,
     // Previene errores de hidratación
     scrollRestoration: false, // Cambia a false para probar
   },
-  // Configuración para mejor manejo de SSR
   compiler: {
-    // Elimina datos innecesarios en producción
     removeConsole: process.env.NODE_ENV === 'production',
   },
   async headers() {
@@ -77,7 +73,6 @@ const nextConfig = {
       'frame-src': ["'self'", "https://accounts.google.com"]
     };
 
-    // Convert directives object to string
     const cspString = Object.entries(cspDirectives)
       .map(([key, values]) => `${key} ${Array.from(new Set(values)).join(' ')}`)
       .join('; ');
