@@ -9,21 +9,21 @@ import { ReferencialesTableSkeleton } from '@/components/ui/skeletons';
 import { Suspense, useState, useEffect } from 'react';
 import { fetchReferencialesPages, fetchFilteredReferenciales } from '@/lib/referenciales';
 import { exportReferencialesToXlsx } from '@/lib/exportToXlsx';
-import { Referencial } from '@/types/referenciales'; // Asegúrate de que la ruta sea correcta
+import { Referencial } from '@/types/referenciales';
 
 // Definimos un tipo específico para las claves exportables
-type ExportableKeys = 
-  | 'cbr' 
-  | 'fojas' 
-  | 'numero' 
-  | 'anio' 
-  | 'predio' 
-  | 'comuna' 
-  | 'rol' 
-  | 'fechaescritura' 
-  | 'monto' 
-  | 'superficie' 
-  | 'observaciones' 
+type ExportableKeys =
+  | 'cbr'
+  | 'fojas'
+  | 'numero'
+  | 'anio'
+  | 'predio'
+  | 'comuna'
+  | 'rol'
+  | 'fechaescritura'
+  | 'monto'
+  | 'superficie'
+  | 'observaciones'
   | 'conservadorId';
 
 // Actualizamos VISIBLE_HEADERS para usar ExportableKeys
@@ -39,7 +39,7 @@ const VISIBLE_HEADERS: { key: ExportableKeys; label: string }[] = [
   { key: 'monto', label: 'Monto ($)' },
   { key: 'superficie', label: 'Superficie (m²)' },
   { key: 'observaciones', label: 'Observaciones' },
-  { key: 'conservadorId', label: 'ID Conservador' }
+  { key: 'conservadorId', label: 'ID Conservador' },
 ];
 
 // Definimos un tipo específico para los datos que devuelve fetchFilteredReferenciales
@@ -54,49 +54,42 @@ interface ReferencialWithRelations extends Omit<Referencial, 'conservador'> {
   };
 }
 
+// Actualizamos PageProps para que searchParams pueda ser una Promise
 interface PageProps {
-  searchParams?: {
-    query?: string;
-    page?: string;
-  };
+  searchParams?: Promise<{ query?: string; page?: string }>;
 }
 
 export default function Page({ searchParams }: PageProps) {
-  // Get the query and page parameters from searchParams with proper type safety
-  const queryParam = searchParams?.query || '';
-  const pageParam = Number(searchParams?.page) || 1;
-
-  // Initialize state with URL parameters
-  const [query, setQuery] = useState<string>(queryParam);
-  const [currentPage, setCurrentPage] = useState<number>(pageParam);
+  const [query, setQuery] = useState<string>('');
+  const [currentPage, setCurrentPage] = useState<number>(1);
   const [referenciales, setReferenciales] = useState<ReferencialWithRelations[]>([]);
   const [totalPages, setTotalPages] = useState<number>(0);
 
-  // In app/dashboard/referenciales/page.tsx
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Get parameters directly from searchParams
-        const queryParam = searchParams?.query || '';
-        const pageParam = Number(searchParams?.page) || 1;
-        
-        // Update state with the current URL parameters
+        // Resolvemos searchParams si es una Promise
+        const resolvedSearchParams = await searchParams;
+        const queryParam = resolvedSearchParams?.query || '';
+        const pageParam = Number(resolvedSearchParams?.page) || 1;
+
+        // Actualizamos el estado con los parámetros resueltos
         setQuery(queryParam);
         setCurrentPage(pageParam);
-        
+
         console.log(`Fetching data with query: "${queryParam}", page: ${pageParam}`);
-        
-        // Make sure we're passing valid values and handle potential null/undefined
+
+        // Obtenemos los datos filtrados
         const data = await fetchFilteredReferenciales(queryParam, pageParam);
-        
-        // Verificar que los datos sean válidos antes de actualizar el estado
+
         if (data && Array.isArray(data)) {
           setReferenciales(data as ReferencialWithRelations[]);
         } else {
           console.error('Datos de referenciales inválidos:', data);
           setReferenciales([]);
         }
-        
+
+        // Obtenemos el total de páginas
         const pages = await fetchReferencialesPages(queryParam);
         setTotalPages(typeof pages === 'number' ? pages : 1);
       } catch (error) {
@@ -105,15 +98,12 @@ export default function Page({ searchParams }: PageProps) {
         setTotalPages(1);
       }
     };
-    
+
     fetchData();
   }, [searchParams]);
 
   const handleExport = () => {
-    // Convertir el formato si es necesario antes de exportar
-    const exportableData = referenciales.map(ref => {
-      // Extrae solo las propiedades necesarias para exportar
-      // Ignora las propiedades no utilizadas con _
+    const exportableData = referenciales.map((ref) => {
       const { conservador, ...rest } = ref;
       return {
         ...rest,
@@ -121,13 +111,12 @@ export default function Page({ searchParams }: PageProps) {
         conservadorComuna: conservador?.comuna || '',
       };
     });
-    
+
     exportReferencialesToXlsx(exportableData, VISIBLE_HEADERS);
   };
 
-  // Create a unique key for the table component based on current page and query
   const tableKey = `table-${currentPage}-${query}`;
-  
+
   return (
     <Suspense fallback={<ReferencialesTableSkeleton />}>
       <div className="w-full relative">
@@ -138,18 +127,17 @@ export default function Page({ searchParams }: PageProps) {
           <Search placeholder="Buscar referencial..." />
           <CreateReferencial />
         </div>
-        
-        {/* Force table to re-mount when page or query changes */}
+
         <div key={tableKey}>
           <Table query={query} currentPage={currentPage} />
         </div>
-        
+
         <div className="mt-5 flex w-full justify-center">
           <Pagination totalPages={totalPages} />
         </div>
-        
-        <button 
-          onClick={handleExport} 
+
+        <button
+          onClick={handleExport}
           className="fixed bottom-4 right-4 mb-4 rounded bg-blue-200 px-3 py-1 text-xs text-blue-700 hover:bg-blue-300 z-[8888]"
         >
           Exportar a XLSX
