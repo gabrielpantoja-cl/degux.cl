@@ -55,51 +55,59 @@ interface ReferencialWithRelations extends Omit<Referencial, 'conservador'> {
 }
 
 interface PageProps {
-  searchParams?: Promise<{
+  searchParams?: {
     query?: string;
     page?: string;
-  }>;
+  };
 }
 
 export default function Page({ searchParams }: PageProps) {
-  const [query, setQuery] = useState<string>('');
-  const [currentPage, setCurrentPage] = useState<number>(1);
+  // Get the query and page parameters from searchParams with proper type safety
+  const queryParam = searchParams?.query || '';
+  const pageParam = Number(searchParams?.page) || 1;
+
+  // Initialize state with URL parameters
+  const [query, setQuery] = useState<string>(queryParam);
+  const [currentPage, setCurrentPage] = useState<number>(pageParam);
   const [referenciales, setReferenciales] = useState<ReferencialWithRelations[]>([]);
   const [totalPages, setTotalPages] = useState<number>(0);
 
   // In app/dashboard/referenciales/page.tsx
-useEffect(() => {
-  const fetchData = async () => {
-    try {
-      const params = await searchParams;
-      const queryParam = params?.query || '';
-      const pageParam = Number(params?.page) || 1;
-      
-      setQuery(queryParam);
-      setCurrentPage(pageParam);
-      
-      // Make sure we're passing valid values and handle potential null/undefined
-      const data = await fetchFilteredReferenciales(queryParam, pageParam);
-      
-      // Verificar que los datos sean válidos antes de actualizar el estado
-      if (data && Array.isArray(data)) {
-        setReferenciales(data as ReferencialWithRelations[]);
-      } else {
-        console.error('Datos de referenciales inválidos:', data);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        // Get parameters directly from searchParams
+        const queryParam = searchParams?.query || '';
+        const pageParam = Number(searchParams?.page) || 1;
+        
+        // Update state with the current URL parameters
+        setQuery(queryParam);
+        setCurrentPage(pageParam);
+        
+        console.log(`Fetching data with query: "${queryParam}", page: ${pageParam}`);
+        
+        // Make sure we're passing valid values and handle potential null/undefined
+        const data = await fetchFilteredReferenciales(queryParam, pageParam);
+        
+        // Verificar que los datos sean válidos antes de actualizar el estado
+        if (data && Array.isArray(data)) {
+          setReferenciales(data as ReferencialWithRelations[]);
+        } else {
+          console.error('Datos de referenciales inválidos:', data);
+          setReferenciales([]);
+        }
+        
+        const pages = await fetchReferencialesPages(queryParam);
+        setTotalPages(typeof pages === 'number' ? pages : 1);
+      } catch (error) {
+        console.error('Error al cargar datos:', error);
         setReferenciales([]);
+        setTotalPages(1);
       }
-      
-      const pages = await fetchReferencialesPages(queryParam);
-      setTotalPages(typeof pages === 'number' ? pages : 1);
-    } catch (error) {
-      console.error('Error al cargar datos:', error);
-      setReferenciales([]);
-      setTotalPages(1);
-    }
-  };
-  
-  fetchData();
-}, [searchParams]);
+    };
+    
+    fetchData();
+  }, [searchParams]);
 
   const handleExport = () => {
     // Convertir el formato si es necesario antes de exportar
@@ -117,6 +125,9 @@ useEffect(() => {
     exportReferencialesToXlsx(exportableData, VISIBLE_HEADERS);
   };
 
+  // Create a unique key for the table component based on current page and query
+  const tableKey = `table-${currentPage}-${query}`;
+  
   return (
     <Suspense fallback={<ReferencialesTableSkeleton />}>
       <div className="w-full relative">
@@ -127,16 +138,20 @@ useEffect(() => {
           <Search placeholder="Buscar referencial..." />
           <CreateReferencial />
         </div>
-        <Suspense key={query + currentPage} fallback={<ReferencialesTableSkeleton />}>
+        
+        {/* Force table to re-mount when page or query changes */}
+        <div key={tableKey}>
           <Table query={query} currentPage={currentPage} />
-        </Suspense>
+        </div>
+        
         <div className="mt-5 flex w-full justify-center">
           <Pagination totalPages={totalPages} />
         </div>
+        
         <button 
           onClick={handleExport} 
           className="fixed bottom-4 right-4 mb-4 rounded bg-blue-200 px-3 py-1 text-xs text-blue-700 hover:bg-blue-300 z-[8888]"
-          >
+        >
           Exportar a XLSX
         </button>
       </div>
