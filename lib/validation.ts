@@ -16,6 +16,25 @@ export const REQUIRED_FIELDS = [
   'rolAvaluo'
 ];
 
+// Mensajes de error amigables para cada campo
+const fieldLabels: Record<string, string> = {
+  fojas: 'Fojas',
+  numero: 'Número',
+  anno: 'Año',
+  cbr: 'Conservador de Bienes Raíces',
+  comuna: 'Comuna',
+  fechaEscritura: 'Fecha de escritura',
+  latitud: 'Latitud',
+  longitud: 'Longitud',
+  predio: 'Predio',
+  vendedor: 'Vendedor',
+  comprador: 'Comprador',
+  superficie: 'Superficie',
+  monto: 'Monto',
+  rolAvaluo: 'Rol de Avalúo',
+  userId: 'Usuario'
+};
+
 export const validateReferencial = (formData: FormData): {
   isValid: boolean;
   errors: { [key: string]: string[] };
@@ -25,7 +44,7 @@ export const validateReferencial = (formData: FormData): {
   const userId = formData.get('userId');
 
   if (!userId) {
-    errors['userId'] = ['Usuario no autenticado'];
+    errors['userId'] = ['Se requiere un usuario autenticado para crear un referencial'];
     return {
       isValid: false,
       errors,
@@ -35,35 +54,85 @@ export const validateReferencial = (formData: FormData): {
 
   // Validación de campos requeridos
   REQUIRED_FIELDS.forEach(field => {
-    if (!formData.get(field)) {
-      errors[field] = ['Este campo es requerido'];
+    const value = formData.get(field);
+    if (!value || (typeof value === 'string' && value.trim() === '')) {
+      errors[field] = [`El campo ${fieldLabels[field] || field} es obligatorio`];
     }
   });
 
   // Validación de fojas
   const fojas = formData.get('fojas') as string;
-  if (fojas && !/^\d+[vV]?$/.test(fojas)) {
-    errors['fojas'] = ['El campo fojas debe ser un número, un número seguido de "v" o "V" (con o sin espacio), o los tipos "vta" y "vuelta"'];
+  if (fojas && !/^[0-9]+(\s?([vV](?:uelta)?|[vV]ta)?)?$/.test(fojas)) {
+    errors['fojas'] = [
+      'El formato de Fojas es incorrecto',
+      'Debe ser un número, opcionalmente seguido de "v", "V", "vta" o "vuelta"'
+    ];
   }
 
   // Validación de números
-  const numericalValidations = {
-    latitud: { value: parseFloat(formData.get('latitud') as string), message: 'Latitud inválida' },
-    longitud: { value: parseFloat(formData.get('longitud') as string), message: 'Longitud inválida' },
-    superficie: { value: parseFloat(formData.get('superficie') as string), min: 0, message: 'Superficie inválida' },
-    monto: { value: parseFloat(formData.get('monto') as string), min: 0, message: 'Monto inválido' }
-  };
+  if (formData.get('numero') && isNaN(Number(formData.get('numero')))) {
+    errors['numero'] = ['El Número debe ser un valor numérico'];
+  }
 
-  Object.entries(numericalValidations).forEach(([field, validation]) => {
-    if (isNaN(validation.value) || ('min' in validation && validation.value <= validation.min)) {
-      errors[field] = [validation.message];
+  if (formData.get('anno') && isNaN(Number(formData.get('anno')))) {
+    errors['anno'] = ['El Año debe ser un valor numérico'];
+  }
+
+  // Validación de coordenadas geográficas
+  const latitud = formData.get('latitud') as string;
+  if (latitud) {
+    const latValue = parseFloat(latitud);
+    if (isNaN(latValue)) {
+      errors['latitud'] = ['La Latitud debe ser un valor numérico'];
+    } else if (latValue < -90 || latValue > 90) {
+      errors['latitud'] = ['La Latitud debe estar entre -90 y 90 grados'];
     }
-  });
+  }
+
+  const longitud = formData.get('longitud') as string;
+  if (longitud) {
+    const lngValue = parseFloat(longitud);
+    if (isNaN(lngValue)) {
+      errors['longitud'] = ['La Longitud debe ser un valor numérico'];
+    } else if (lngValue < -180 || lngValue > 180) {
+      errors['longitud'] = ['La Longitud debe estar entre -180 y 180 grados'];
+    }
+  }
+
+  // Validación de superficie
+  const superficie = formData.get('superficie') as string;
+  if (superficie) {
+    const supValue = parseFloat(superficie);
+    if (isNaN(supValue)) {
+      errors['superficie'] = ['La Superficie debe ser un valor numérico'];
+    } else if (supValue <= 0) {
+      errors['superficie'] = ['La Superficie debe ser mayor que cero'];
+    }
+  }
+
+  // Validación de monto
+  const monto = formData.get('monto') as string;
+  if (monto) {
+    const montoValue = parseFloat(monto);
+    if (isNaN(montoValue)) {
+      errors['monto'] = ['El Monto debe ser un valor numérico'];
+    } else if (montoValue <= 0) {
+      errors['monto'] = ['El Monto debe ser mayor que cero'];
+    }
+  }
 
   // Validación de fecha
   const fechaEscritura = formData.get('fechaEscritura') as string;
-  if (fechaEscritura && isNaN(Date.parse(fechaEscritura))) {
-    errors['fechaEscritura'] = ['Fecha de escritura inválida'];
+  if (fechaEscritura) {
+    if (isNaN(Date.parse(fechaEscritura))) {
+      errors['fechaEscritura'] = ['La Fecha de escritura no es válida'];
+    } else {
+      const date = new Date(fechaEscritura);
+      const now = new Date();
+      if (date > now) {
+        errors['fechaEscritura'] = ['La Fecha de escritura no puede ser futura'];
+      }
+    }
   }
 
   // Validación de campos de texto
@@ -71,13 +140,23 @@ export const validateReferencial = (formData: FormData): {
   textFields.forEach(field => {
     const value = formData.get(field) as string;
     if (value && value.trim().length === 0) {
-      errors[field] = ['Este campo no puede estar vacío'];
+      errors[field] = [`El campo ${fieldLabels[field] || field} no puede estar vacío`];
     }
   });
 
+  // Mensaje final
+  let message;
+  const errorCount = Object.keys(errors).length;
+  
+  if (errorCount > 0) {
+    message = errorCount === 1 
+      ? `Hay un error en el formulario. Por favor corrígelo antes de continuar.`
+      : `Hay ${errorCount} errores en el formulario. Por favor corrígelos antes de continuar.`;
+  }
+
   return {
-    isValid: Object.keys(errors).length === 0,
+    isValid: errorCount === 0,
     errors,
-    message: Object.keys(errors).length > 0 ? 'Por favor complete todos los campos requeridos correctamente' : undefined
+    message
   };
 };
