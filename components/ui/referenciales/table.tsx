@@ -1,26 +1,12 @@
 "use client";
 
 import { formatDateToLocal } from '@/lib/utils';
-import { fetchFilteredReferenciales } from '@/lib/referenciales';
-import { useState, useEffect } from 'react';
 import { Referencial } from '@/types/referenciales';
 
 const SENSITIVE_FIELDS = ['comprador', 'vendedor'];
 const isSensitiveField = (key: string) => SENSITIVE_FIELDS.includes(key);
 
-interface ReferencialWithRelations extends Omit<Referencial, 'conservador'> {
-  user: {
-    name: string | null;
-    email: string;
-  };
-  conservador: {
-    id: string;
-    nombre: string;
-    comuna: string;
-  } | null;
-}
-
-const formatFieldValue = (key: string, value: any, referencial?: ReferencialWithRelations) => {
+const formatFieldValue = (key: string, value: any, referencial: Referencial) => {
   if (isSensitiveField(key)) {
     return '• • • • •';
   }
@@ -31,7 +17,7 @@ const formatFieldValue = (key: string, value: any, referencial?: ReferencialWith
   if ((key === 'monto' || key === 'superficie') && value !== undefined) {
     return value.toLocaleString('es-CL');
   }
-  if (key === 'conservador' && referencial?.conservador) {
+  if (key === 'conservador' && referencial.conservador) {
     return referencial.conservador.nombre;
   }
   return value || '';
@@ -40,6 +26,7 @@ const formatFieldValue = (key: string, value: any, referencial?: ReferencialWith
 interface ReferencialTableProps {
   query: string;
   currentPage: number;
+  referenciales: Referencial[]; // Usamos Referencial directamente
 }
 
 type BaseKeys = keyof Omit<Referencial, 'user' | 'conservador'>;
@@ -67,64 +54,18 @@ const VISIBLE_HEADERS = ALL_TABLE_HEADERS.filter(
 export default function ReferencialesTable({
   query,
   currentPage,
+  referenciales, // Recibe los datos como prop
 }: ReferencialTableProps) {
-  const [referenciales, setReferenciales] = useState<ReferencialWithRelations[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-
-  useEffect(() => {
-    setLoading(true);
-    console.log(`Fetching data for page ${currentPage} with query "${query}"`);
-    
-    const fetchData = async () => {
-      try {
-        const safeQuery = typeof query === 'string' ? query : '';
-        const safePage = typeof currentPage === 'number' && !isNaN(currentPage) ? currentPage : 1;
-        
-        console.log(`Calling fetchFilteredReferenciales with query="${safeQuery}", page=${safePage}`);
-        const data = await fetchFilteredReferenciales(safeQuery, safePage);
-        
-        if (data && Array.isArray(data)) {
-          const validReferenciales = data.filter(ref => 
-            ref && typeof ref === 'object' && 'id' in ref
-          ) as ReferencialWithRelations[];
-          
-          console.log(`Received ${validReferenciales.length} referenciales for page ${safePage}`);
-          setReferenciales(validReferenciales);
-        } else {
-          console.error('Los datos recibidos no son un array:', data);
-          setReferenciales([]);
-        }
-      } catch (error) {
-        console.error('Error al cargar referenciales:', error);
-        setReferenciales([]);
-      } finally {
-        setLoading(false);
-      }
-    };
-    
-    fetchData();
-  }, [query, currentPage]); 
-
   return (
     <div className="mt-6 flow-root">
       <div className="inline-block min-w-full align-middle">
-        {/* Show current page information */}
+        {/* Mostrar información de la página actual */}
         <div className="text-sm text-gray-500 mb-2">
-          {loading ? (
-            "Cargando datos..."
-          ) : (
-            <>
-              Mostrando página {currentPage} {query ? `con filtro "${query}"` : ""}
-            </>
-          )}
+          Mostrando página {currentPage} {query ? `con filtro "${query}"` : ""}
         </div>
         
         <div className="rounded-lg bg-gray-50 p-2 md:pt-0">
-          {loading ? (
-            <div className="flex justify-center items-center py-10">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
-            </div>
-          ) : referenciales.length === 0 ? (
+          {referenciales.length === 0 ? (
             <div className="text-center py-10">
               <p className="text-gray-500">No hay resultados para mostrar</p>
               {query && <p className="text-sm text-gray-400 mt-2">Prueba con una búsqueda diferente</p>}

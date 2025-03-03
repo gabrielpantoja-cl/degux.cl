@@ -40,17 +40,6 @@ const VISIBLE_HEADERS: { key: ExportableKeys; label: string }[] = [
   { key: 'conservadorId', label: 'ID Conservador' },
 ];
 
-interface ReferencialWithRelations extends Omit<Referencial, 'conservador'> {
-  user: {
-    name: string | null;
-    email: string;
-  };
-  conservador: {
-    nombre: string;
-    comuna: string;
-  };
-}
-
 interface PageProps {
   searchParams?: Promise<{ query?: string; page?: string }>;
 }
@@ -58,7 +47,7 @@ interface PageProps {
 export default function Page({ searchParams }: PageProps) {
   const [query, setQuery] = useState<string>('');
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [referenciales, setReferenciales] = useState<ReferencialWithRelations[]>([]);
+  const [referenciales, setReferenciales] = useState<Referencial[]>([]);
   const [totalPages, setTotalPages] = useState<number>(0);
 
   useEffect(() => {
@@ -76,7 +65,7 @@ export default function Page({ searchParams }: PageProps) {
         const data = await fetchFilteredReferenciales(queryParam, pageParam);
 
         if (data && Array.isArray(data)) {
-          setReferenciales(data as ReferencialWithRelations[]);
+          setReferenciales(data as Referencial[]);
         } else {
           console.error('Datos de referenciales inválidos:', data);
           setReferenciales([]);
@@ -121,7 +110,8 @@ export default function Page({ searchParams }: PageProps) {
         </div>
 
         <div key={tableKey}>
-          <Table query={query} currentPage={currentPage} />
+          {/* Pasa referenciales como prop */}
+          <Table query={query} currentPage={currentPage} referenciales={referenciales} />
         </div>
 
         <div className="mt-5 flex w-full justify-center">
