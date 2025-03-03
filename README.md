@@ -1,5 +1,5 @@
 # Reference Database for Appraisal 📊
-Project developed with Next.js 14 App Router
+Project developed with Next.js 15.2.0 App Router
 
 ## Project Status
 🚧 **Under active development** 🚧
@@ -47,13 +47,10 @@ In the initial phase, we focus on collaboratively creating the database 🤝.
 ## Known Issues 🐛
 - On mobile view, next image does not optimize the home image properly 📱
 - When creating a new reference, a duplicate success message appears 📨
-- Post-login redirection needs optimization 🔄
-- The creation form needs improved validation ✅
+- **Pagination in the Referenciales table is broken in production.  Navigating between pages does not update the table UI. This is a known issue, and we are actively working to resolve it. 🚧**
 
 ## In Development 🚀
 - Implementation of robust error handling 🛠️
-- Improvement of form validation system 📝
-- Optimization of the authentication flow 🔄
 - Caching system to improve performance ⚡
 
 ## Database 🗄️
