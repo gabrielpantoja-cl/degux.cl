@@ -68,13 +68,16 @@ const FormFields: React.FC<FormFieldsProps> = ({ state, currentUser }) => {
       />
 
       <Input
-        label="CBR"
+        label="Conservador de Bienes Raíces (CBR)"
         id="cbr"
         name="cbr"
-        placeholder="Escribe el nombre del Conservador de Bienes Raíces"
+        placeholder="Escribe el nombre del Conservador (ej. Nueva Imperial)"
+        title="Ingrese el nombre del Conservador de Bienes Raíces, no su ID"
         error={state.errors.cbr}
         required={true}
       />
+      
+      {/* El campo conservadorId ya no se muestra al usuario directamente */}
 
       <Input
         label="Comuna"
