@@ -207,12 +207,11 @@ export default function CsvUploader({ users }: CsvUploaderProps) {
           
           <p className="mt-2 text-sm text-gray-600">
             Descarga la plantilla, completa los datos y súbela para registrar múltiples referenciales.
-            Los campos lat y lng son las coordenadas geográficas en grados decimales.
+            Los campos lat y lng son las coordenadas geográficas en grados decimales, mismo formato que usa SII.
           </p>
 
           <p className="mt-2 text-sm text-blue-600">
-            Nota: En el campo &quot;cbr&quot; ingresa el nombre del conservador (ej. &quot;Nueva Imperial&quot;).
-            No es necesario incluir el ID del conservador.
+            Nota: El formato de la fecha de la escritura debe ser YYYY-MM-DD (Ej: &quot;2024-03-16&quot;).
           </p>
         </div>
 
