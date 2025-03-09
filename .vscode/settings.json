@@ -9,5 +9,6 @@
   "typescript.enablePromptUseWorkspaceTsdk": true,
   "tailwindCSS.experimental.classRegex": [
     ["cva\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"]
-  ]
+  ],
+  "CodeGPT.apiKey": "Ollama"
 }

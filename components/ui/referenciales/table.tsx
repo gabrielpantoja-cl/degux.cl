@@ -26,7 +26,7 @@ const formatFieldValue = (key: string, value: any, referencial: Referencial) => 
 interface ReferencialTableProps {
   query: string;
   currentPage: number;
-  referenciales: Referencial[]; // Usamos Referencial directamente
+  referenciales: Referencial[]; 
 }
 
 type BaseKeys = keyof Omit<Referencial, 'user' | 'conservador'>;
@@ -54,7 +54,7 @@ const VISIBLE_HEADERS = ALL_TABLE_HEADERS.filter(
 export default function ReferencialesTable({
   query,
   currentPage,
-  referenciales, // Recibe los datos como prop
+  referenciales, 
 }: ReferencialTableProps) {
   return (
     <div className="mt-6 flow-root">
