@@ -41,19 +41,14 @@ export async function fetchLatestReferenciales() {
 
 export async function fetchFilteredReferenciales(query: string | null | undefined, currentPage: number | null | undefined) {
   noStore();
-  
-  // Validación exhaustiva y sanitización de parámetros para evitar el error de null payload
+
   const safeQuery = query != null && typeof query === 'string' ? query : '';
-  
-  // Aseguramos que currentPage sea un número válido
   const page = currentPage != null ? Number(currentPage) : 1;
   const safePage = Number.isNaN(page) ? 1 : Math.max(1, page);
   const offset = (safePage - 1) * ITEMS_PER_PAGE;
 
   try {
-    // Construir whereCondition con tipos correctos de Prisma
-    // Solo incluir la condición OR si hay un query válido
-    const whereCondition: Prisma.referencialesWhereInput = safeQuery.trim() 
+    const whereCondition: Prisma.referencialesWhereInput = safeQuery.trim()
       ? {
           OR: [
             { comuna: { contains: safeQuery, mode: 'insensitive' } },
@@ -61,15 +56,12 @@ export async function fetchFilteredReferenciales(query: string | null | undefine
             { comprador: { contains: safeQuery, mode: 'insensitive' } },
             { vendedor: { contains: safeQuery, mode: 'insensitive' } }
           ]
-        } 
+        }
       : {};
 
-    // Ejecutar consulta con manejo de errores mejorado
     const referenciales = await prisma.referenciales.findMany({
       where: whereCondition,
-      orderBy: {
-        fechaescritura: 'desc',
-      },
+      orderBy: { fechaescritura: 'desc' },
       take: ITEMS_PER_PAGE,
       skip: offset,
       include: {
@@ -81,7 +73,7 @@ export async function fetchFilteredReferenciales(query: string | null | undefine
         },
         conservador: {
           select: {
-            id: true, // Importante: incluir el id para que coincida con el tipo esperado
+            id: true,
             nombre: true,
             comuna: true,
           },
@@ -89,20 +81,18 @@ export async function fetchFilteredReferenciales(query: string | null | undefine
       },
     });
 
-    // Validar resultado
     if (!referenciales || !Array.isArray(referenciales)) {
-      console.error('Respuesta inesperada de la base de datos:', referenciales);
-      return []; // Devolver array vacío en caso de error
+      console.error('Unexpected database response:', referenciales);
+      return [];
     }
 
     return referenciales;
-
   } catch (error) {
-    console.error('Error en la base de datos:', error);
-    // Retornar array vacío en lugar de null para evitar errores al deserializar
+    console.error('Database error:', error);
     return [];
   }
 }
+
 
 export async function fetchReferencialesPages(query: string | null | undefined = '') {
   noStore();
