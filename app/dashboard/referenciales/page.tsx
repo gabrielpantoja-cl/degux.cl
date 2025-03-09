@@ -6,7 +6,7 @@ import Table from '@/components/ui/referenciales/table';
 import { CreateReferencial } from '@/components/ui/referenciales/buttons';
 import { lusitana } from '@/components/ui/fonts';
 import { ReferencialesTableSkeleton } from '@/components/ui/skeletons';
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, Suspense } from 'react'; // Importa Suspense
 import { fetchReferencialesPages, fetchFilteredReferenciales } from '@/lib/referenciales';
 import { exportReferencialesToXlsx } from '@/lib/exportToXlsx';
 import { Referencial } from '@/types/referenciales';
@@ -44,7 +44,7 @@ const VISIBLE_HEADERS: { key: ExportableKeys; label: string }[] = [
 export default function Page() {
   // Usar useSearchParams directamente para acceder a los parámetros de URL en tiempo real
   const searchParams = useSearchParams();
-  
+
   const [query, setQuery] = useState<string>('');
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [referenciales, setReferenciales] = useState<Referencial[]>([]);
@@ -63,17 +63,17 @@ export default function Page() {
   const fetchData = useCallback(async () => {
     setIsLoading(true);
     setError(null);
-    
+
     try {
       const { queryParam, pageParam } = getSearchParams();
-      
+
       console.log(`Fetching data with query: "${queryParam}", page: ${pageParam}`);
-      
+
       setQuery(queryParam);
       setCurrentPage(pageParam);
-      
+
       const data = await fetchFilteredReferenciales(queryParam, pageParam);
-      
+
       if (data && Array.isArray(data)) {
         setReferenciales(data as Referencial[]);
       } else {
@@ -81,7 +81,7 @@ export default function Page() {
         setReferenciales([]);
         setError('Los datos recibidos no tienen el formato esperado');
       }
-      
+
       const pages = await fetchReferencialesPages(queryParam);
       setTotalPages(typeof pages === 'number' ? pages : 1);
     } catch (error) {
@@ -116,49 +116,51 @@ export default function Page() {
   const contentKey = `referenciales-${currentPage}-${query}-${Date.now()}`;
 
   return (
-    <div className="w-full relative" key={contentKey}>
-      <div className="flex w-full items-center justify-between">
-        <h1 className={`${lusitana.className} text-2xl`}>Referenciales de Compraventas</h1>
-      </div>
-      
-      <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
-        <Search placeholder="Buscar referencial..." />
-        <CreateReferencial />
-      </div>
-
-      {isLoading ? (
-        <ReferencialesTableSkeleton />
-      ) : error ? (
-        <div className="mt-6 p-4 bg-red-50 text-red-700 rounded-md">
-          {error}
-          <button 
-            onClick={fetchData} 
-            className="ml-4 px-2 py-1 bg-red-100 rounded hover:bg-red-200"
-          >
-            Reintentar
-          </button>
+    <Suspense fallback={<ReferencialesTableSkeleton />}> {/* Envolver con Suspense */}
+      <div className="w-full relative" key={contentKey}>
+        <div className="flex w-full items-center justify-between">
+          <h1 className={`${lusitana.className} text-2xl`}>Referenciales de Compraventas</h1>
         </div>
-      ) : (
-        <>
-          <Table 
-            query={query} 
-            currentPage={currentPage} 
-            referenciales={referenciales} 
-          />
-          
-          <div className="mt-5 flex w-full justify-center">
-            <Pagination totalPages={totalPages} />
-          </div>
-        </>
-      )}
 
-      <button
-        onClick={handleExport}
-        className="fixed bottom-4 right-4 mb-4 rounded bg-blue-200 px-3 py-1 text-xs text-blue-700 hover:bg-blue-300 z-[8888]"
-        disabled={isLoading || referenciales.length === 0}
-      >
-        Exportar a XLSX
-      </button>
-    </div>
+        <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
+          <Search placeholder="Buscar referencial..." />
+          <CreateReferencial />
+        </div>
+
+        {isLoading ? (
+          <ReferencialesTableSkeleton />
+        ) : error ? (
+          <div className="mt-6 p-4 bg-red-50 text-red-700 rounded-md">
+            {error}
+            <button
+              onClick={fetchData}
+              className="ml-4 px-2 py-1 bg-red-100 rounded hover:bg-red-200"
+            >
+              Reintentar
+            </button>
+          </div>
+        ) : (
+          <>
+            <Table
+              query={query}
+              currentPage={currentPage}
+              referenciales={referenciales}
+            />
+
+            <div className="mt-5 flex w-full justify-center">
+              <Pagination totalPages={totalPages} />
+            </div>
+          </>
+        )}
+
+        <button
+          onClick={handleExport}
+          className="fixed bottom-4 right-4 mb-4 rounded bg-blue-200 px-3 py-1 text-xs text-blue-700 hover:bg-blue-300 z-[8888]"
+          disabled={isLoading || referenciales.length === 0}
+        >
+          Exportar a XLSX
+        </button>
+      </div>
+    </Suspense>
   );
 }
