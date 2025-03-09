@@ -10,5 +10,5 @@
   "tailwindCSS.experimental.classRegex": [
     ["cva\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"]
   ],
-  "CodeGPT.apiKey": "Ollama"
+  "CodeGPT.apiKey": "CodeGPT Plus Beta"
 }
