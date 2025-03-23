@@ -6,6 +6,7 @@ interface DeleteAccountResponse {
   success: boolean;
   message: string;
   error?: string;
+  recordCount?: number;
 }
 
 export const useDeleteAccount = () => {
@@ -15,11 +16,11 @@ export const useDeleteAccount = () => {
 
   const handleConfirmDelete = useCallback(async () => {
     if (!session?.user) {
-      toast.error('Sesión no válida');
+      toast.error('Debes iniciar sesión para realizar esta acción');
       return;
     }
 
-    const toastId = toast.loading('Eliminando cuenta...');
+    const toastId = toast.loading('Procesando eliminación de cuenta...');
     
     try {
       setIsDeleting(true);
@@ -32,14 +33,26 @@ export const useDeleteAccount = () => {
       const data: DeleteAccountResponse = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || 'Error al eliminar la cuenta');
+        if (response.status === 400 && data.error === 'HAS_ASSOCIATED_RECORDS') {
+          toast.error(
+            `No se puede eliminar tu cuenta. Tienes ${data.recordCount} registro(s) asociado(s). 
+            Por favor, elimínalos primero.`, 
+            { id: toastId, duration: 5000 }
+          );
+        } else {
+          throw new Error(data.message || 'Error al eliminar la cuenta');
+        }
+        return;
       }
 
-      toast.success('Cuenta eliminada correctamente', { id: toastId });
+      toast.success(data.message, { id: toastId });
       await signOut({ callbackUrl: '/' });
     } catch (error) {
       console.error('Error:', error);
-      toast.error('Error al eliminar la cuenta', { id: toastId });
+      toast.error(
+        error instanceof Error ? error.message : 'Error al eliminar la cuenta', 
+        { id: toastId }
+      );
     } finally {
       setIsDeleting(false);
       setShowModal(false);
@@ -48,7 +61,7 @@ export const useDeleteAccount = () => {
 
   const deleteAccount = () => {
     if (!session?.user) {
-      toast.error('Debes iniciar sesión');
+      toast.error('Debes iniciar sesión para realizar esta acción');
       return;
     }
     setShowModal(true);
