@@ -44,3 +44,29 @@ Referenciales.cl se reserva el derecho de modificar estos términos y condicione
 ## 6. Declaración de Buenas Prácticas
 
 Referenciales.cl fomenta el uso ético y responsable de la información pública, respetando la privacidad de los involucrados y promoviendo la transparencia en el mercado de bienes raíces en Chile. Como un proyecto de código abierto, invitamos a la comunidad a participar activamente en el desarrollo y mejora de la plataforma, asegurando que el conocimiento y la innovación sean compartidos para el beneficio colectivo.
+
+
+---
+
+## 7. Eliminación de Cuentas y Gestión de Datos
+
+### 7.1. Proceso de Eliminación
+Los usuarios tienen derecho a solicitar la eliminación de su cuenta en cualquier momento. Sin embargo, debido a la naturaleza colaborativa de Referenciales.cl, existen ciertas condiciones y procedimientos que deben seguirse:
+
+### 7.2. Gestión de Datos Existentes
+* 📊 Los usuarios que hayan contribuido con datos referenciales deberán transferir sus registros a otro usuario antes de que su cuenta pueda ser eliminada.
+* 🔄 Esta transferencia es necesaria para mantener la integridad y continuidad de la base de datos colaborativa.
+* ⚠️ No se procesará la eliminación de la cuenta hasta que todos los registros hayan sido transferidos o eliminados.
+
+### 7.3. Derechos y Responsabilidades
+* 🛡️ Referenciales.cl se reserva el derecho de retener o eliminar una cuenta si se considera que sus acciones pueden perjudicar a la plataforma o a otros usuarios.
+* 📝 Los datos aportados permanecerán en la plataforma incluso después de la eliminación de la cuenta, manteniendo su carácter colaborativo y de beneficio público.
+* ⚖️ La plataforma puede conservar cierta información por motivos legales o de auditoría, incluso después de la eliminación de la cuenta.
+
+### 7.4. Proceso de Transferencia
+1. El usuario debe identificar y notificar al nuevo responsable de sus registros
+2. Confirmar la transferencia a través de la plataforma
+3. Una vez completada la transferencia, solicitar la eliminación de la cuenta
+
+> **Nota:** La eliminación de una cuenta es irreversible. Asegúrate de haber transferido o respaldado toda la información necesaria antes de proceder.
+
