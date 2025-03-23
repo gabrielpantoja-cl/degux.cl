@@ -11,7 +11,7 @@ const ReferencialSchema = z.object({
   fojas: z.string().min(1, "Fojas es requerido").regex(/^[0-9]+[a-zA-Z]?$/, "Formato inválido - debe ser número seguido opcionalmente de letra"), // Acepta "157" o "157v"
   numero: z.number(),
   anno: z.number(),
-  cbr: z.string(), // Este campo ahora será el nombre del conservador
+  cbr: z.string(), 
   comuna: z.string(),
   fechaEscritura: z.string(),
   latitud: z.number(),
@@ -23,7 +23,7 @@ const ReferencialSchema = z.object({
   monto: z.number(),
   rolAvaluo: z.string(),
   observaciones: z.string().optional(),
-  conservadorId: z.string().optional(), // Ahora es opcional, ya que se derivará del cbr
+  conservadorId: z.string().optional(), 
 });
 
 export type State = {
@@ -67,7 +67,7 @@ export async function createReferencial(formData: FormData) {
     monto: Number(formData.get('monto')),
     rolAvaluo: formData.get('rolAvaluo'),
     observaciones: formData.get('observaciones') || undefined,
-    conservadorId: undefined, // Ya no lo obtenemos directamente del formulario
+    conservadorId: undefined, 
   });
 
   if (!validatedFields.success) {

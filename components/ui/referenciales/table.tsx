@@ -33,7 +33,7 @@ type BaseKeys = keyof Omit<Referencial, 'user' | 'conservador'>;
 type DisplayKeys = BaseKeys | 'conservador';
 
 const ALL_TABLE_HEADERS: { key: DisplayKeys, label: string }[] = [
-  { key: 'cbr', label: 'CBR' },
+  { key: 'conservador', label: 'Conservador' },
   { key: 'fojas', label: 'Fojas' },
   { key: 'numero', label: 'Número' },
   { key: 'anio', label: 'Año' },
@@ -44,7 +44,6 @@ const ALL_TABLE_HEADERS: { key: DisplayKeys, label: string }[] = [
   { key: 'monto', label: 'Monto ($)' },
   { key: 'superficie', label: 'Superficie (m²)' },
   { key: 'observaciones', label: 'Observaciones' },
-  { key: 'conservador', label: 'Conservador' },
 ];
 
 const VISIBLE_HEADERS = ALL_TABLE_HEADERS.filter(
