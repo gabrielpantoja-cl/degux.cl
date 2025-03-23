@@ -1,7 +1,12 @@
-// lib/hooks/useDeleteAccount.ts
 import { useState, useCallback } from 'react';
 import { signOut, useSession } from 'next-auth/react';
 import { toast } from 'react-hot-toast';
+
+interface DeleteAccountResponse {
+  success: boolean;
+  message: string;
+  error?: string;
+}
 
 export const useDeleteAccount = () => {
   const { data: session } = useSession();
@@ -19,12 +24,12 @@ export const useDeleteAccount = () => {
     try {
       setIsDeleting(true);
       
-      const response = await fetch('/api/auth/delete-account', {
+      const response = await fetch('/api/delete-account', {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' }
       });
 
-      const data = await response.json();
+      const data: DeleteAccountResponse = await response.json();
 
       if (!response.ok) {
         throw new Error(data.error || 'Error al eliminar la cuenta');
