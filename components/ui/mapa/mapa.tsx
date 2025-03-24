@@ -31,7 +31,7 @@ const SearchField = (): null => {
                 'accept-language': 'es',
                 countrycodes: 'cl',
             },
-            searchUrl: '/api/geocode', // Proxy endpoint
+            searchUrl: '/api/geocode', 
         });
 
         const searchControl = new (GeoSearchControl as any)({
@@ -47,7 +47,7 @@ const SearchField = (): null => {
             keepResult: false,
             maxMarkers: 1,
             marker: {
-                icon: redIcon // Usa el icono personalizado
+                icon: redIcon 
             }
         });
 
@@ -65,7 +65,6 @@ const Mapa = () => {
     const mapRef = useRef<Map | null>(null);
 
     useEffect(() => {
-        // Capturamos la referencia actual del mapa
         const map = mapRef.current;
         
         fetchReferencialesForMap()
@@ -88,7 +87,6 @@ const Mapa = () => {
                 console.error('Error fetching data: ', error);
             });
 
-        // Cleanup function usando la variable local
         return () => {
             if (map) {
                 map.remove();
@@ -99,8 +97,8 @@ const Mapa = () => {
     return (
         <div className="relative w-full">
             <MapContainer 
-                center={[-38.7445, -72.9507]}
-                zoom={13} 
+            center={[-33.4489, -70.6693]} // Coordenadas de Santiago de Chile
+            zoom={13} 
                 style={{ 
                     height: "70vh",    
                     width: "90%",      
