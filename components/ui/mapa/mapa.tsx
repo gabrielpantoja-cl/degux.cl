@@ -4,24 +4,22 @@ import { MapContainer, TileLayer, useMap } from 'react-leaflet';
 import { GeoSearchControl, OpenStreetMapProvider } from 'leaflet-geosearch';
 import 'leaflet/dist/leaflet.css';
 import 'leaflet-geosearch/dist/geosearch.css';
-import './mapa.css'; // Importa el archivo CSS personalizado
+import './mapa.css'; 
 import { fetchReferencialesForMap } from '@/lib/mapData';
 import { MapMarker, Point } from '@/components/ui/mapa/MapMarker';
-import LocationButton from '@/components/ui/mapa/LocationButton'; // Importa el componente LocationButton
-import { Icon, Map } from 'leaflet'; // Importa el tipo Map de leaflet
+import LocationButton from '@/components/ui/mapa/LocationButton'; 
+import { Icon, Map } from 'leaflet'; 
 
-// Configura el icono del marcador personalizado
 const redIcon = new Icon({
   iconUrl: '/images/marker-icon.png',
-  iconSize: [25, 41], // Tamaño del icono
-  iconAnchor: [12, 41], // Punto del icono que corresponde a la ubicación del marcador
-  popupAnchor: [1, -34], // Punto desde el cual se abrirá el popup relativo al icono
-  shadowUrl: '/images/marker-shadow.png', // Ruta a la sombra del marcador
-  shadowSize: [41, 41], // Tamaño de la sombra
-  shadowAnchor: [12, 41] // Punto del icono que corresponde a la ubicación de la sombra
+  iconSize: [25, 41], 
+  iconAnchor: [12, 41], 
+  popupAnchor: [1, -34], 
+  shadowUrl: '/images/marker-shadow.png', 
+  shadowSize: [41, 41], 
+  shadowAnchor: [12, 41] 
 });
 
-// Componente para el control de búsqueda
 const SearchField = (): null => {
     const map = useMap();
     
@@ -98,7 +96,7 @@ const Mapa = () => {
         <div className="relative w-full">
             <MapContainer 
             center={[-33.4489, -70.6693]} // Coordenadas de Santiago de Chile
-            zoom={13} 
+            zoom={10} 
                 style={{ 
                     height: "70vh",    
                     width: "90%",      
