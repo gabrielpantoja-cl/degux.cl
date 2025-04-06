@@ -12,6 +12,7 @@ const config = {
         primary: {
           DEFAULT: '#00204A',
         },
+        'primary-foreground': '#ffffff',
       },
       keyframes: {
         'accordion-down': {
