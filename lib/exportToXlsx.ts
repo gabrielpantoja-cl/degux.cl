@@ -17,11 +17,16 @@ export const exportReferencialesToXlsx = async (referenciales: referenciales[], 
   referenciales.forEach(referencial => {
     const row: { [key: string]: any } = {};
     headers.forEach(({ key }) => {
-      row[key as string] = referencial[key];
+      if (referencial.hasOwnProperty(key)) {
+        row[key as string] = referencial[key];
+      } else {
+        row[key as string] = '';
+      }
     });
     worksheet.addRow(row);
   });
 
-  // Guardar el archivo
-  await workbook.xlsx.writeFile('referenciales.xlsx');
+  // Generar el buffer del archivo
+  const buffer = await workbook.xlsx.writeBuffer();
+  return buffer;
 };

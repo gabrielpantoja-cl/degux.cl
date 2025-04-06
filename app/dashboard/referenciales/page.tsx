@@ -11,6 +11,7 @@ import { fetchReferencialesPages, fetchFilteredReferenciales } from '@/lib/refer
 import { exportReferencialesToXlsx } from '@/lib/exportToXlsx';
 import { Referencial } from '@/types/referenciales';
 import { useSearchParams } from 'next/navigation';
+import { saveAs } from 'file-saver';
 
 type ExportableKeys =
   | 'cbr'
@@ -92,14 +93,24 @@ function ReferencialesContent() {
     fetchData();
   }, [fetchData]);
 
-  const handleExport = () => {
+  const handleExport = async () => {
     const exportableData = referenciales.map((ref) => ({
       ...ref,
       conservadorNombre: ref.conservador?.nombre || '',
       conservadorComuna: ref.conservador?.comuna || '',
     }));
 
-    exportReferencialesToXlsx(exportableData, VISIBLE_HEADERS);
+    try {
+      const buffer = await exportReferencialesToXlsx(exportableData, VISIBLE_HEADERS);
+      
+      const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+      
+      saveAs(blob, 'referenciales.xlsx');
+      
+    } catch (error) {
+      console.error("Error exporting to XLSX:", error);
+      alert("Hubo un error al exportar el archivo XLSX.");
+    }
   };
 
   return (
