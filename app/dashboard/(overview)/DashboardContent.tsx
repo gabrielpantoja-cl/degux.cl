@@ -38,13 +38,13 @@ export default function DashboardContent({
         {/* Bienvenida */}
         {session?.user && (
           <div className="space-y-2">
-            <div className="text-lg text-blue-600">
+            <div className="text-lg text-primary">
               👋 ¡Hola! <span className="font-bold">{session.user.name}</span>
             </div>
             <div className="text-sm text-gray-600">
               Cuenta: <span className="font-medium">{session.user.email}</span>
             </div>
-            <div className="text-base text-blue-600">
+            <div className="text-base text-primary">
               Bienvenid@ a referenciales.cl
             </div>
           </div>

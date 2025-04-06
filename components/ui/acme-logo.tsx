@@ -18,7 +18,7 @@ export default function AcmeLogo() {
       />
       <p className="text-sm md:text-lg font-semibold tracking-tight text-white text-center leading-tight">
         referenciales
-        <span className="text-sky-300">.cl</span>
+        <span className="text-white">.cl</span>
       </p>
     </div>
   );

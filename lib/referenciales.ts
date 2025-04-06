@@ -82,13 +82,16 @@ export async function fetchFilteredReferenciales(query: string | null | undefine
     });
 
     if (!referenciales || !Array.isArray(referenciales)) {
-      console.error('Unexpected database response:', referenciales);
+      console.error('[fetchFilteredReferenciales] Unexpected DB response:', referenciales);
+      console.log('[fetchFilteredReferenciales] Returning [] due to unexpected response.');
       return [];
     }
 
+    console.log(`[fetchFilteredReferenciales] Success, returning ${referenciales.length} items.`);
     return referenciales;
   } catch (error) {
-    console.error('Database error:', error);
+    console.error('[fetchFilteredReferenciales] Database error caught:', error);
+    console.log('[fetchFilteredReferenciales] Returning [] due to caught error.');
     return [];
   }
 }

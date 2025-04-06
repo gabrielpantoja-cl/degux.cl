@@ -25,14 +25,14 @@ function ProgressBar({ totalReferenciales }: { totalReferenciales: number }) {
   }, [totalReferenciales]);
 
   return (
-    <div className="p-4 bg-blue-50 border border-blue-200 rounded-md mb-4">
+    <div className="p-4 bg-gray-50 border border-gray-200 rounded-md mb-4">
       <div className="flex justify-between items-center mb-2">
-        <span className="text-blue-700">Referenciales agregados: {totalReferenciales}</span>
-        <span className="text-blue-700">Objetivo: 100</span>
+        <span className="text-primary">Referenciales agregados: {totalReferenciales}</span>
+        <span className="text-primary">Objetivo: 100</span>
       </div>
       <div className="w-full bg-gray-200 rounded-full h-4">
         <div
-          className="bg-blue-500 h-4 rounded-full transition-all duration-500 ease-in-out"
+          className="bg-primary h-4 rounded-full transition-all duration-500 ease-in-out"
           style={{ width: `${progress}%` }}
         ></div>
       </div>

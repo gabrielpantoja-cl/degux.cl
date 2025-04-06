@@ -94,7 +94,7 @@ export default function Page() {
 
   return (
     <main className="flex min-h-screen flex-col p-6">
-      <div className="flex h-20 shrink-0 items-end rounded-lg bg-blue-500 p-4 md:h-52">
+      <div className="flex h-20 shrink-0 items-end rounded-lg bg-primary p-4 md:h-52">
         <AcmeLogo />
       </div>
       <div className="mt-4 flex grow flex-col gap-4 md:flex-row">
@@ -114,13 +114,13 @@ export default function Page() {
                 className="mr-2"
               />
               <label htmlFor="acceptTerms" className="text-sm text-gray-600">
-                He leído y acepto los <Link href="/terms" className="text-blue-500 underline">Términos de Servicio</Link> y <Link href="/privacy" className="text-blue-500 underline">Política de Privacidad</Link>
+                He leído y acepto los <Link href="/terms" className="text-primary underline">Términos de Servicio</Link> y <Link href="/privacy" className="text-primary underline">Política de Privacidad</Link>
               </label>
             </div>
             <button
               onClick={session ? handleSignOut : handleAuth}
               className={`flex items-center gap-5 self-start rounded-lg px-6 py-3 text-sm font-medium text-white transition-colors md:text-base ${
-                (acceptedTerms || session) && !isLoading ? 'bg-blue-500 hover:bg-blue-400' : 'bg-gray-300 cursor-not-allowed'
+                (acceptedTerms || session) && !isLoading ? 'bg-primary hover:bg-primary/90' : 'bg-gray-300 cursor-not-allowed'
               }`}
               disabled={!acceptedTerms && !session || isLoading}
             >

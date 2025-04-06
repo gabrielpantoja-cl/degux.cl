@@ -12,6 +12,7 @@ import { exportReferencialesToXlsx } from '@/lib/exportToXlsx';
 import { Referencial } from '@/types/referenciales';
 import { useSearchParams } from 'next/navigation';
 import { saveAs } from 'file-saver';
+import toast from 'react-hot-toast';
 
 type ExportableKeys =
   | 'cbr'
@@ -100,16 +101,16 @@ function ReferencialesContent() {
       conservadorComuna: ref.conservador?.comuna || '',
     }));
 
+    const toastId = toast.loading('Exportando a XLSX...');
+
     try {
       const buffer = await exportReferencialesToXlsx(exportableData, VISIBLE_HEADERS);
-      
       const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-      
       saveAs(blob, 'referenciales.xlsx');
-      
+      toast.success('Archivo exportado correctamente.', { id: toastId });
     } catch (error) {
       console.error("Error exporting to XLSX:", error);
-      alert("Hubo un error al exportar el archivo XLSX.");
+      toast.error('Hubo un error al exportar el archivo XLSX.', { id: toastId });
     }
   };
 
@@ -152,7 +153,7 @@ function ReferencialesContent() {
 
       <button
         onClick={handleExport}
-        className="fixed bottom-4 right-4 mb-4 rounded bg-blue-200 px-3 py-1 text-xs text-blue-700 hover:bg-blue-300 z-[8888]"
+        className="fixed bottom-4 right-4 mb-4 rounded bg-primary px-3 py-1 text-xs text-white hover:bg-opacity-80 z-30"
         disabled={isLoading || referenciales.length === 0}
       >
         Exportar a XLSX

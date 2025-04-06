@@ -31,7 +31,7 @@ export default function TopComunasChart() {
             <YAxis />
             <Tooltip />
             <Legend />
-            <Bar dataKey="count" fill="#8884d8" />
+            <Bar dataKey="count" fill="#00204A" />
           </BarChart>
         </ResponsiveContainer>
       </div>
