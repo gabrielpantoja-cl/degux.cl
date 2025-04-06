@@ -8,6 +8,11 @@ const config = {
   ],
   theme: {
     extend: {
+      colors: {
+        primary: {
+          DEFAULT: '#00204A',
+        },
+      },
       keyframes: {
         'accordion-down': {
           from: { height: '0' },

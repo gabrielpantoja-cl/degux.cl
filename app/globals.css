@@ -90,8 +90,8 @@
 /* Universal selector for box-sizing and resetting padding/margin */
 * {
   box-sizing: border-box;
-  padding: 0;
-  margin: 0;
+  /* padding: 0; */ /* Removed */
+  /* margin: 0; */ /* Removed */
 }
 
 /* Timestamp comment style */
@@ -137,141 +137,11 @@ input[type='number']::-webkit-outer-spin-button {
   font-weight: 500;
 }
 
-/* General element styles */
-abbr[title] {
-  text-decoration: underline dotted;
-}
-
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  font-size: inherit;
-  font-weight: inherit;
-}
-
-a {
-  color: inherit;
-  text-decoration: inherit;
-}
-
-b,
-strong {
-  font-weight: bolder;
-}
-
-body {
-  margin: 0;
-  line-height: inherit;
-}
-
-hr {
-  height: 0;
-  color: inherit;
-}
-
-table {
-  text-indent: 0;
-  border-color: inherit;
-  border-collapse: collapse;
-}
-
-button,
-input,
-optgroup,
-select,
-textarea {
-  font-family: inherit;
-  font-feature-settings: inherit;
-  font-variation-settings: inherit;
-}
-
-button,
-[role="button"] {
-  cursor: pointer;
-}
-
-:disabled {
-  cursor: default;
-}
-
-::-webkit-file-upload-button {
-  font: inherit;
-}
-
-summary {
-  display: list-item;
-}
-
-blockquote,
-dl,
-dd,
-h1,
-h2,
-h3,
-h4,
-h5,
-h6,
-hr,
-figure,
-p,
-pre {
-  margin: 0;
-}
-
-fieldset {
-  margin: 0;
-  padding: 0;
-}
-
-legend {
-  padding: 0;
-}
-
-ol,
-ul,
-menu {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-dialog {
-  padding: 0;
-}
-
-textarea {
-  resize: vertical;
-}
-
-input::placeholder,
-textarea::placeholder {
-  opacity: 1;
-  color: #9ca3af;
-}
-
-:-moz-focusring {
-  outline: auto;
-}
-
-:-moz-ui-invalid {
-  box-shadow: none;
-}
-
-progress {
-  vertical-align: baseline;
-}
-
-[type='search'] {
-  -webkit-appearance: textfield;
-  outline-offset: -2px;
-}
-
-::-webkit-search-decoration {
-  -webkit-appearance: none;
-}
+/* General element styles - REMOVED BLOCK */
+/* 
+   The block from abbr[title] down to ::-webkit-search-decoration 
+   has been removed to rely on Tailwind's Preflight (@tailwind base)
+*/
 
 /* Estilos específicos para los iconos de Leaflet */
 .leaflet-marker-icon,
