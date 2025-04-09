@@ -94,7 +94,7 @@ export async function POST(req: NextRequest) {
 
     // --- Use AI SDK streamText --- 
     const result: StreamTextResult<never, never> = await streamText({
-      model: openai('gpt-4o'), 
+      model: openai('gpt-4o-mini'),
       messages: messagesWithSystemPrompt,
       onFinish: async ({ text }: { text: string }) => { // Type the callback param
         try {
