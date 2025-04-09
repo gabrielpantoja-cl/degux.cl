@@ -1,6 +1,7 @@
 generator client {
   provider = "prisma-client-js"
   previewFeatures = ["postgresqlExtensions"]
+  output   = "../node_modules/.prisma/client"
 }
 
 datasource db {
@@ -14,6 +15,12 @@ enum Role {
   user
   admin
   superadmin
+}
+
+// Enum para identificar el rol en un mensaje de chat
+enum MessageRole {
+  user
+  bot
 }
 
 model AuditLog {
@@ -77,6 +84,7 @@ model User {
   sessions      Session[]
   referenciales referenciales[]
   auditLogs     AuditLog[] 
+  chatMessages  ChatMessage[] // Relación inversa con ChatMessage
 }
 
 model Account {
@@ -122,5 +130,18 @@ model spatial_ref_sys {
   auth_srid Int?
   srtext    String? @db.VarChar(2048)
   proj4text String? @db.VarChar(2048)
+}
+
+// Nuevo modelo para almacenar mensajes del chatbot
+model ChatMessage {
+  id        String      @id @default(cuid())
+  userId    String      // Quién inició la conversación o a quién pertenece el mensaje
+  role      MessageRole // Quién envió este mensaje específico (user o bot)
+  content   String      @db.Text // El contenido del mensaje
+  createdAt DateTime    @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt]) // Índice para consultas eficientes por usuario y fecha
 }
 

@@ -1,59 +1,22 @@
 //components/ui/Chatbot.tsx
 "use client";
 
-import { useState } from 'react';
 import { XMarkIcon, PaperAirplaneIcon } from '@heroicons/react/24/outline';
-
-interface Message {
-  role: 'user' | 'bot';
-  content: string;
-}
+import { useChat } from 'ai/react';
+import { Message } from 'ai';
 
 interface ChatbotProps {
   onClose: () => void;
 }
 
 const Chatbot: React.FC<ChatbotProps> = ({ onClose }) => {
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [input, setInput] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
+  const { messages, input, handleInputChange, handleSubmit, isLoading, error } = useChat({
+    api: '/api/chat'
+  });
 
-  const handleSend = async () => {
-    if (!input.trim() || isLoading) return;
-
-    const userMessage: Message = { role: 'user', content: input };
-    setMessages(prev => [...prev, userMessage]);
-    setInput('');
-    setIsLoading(true);
-
-    try {
-      const response = await fetch('/api/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ messages: [...messages, userMessage] }),
-      });
-
-      if (!response.ok) {
-        throw new Error(await response.text());
-      }
-
-      const data = await response.json();
-      const botMessage: Message = { role: 'bot', content: data.message };
-      setMessages(prev => [...prev, botMessage]);
-    } catch (error) {
-      console.error('Error:', error);
-      setMessages(prev => [...prev, { role: 'bot', content: 'Lo siento, hubo un error. Por favor, intenta de nuevo.' }]);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      handleSend();
-    }
-  };
+  if (error) {
+    console.error("Error from useChat:", error);
+  }
 
   return (
     <div className="w-full h-full bg-white flex flex-col">
@@ -71,44 +34,50 @@ const Chatbot: React.FC<ChatbotProps> = ({ onClose }) => {
 
       {/* Messages Container */}
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
-        {messages.length === 0 && (
+        {messages.length === 0 && !isLoading && (
           <div className="text-center text-gray-500 mt-4">
             ¿En qué puedo ayudarte hoy?
           </div>
         )}
-        {messages.map((msg, index) => (
+        {messages.map((msg: Message) => (
           <div
-            key={index}
+            key={msg.id}
             className={`max-w-[80%] p-3 rounded-lg ${
               msg.role === 'user'
                 ? 'ml-auto bg-blue-100 text-blue-900'
                 : 'bg-gray-100 text-gray-900'
             }`}
           >
-            {msg.content}
+            {msg.content.split('\n').map((line: string, i: number) => (
+              <span key={i}>{line}<br/></span>
+            ))}
           </div>
         ))}
-        {isLoading && (
+        {isLoading && messages[messages.length - 1]?.role === 'user' && (
           <div className="bg-gray-100 text-gray-900 p-3 rounded-lg max-w-[80%] animate-pulse">
             Escribiendo...
           </div>
         )}
+        {error && (
+            <div className="bg-red-100 text-red-700 p-3 rounded-lg max-w-[80%]">
+                Lo siento, ocurrió un error: {error.message}
+            </div>
+        )}
       </div>
 
       {/* Input Area */}
-      <div className="border-t p-4">
+      <form onSubmit={handleSubmit} className="border-t p-4">
         <div className="flex gap-2">
           <input
             type="text"
             value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={handleKeyDown}
+            onChange={handleInputChange}
             placeholder="Escribe tu mensaje..."
             className="flex-1 p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             disabled={isLoading}
           />
           <button
-            onClick={handleSend}
+            type="submit"
             disabled={isLoading || !input.trim()}
             className={`p-2 rounded-lg ${
               isLoading || !input.trim()
@@ -120,7 +89,7 @@ const Chatbot: React.FC<ChatbotProps> = ({ onClose }) => {
             <PaperAirplaneIcon className="w-5 h-5" />
           </button>
         </div>
-      </div>
+      </form>
     </div>
   );
 };

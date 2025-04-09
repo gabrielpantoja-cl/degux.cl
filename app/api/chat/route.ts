@@ -1,23 +1,21 @@
 // app/api/chat/route.ts
 import { NextRequest, NextResponse } from 'next/server';
-import OpenAI from 'openai';
+import { createOpenAI } from '@ai-sdk/openai';
+import { streamText, CoreMessage, StreamTextResult } from 'ai';
+import { db } from '@/lib/prisma';
+import { MessageRole } from '@prisma/client';
+import { auth } from '@/auth';
 
 // Verificar que la API key existe, agregada en .env.local y en vercel project
 if (!process.env.OPENAI_API_KEY) {
   throw new Error('Missing OPENAI_API_KEY environment variable');
 }
 
-// Configuración de OpenAI con timeout
-const openai = new OpenAI({
+// Initialize the OpenAI provider using the AI SDK
+const openai = createOpenAI({
   apiKey: process.env.OPENAI_API_KEY,
-  timeout: 10000, // 10 segundos
+  // timeout is configured differently or might not be needed directly here
 });
-
-// Interfaz para los mensajes
-interface ChatMessage {
-  role: 'user' | 'assistant';
-  content: string;
-}
 
 // Interfaz para las FAQs
 interface FAQs {
@@ -40,67 +38,90 @@ ${Object.entries(faqs).map(([question, answer]) => `- "${question}": "${answer}"
 
 export async function POST(req: NextRequest) {
   try {
-    // Validar el cuerpo de la solicitud
-    const body = await req.json();
-    
-    if (!body.messages || !Array.isArray(body.messages)) {
-      return NextResponse.json(
-        { error: 'Invalid request format' },
-        { status: 400 }
-      );
+    // --- Authentication (Keep as is) ---
+    const session = await auth();
+    const userId = session?.user?.id;
+    if (!userId) {
+      return new Response('Unauthorized', { status: 401 });
     }
+    // --- End Authentication ---
 
-    const messages: ChatMessage[] = body.messages.map((msg: any) => ({
-      role: msg.role === 'user' ? 'user' : 'assistant',
-      content: String(msg.content || ''),
-    }));
+    const { messages }: { messages: CoreMessage[] } = await req.json();
 
-    // Validar que hay al menos un mensaje
-    if (messages.length === 0) {
-      return NextResponse.json(
-        { error: 'No messages provided' },
-        { status: 400 }
-      );
+    // --- Save User Message (Keep as is) ---
+    const lastUserMessage = messages[messages.length - 1];
+    if (lastUserMessage?.role === 'user') {
+      try {
+        await db.chatMessage.create({
+          data: {
+            userId: userId,
+            role: MessageRole.user, // Use enum
+            content: typeof lastUserMessage.content === 'string' ? lastUserMessage.content : JSON.stringify(lastUserMessage.content), // Handle potential non-string content
+          },
+        });
+      } catch (dbError) {
+        console.error("Error saving user message:", dbError);
+        // Decide if you want to proceed even if saving fails
+      }
     }
+    // --- End Save User Message ---
 
-    // Check if the last user message matches any FAQ
-    const lastMessage = messages[messages.length - 1].content;
-    if (faqs.hasOwnProperty(lastMessage)) {
-      return NextResponse.json({ message: faqs[lastMessage] });
+    // --- Check FAQs (Keep as is) ---
+    const lastMessageContent = typeof lastUserMessage?.content === 'string' ? lastUserMessage.content : '';
+    if (lastMessageContent && faqs.hasOwnProperty(lastMessageContent)) {
+      // Save bot response for FAQ
+      try {
+        await db.chatMessage.create({
+          data: {
+            userId: userId,
+            role: MessageRole.bot,
+            content: faqs[lastMessageContent]
+          }
+        });
+      } catch (dbError) {
+        console.error("Error saving FAQ bot message:", dbError);
+      }
+      return NextResponse.json({ message: faqs[lastMessageContent] });
     }
+    // --- End Check FAQs ---
 
-    // Crear el prompt completo con el prompt inicial y los mensajes del usuario
-    const prompt = `${promptInitial}\n${messages.map((msg: any) => `${msg.role === 'user' ? 'Usuario' : 'Asistente'}: ${msg.content}`).join('\n')}\nAsistente:`;
+    // --- Add System Prompt (Keep as is) ---
+    const messagesWithSystemPrompt: CoreMessage[] = [
+      { role: 'system', content: promptInitial },
+      ...messages
+    ];
+    // --- End Add System Prompt ---
 
-    const completion = await openai.chat.completions.create({
-      model: 'gpt-3.5-turbo',
-      messages: [{ role: 'system', content: prompt }],
-      max_tokens: 1000,
-      temperature: 0.7,
+    // --- Use AI SDK streamText --- 
+    const result: StreamTextResult<never, never> = await streamText({
+      model: openai('gpt-4o'), 
+      messages: messagesWithSystemPrompt,
+      onFinish: async ({ text }: { text: string }) => { // Type the callback param
+        try {
+          await db.chatMessage.create({
+            data: {
+              userId: userId, 
+              role: MessageRole.bot,
+              content: text, // Use text from the callback parameter
+            },
+          });
+        } catch (dbError) {
+          console.error("Error saving bot message:", dbError);
+        }
+      },
     });
+    // --- End Use AI SDK streamText ---
 
-    const message = completion.choices[0]?.message?.content;
-
-    if (!message) {
-      throw new Error('No response from OpenAI');
-    }
-
-    return NextResponse.json({ message });
+    // Return the stream response using the AI SDK helper
+    return result.toDataStreamResponse(); // Use the method suggested by the linter
 
   } catch (error) {
-    console.error('OpenAI API Error:', error);
-
-    // Manejar diferentes tipos de errores
-    if (error instanceof OpenAI.APIError) {
-      return NextResponse.json(
-        { error: 'OpenAI API error', details: error.message },
-        { status: error.status || 500 }
-      );
-    }
-
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    );
+    // --- Error Handling (Keep and potentially improve) ---
+    console.error('Chat API Error:', error);
+    // Consider more specific error handling if needed
+    // if (error instanceof OpenAI.APIError) { ... }
+    return new Response('Internal Server Error', { status: 500 });
   }
 }
+
+// export const runtime = 'edge'; // Ensure runtime is compatible if used
