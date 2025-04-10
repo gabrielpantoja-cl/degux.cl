@@ -69,8 +69,6 @@ Implementamos protecciones contra:
 
 ---
 
----
-
 ## 6. Cookies
 
 Referenciales.cl utiliza cookies para mejorar la experiencia del usuario en la plataforma. Las cookies son pequeños archivos de texto que se almacenan en el dispositivo del usuario y permiten recordar sus preferencias y actividades anteriores en el sitio web.
@@ -85,5 +83,3 @@ Referenciales.cl utiliza cookies para mejorar la experiencia del usuario en la p
 ### Gestión de Cookies ###
 Los usuarios pueden gestionar las cookies a través de la configuración de su navegador. Sin embargo, deshabilitar las cookies puede afectar la funcionalidad del sitio web.
 
----
----
