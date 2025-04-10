@@ -42,8 +42,14 @@ const Footer: React.FC = () => {
           className="text-green-600 hover:text-green-800 font-medium inline-flex items-center align-middle" // Mantenemos estilo WhatsApp
         >
           WhatsApp
-          {/* Asumiendo que WhatsAppIcon acepta className para margen */}
-          <WhatsAppIcon className="ml-1 h-4 w-4" /> 
+          {/* --- CORRECCIÓN ---
+            Se eliminó la prop 'className' porque WhatsAppIcon no la acepta.
+            Si necesitas aplicar margen o tamaño, envuelve el icono en un <span>:
+            <span className="ml-1 inline-block h-4 w-4"><WhatsAppIcon /></span> 
+          */}
+          <span className="ml-1 inline-block h-4 w-4 align-middle"> {/* Envoltura para estilos */}
+             <WhatsAppIcon /> 
+          </span>
         </a>.
       </p>
     </footer>
