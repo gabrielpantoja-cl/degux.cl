@@ -1,12 +1,12 @@
 'use client';
 
 import LatestReferenciales from '@/components/ui/dashboard/latest-referenciales';
-import { lusitana } from '@/components/ui/fonts';
+import { lusitana } from '@/lib/styles/fonts';
 import { Suspense } from 'react';
 import dynamic from 'next/dynamic';
-import { CardsSkeleton, LatestReferencialesSkeleton } from '@/components/ui/skeletons';
+import { CardsSkeleton, LatestReferencialesSkeleton } from '@/components/ui/primitives/skeletons';
 import { Session } from 'next-auth';
-import ProgressBar from '@/components/ui/dashboard/ProgressBar';
+import UfDisplay from '@/components/ui/dashboard/UfDisplay';
 
 const TopCommunesChart = dynamic(
   () => import('@/components/ui/dashboard/TopComunasChart'),
@@ -22,7 +22,6 @@ interface DashboardContentProps {
 export default function DashboardContent({ 
   session, 
   latestReferenciales, 
-  totalReferenciales 
 }: DashboardContentProps) {
   return (
     <main className="flex flex-col space-y-6">
@@ -50,10 +49,10 @@ export default function DashboardContent({
           </div>
         )}
 
-        {/* Barra de progreso */}
+        {/* Valor UF */}
         <div className="w-full">
           <Suspense fallback={<CardsSkeleton />}>
-            <ProgressBar totalReferenciales={totalReferenciales} />
+            <UfDisplay />
           </Suspense>
         </div>
 
