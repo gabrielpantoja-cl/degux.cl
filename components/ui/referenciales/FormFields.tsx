@@ -1,6 +1,6 @@
 // components/ui/referenciales/FormFields.tsx
 import React from 'react';
-import { Input } from '@/components/ui/input';
+import { Input } from '@/components/ui/primitives/input';
 
 interface FormState {
   errors: {

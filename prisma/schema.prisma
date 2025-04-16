@@ -66,6 +66,7 @@ model referenciales {
   userId         String
   conservadorId  String        // Nuevo campo para la relación
   geom           Unsupported("geometry")?
+  // createdAt      DateTime      @default(now()) // <-- AÑADIR ESTA LÍNEA
   user           User          @relation(fields: [userId], references: [id])
   conservador    conservadores @relation(fields: [conservadorId], references: [id]) // Relación inversa
 }
