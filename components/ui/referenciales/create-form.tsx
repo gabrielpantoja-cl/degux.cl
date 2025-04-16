@@ -4,7 +4,7 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/ui/primitives/button';
 import { createReferencial } from '@/lib/actions';
 import { useSession, SessionProvider } from 'next-auth/react';
 import { validateReferencial } from '@/lib/validation';

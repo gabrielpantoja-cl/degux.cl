@@ -1,9 +1,9 @@
-// components/ui/form.tsx
+// components/ui/primitives/form.tsx
 import * as React from 'react';
 import * as LabelPrimitive from '@radix-ui/react-label';
 import { Slot } from '@radix-ui/react-slot';
 import { cn } from '@/lib/utils';
-import { Label } from '@/components/ui/label';
+import { Label } from '@/components/ui/primitives/label';
 
 type FormFieldContextValue = {
   name: string;

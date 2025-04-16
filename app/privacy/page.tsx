@@ -1,6 +1,6 @@
 /* app/privacy/page.tsx */
-import Footer from './components/Footer';
-import TimeStamp from './components/TimeStamp';
+import Footer from '@/components/ui/common/Footer';
+import TimeStamp from '@/components/ui/common/TimeStamp';
 import { promises as fs } from 'fs';
 import path from 'path';
 import { unified } from 'unified';

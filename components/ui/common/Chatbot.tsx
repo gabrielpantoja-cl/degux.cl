@@ -1,4 +1,4 @@
-//components/ui/Chatbot.tsx
+// components/ui/common/Chatbot.tsx
 "use client";
 
 import { XMarkIcon, PaperAirplaneIcon } from '@heroicons/react/24/outline';

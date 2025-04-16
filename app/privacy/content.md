@@ -85,5 +85,3 @@ Referenciales.cl utiliza cookies para mejorar la experiencia del usuario en la p
 ### Gestión de Cookies ###
 Los usuarios pueden gestionar las cookies a través de la configuración de su navegador. Sin embargo, deshabilitar las cookies puede afectar la funcionalidad del sitio web.
 
----
----
