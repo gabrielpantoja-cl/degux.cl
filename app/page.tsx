@@ -5,8 +5,8 @@ import { useState, useEffect } from 'react';
 import { toast } from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 import { signIn, useSession, signOut } from 'next-auth/react';
-import AcmeLogo from '@/components/ui/acme-logo';
-import { lusitana } from '@/components/ui/fonts';
+import AcmeLogo from '@/components/ui/common/AcmeLogo';
+import { lusitana } from '@/lib/styles/fonts';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -119,8 +119,10 @@ export default function Page() {
             </div>
             <button
               onClick={session ? handleSignOut : handleAuth}
-              className={`flex items-center gap-5 self-start rounded-lg px-6 py-3 text-sm font-medium text-white transition-colors md:text-base ${
-                (acceptedTerms || session) && !isLoading ? 'bg-primary hover:bg-primary/90' : 'bg-gray-300 cursor-not-allowed'
+              className={`flex items-center gap-5 self-start rounded-lg px-6 py-3 text-sm font-medium transition-colors md:text-base ${
+                !acceptedTerms && !session || isLoading 
+                  ? 'bg-gray-300 cursor-not-allowed text-gray-600' 
+                  : 'bg-primary hover:bg-primary/90 text-white'
               }`}
               disabled={!acceptedTerms && !session || isLoading}
             >

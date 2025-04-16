@@ -1,11 +1,11 @@
 "use client";
 
 import Pagination from '@/components/ui/referenciales/pagination';
-import Search from '@/components/ui/search';
+import Search from '@/components/ui/primitives/search';
 import Table from '@/components/ui/referenciales/table';
 import { CreateReferencial } from '@/components/ui/referenciales/buttons';
-import { lusitana } from '@/components/ui/fonts';
-import { ReferencialesTableSkeleton } from '@/components/ui/skeletons';
+import { lusitana } from '@/lib/styles/fonts';
+import { ReferencialesTableSkeleton } from '@/components/ui/primitives/skeletons';
 import { useState, useEffect, useCallback, Suspense } from 'react';
 import { fetchReferencialesPages, fetchFilteredReferenciales } from '@/lib/referenciales';
 import { exportReferencialesToXlsx } from '@/lib/exportToXlsx';

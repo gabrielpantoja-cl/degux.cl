@@ -5,7 +5,7 @@ import React, { useState, useEffect } from 'react';
 import { Prisma } from '@prisma/client';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/ui/primitives/button';
 import FormFields from './FormFields';
 import { updateReferencial, deleteReferencial } from '@/lib/actions';
 import { useSession } from 'next-auth/react';

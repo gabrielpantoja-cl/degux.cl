@@ -1,7 +1,7 @@
 // components/ui/dashboard/latest-referenciales.tsx
 import { ArrowPathIcon } from '@heroicons/react/24/outline';
 import clsx from 'clsx';
-import { lusitana } from '@/components/ui/fonts';
+import { lusitana } from '@/lib/styles/fonts';
 
 type LatestReferencial = {
   id: string;
