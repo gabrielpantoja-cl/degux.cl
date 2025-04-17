@@ -64,9 +64,10 @@ model referenciales {
   monto          Int
   observaciones  String?
   userId         String
-  conservadorId  String        // Nuevo campo para la relación
+  conservadorId  String        
   geom           Unsupported("geometry")?
-  // createdAt      DateTime      @default(now()) // <-- AÑADIR ESTA LÍNEA
+  createdAt      DateTime      @default(now()) // <-- AÑADIR ESTA LÍNEA
+  updatedAt DateTime @updatedAt     // Actualiza automáticamente la fecha/hora al modificar el registro
   user           User          @relation(fields: [userId], references: [id])
   conservador    conservadores @relation(fields: [conservadorId], references: [id]) // Relación inversa
 }
