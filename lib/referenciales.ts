@@ -64,7 +64,27 @@ export async function fetchFilteredReferenciales(query: string | null | undefine
       orderBy: { fechaescritura: 'desc' },
       take: ITEMS_PER_PAGE,
       skip: offset,
-      include: {
+      select: {
+        id: true,
+        lat: true,
+        lng: true,
+        fojas: true,
+        numero: true,
+        anio: true,
+        cbr: true,
+        comprador: true,
+        vendedor: true,
+        predio: true,
+        comuna: true,
+        rol: true,
+        fechaescritura: true,
+        superficie: true,
+        monto: true,
+        observaciones: true,
+        userId: true,
+        conservadorId: true,
+        createdAt: true,  // Añadido
+        updatedAt: true,  // Añadido
         user: {
           select: {
             name: true,
