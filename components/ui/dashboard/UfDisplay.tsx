@@ -15,21 +15,17 @@ export default function UfDisplay() {
   useEffect(() => {
     const fetchUf = async () => {
       try {
-        const response = await fetch('https://mindicador.cl/api/uf', {
+        const response = await fetch('/api/uf', {
           cache: 'no-store'
         });
         
-        if (!response.ok) throw new Error('Error al obtener el valor de la UF');
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || 'Error al obtener el valor de la UF');
+        }
         
         const data = await response.json();
-        if (data && data.serie && data.serie.length > 0) {
-          setUfData({
-            valor: data.serie[0].valor,
-            fecha: data.serie[0].fecha
-          });
-        } else {
-          throw new Error('Formato de datos UF inválido');
-        }
+        setUfData(data);
       } catch (error) {
         setError(error instanceof Error ? error.message : 'Error desconocido');
       } finally {
