@@ -17,6 +17,8 @@ export interface Referencial {
   observaciones: string | null;
   userId: string;
   conservadorId: string; // Campo nuevo
+  createdAt: Date;    // Añadido
+  updatedAt: Date;    // Añadido
   user: {
     name: string | null;
     email: string;
