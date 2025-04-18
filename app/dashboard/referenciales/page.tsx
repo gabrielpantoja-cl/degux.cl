@@ -96,9 +96,28 @@ function ReferencialesContent() {
 
   const handleExport = async () => {
     const exportableData = referenciales.map((ref) => ({
-      ...ref,
+      id: ref.id,
+      lat: ref.lat,
+      lng: ref.lng,
+      fojas: ref.fojas,
+      numero: ref.numero,
+      anio: ref.anio,
+      cbr: ref.cbr,
+      comprador: ref.comprador,
+      vendedor: ref.vendedor,
+      predio: ref.predio,
+      comuna: ref.comuna,
+      rol: ref.rol,
+      fechaescritura: ref.fechaescritura,
+      superficie: ref.superficie,
+      monto: ref.monto,
+      observaciones: ref.observaciones,
+      userId: ref.userId,
+      conservadorId: ref.conservadorId,
+      createdAt: ref.createdAt,
+      updatedAt: ref.updatedAt,
       conservadorNombre: ref.conservador?.nombre || '',
-      conservadorComuna: ref.conservador?.comuna || '',
+      conservadorComuna: ref.conservador?.comuna || ''
     }));
 
     const toastId = toast.loading('Exportando a XLSX...');
