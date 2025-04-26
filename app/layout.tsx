@@ -5,45 +5,34 @@ import { Toaster } from 'react-hot-toast';
 import SessionProviderClient from '@/app/dashboard/SessionProviderClient';
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/next';
-// Recommended: Import fonts using next/font
-// import { Inter } from 'next/font/google';
 
-// Example font setup (replace 'Inter' with your desired font)
-// const inter = Inter({ subsets: ['latin'] });
 
-// Viewport configuration (from Version 2)
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
   maximumScale: 1,
-  userScalable: false, // Good for web apps, prevents accidental zooming
+  userScalable: false, 
   themeColor: [
     { media: '(prefers-color-scheme: light)', color: '#ffffff' },
     { media: '(prefers-color-scheme: dark)', color: '#000000' },
   ],
 };
 
-// Comprehensive Metadata (from Version 2)
-// Note: Ensure all referenced icon/image paths exist in your `public` folder!
-// Note: Replace placeholder values (like 'your-google-site-verification')
+
 export const metadata: Metadata = {
-  // Title configuration
   title: {
     template: '%s | Dashboard | @referenciales.cl',
-    default: 'referenciales.cl', // Default title if template is not used
+    default: 'referenciales.cl', 
   },
   description: 'Base de datos colaborativa.',
-  // Base URL for resolving relative paths in metadata
   metadataBase: new URL('https://next14-postgres.vercel.app/'),
-  // PWA / Application specific metadata
-  applicationName: 'referenciales.cl', // Used by some systems
+  applicationName: 'referenciales.cl', 
   appleWebApp: {
-    capable: true, // Allows launching from home screen without browser chrome
+    capable: true, 
     statusBarStyle: 'default', // Or 'black', 'black-translucent'
     title: 'referenciales.cl', // Title when added to home screen
     // startupImage: [...] // Optional: Add splash screens for different devices
   },
-  // Format detection for mobile devices
   formatDetection: {
     email: false,
     address: false,
