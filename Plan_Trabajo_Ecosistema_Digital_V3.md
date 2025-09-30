@@ -275,31 +275,114 @@ Usuario busca propiedad en Valdivia
 
 ---
 
-### 🎯 Recomendación Actual
+### ✅ Decisión Final: PostgreSQL Dedicado en VPS
 
-**Fase 1-2 (MVP - 3 meses):**
-→ **Neon** para velocidad de desarrollo
+**Después de evaluación, se decidió:**
+→ **PostgreSQL Dedicado Self-hosted en VPS**
 
-**Razones:**
-1. Database branching invaluable para probar Fase 1
-2. Bootstrap mode: velocidad > control
-3. Free tier suficiente para MVP
-4. Puedes migrar después sin dolor (PostgreSQL estándar)
+#### **Razones de la Decisión:**
 
-**Plan de transición:**
+1. **Maximizar uso del VPS** - Ya pagado, capacidad disponible
+2. **Aislamiento total** - Separado de N8N (seguridad y estabilidad)
+3. **Costo cero adicional** - Solo ~300MB RAM extra
+4. **Control total** - Optimización específica para Nexus Core
+5. **Filosofía open source** - 100% auto-gestionado
+6. **Compliance directo** - Datos en infraestructura propia
+7. **Escalabilidad futura** - Fácil agregar replicas cuando sea necesario
+
+#### **Arquitectura Implementada:**
+
+```yaml
+# Docker Compose en VPS
+services:
+  nexus-db:
+    image: postgis/postgis:15-3.4
+    container_name: nexus-db
+    ports:
+      - "5433:5432"  # Puerto independiente
+    volumes:
+      - nexus_db_data:/var/lib/postgresql/data
+      - ./backups:/backups
+    environment:
+      POSTGRES_DB: nexus_core
+      POSTGRES_USER: nexus_user
+      POSTGRES_PASSWORD: ${NEXUS_DB_PASSWORD}
+    networks:
+      - nexus-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U nexus_user"]
+      interval: 10s
 ```
-Mes 0-3:  Neon free tier (MVP con perfiles + networking)
-Mes 3-6:  Evaluar métricas:
-          ├─ Si >10GB datos → Migrar a VPS self-hosted
-          ├─ Si <500MB → Seguir en Neon free
-          └─ Si revenue >$500/mes → Decidir según ROI
+
+#### **Características:**
+
+- ✅ **PostGIS incluido** - Soporte geoespacial nativo
+- ✅ **Puerto dedicado (5433)** - No conflicto con N8N (5432)
+- ✅ **Backups automáticos** - Cron diario a las 3 AM
+- ✅ **Health checks** - Monitoreo de salud del contenedor
+- ✅ **Volúmenes persistentes** - Datos seguros
+- ✅ **Network aislada** - Red Docker independiente
+
+#### **Ubicación Física:**
+
+```
+VPS Digital Ocean (167.172.251.27)
+  ├─ N8N Stack (puerto 5432)
+  │  ├─ n8n-db (PostgreSQL)
+  │  ├─ n8n (workflow engine)
+  │  └─ n8n-redis
+  │
+  └─ Nexus Core Stack (puerto 5433)
+     ├─ nexus-db (PostgreSQL + PostGIS) ← NUEVO
+     └─ nexus-app (Next.js) ← Por desplegar
 ```
 
-**Triggers para migrar a VPS:**
-- ✅ >10GB de datos activos
-- ✅ Revenue estable >$500/mes (justifica DevOps time)
-- ✅ Requerimientos de compliance específicos
-- ✅ Necesitas features custom de PostgreSQL
+#### **Recursos Utilizados:**
+
+| Recurso | Uso Adicional | Total Estimado |
+|---------|---------------|----------------|
+| RAM | ~300MB | N8N: 500MB + Nexus DB: 300MB = 800MB |
+| Disco | ~2GB inicial | Crece con datos |
+| CPU | Mínima en idle | Picos en queries |
+
+#### **Ventajas vs Alternativas:**
+
+**vs Neon:**
+- ✅ $0 costo (vs $20-30/mes post-free)
+- ✅ Control total de datos
+- ✅ Sin dependencia externa
+- ❌ Sin database branching (trade-off aceptable)
+
+**vs Compartir DB con N8N:**
+- ✅ Aislamiento y seguridad
+- ✅ Sin riesgo de conflictos
+- ✅ Escalamiento independiente
+
+**vs Supabase Self-hosted:**
+- ✅ Simple: 1 contenedor vs 12
+- ✅ Recursos: 300MB vs 1.5GB
+- ✅ Ya tienes NextAuth.js (no necesitas Supabase Auth)
+
+#### **Plan de Backups:**
+
+```bash
+# Script ejecutado diariamente (3 AM)
+/home/gabriel/vps-do/nexus-core/backup.sh
+
+# Retiene últimos 7 días
+/backups/nexus_backup_YYYYMMDD_HHMMSS.sql.gz
+```
+
+#### **Connection String:**
+
+```env
+# Local development (desde tu máquina)
+POSTGRES_PRISMA_URL="postgresql://nexus_user:PASSWORD@167.172.251.27:5433/nexus_core?schema=public"
+
+# Production (dentro del VPS)
+POSTGRES_PRISMA_URL="postgresql://nexus_user:PASSWORD@nexus-db:5432/nexus_core?schema=public"
+```
 
 ---
 
@@ -325,17 +408,21 @@ Mes 3-6:  Evaluar métricas:
 ### 🔄 Fase 1: Perfiles de Usuario (EN PROGRESO)
 **Duración:** Septiembre-Octubre 2025 (1-2 semanas)
 **Prioridad:** ALTA
-**Estado:** 🔄 40% Completado
+**Estado:** 🔄 50% Completado
 
 #### ✅ Tareas Completadas:
 - [x] Diseño de modelos Prisma (User, Property, Connection)
 - [x] Enums para ProfessionType, PropertyType, PropertyStatus
 - [x] Schema validado y generado con Prisma
+- [x] **Decisión de Base de Datos** → PostgreSQL Dedicado en VPS
+- [x] Diseño de arquitectura Docker para nexus-db
+- [x] Diseño de script de backups automáticos
 
 #### 🔄 Tareas en Progreso:
-- [ ] **Decisión de Base de Datos** (Neon vs VPS PostgreSQL)
-- [ ] Aplicar schema a BD elegida
-- [ ] Migración de datos existentes (si aplica)
+- [ ] **Setup PostgreSQL dedicado en VPS** (docker-compose + .env)
+- [ ] Aplicar schema de Prisma a nueva BD
+- [ ] Configurar backups automáticos (cron)
+- [ ] Actualizar connection string en proyecto local
 
 #### 🔜 Tareas Pendientes:
 
@@ -647,11 +734,17 @@ Trigger (diario) →
 
 ### Gabriel (Enfoque Técnico)
 
-#### 1. **Decisión de Base de Datos** (DÍA 1)
-- [ ] Evaluar métricas actuales de datos
-- [ ] Decidir: Neon vs VPS PostgreSQL vs Híbrido
-- [ ] Crear proyecto en Neon (si se elige esa opción)
-- [ ] Aplicar schema Prisma a BD elegida
+#### 1. **Setup PostgreSQL Dedicado en VPS** (DÍA 1)
+- [x] ✅ Decisión tomada: PostgreSQL Dedicado en VPS
+- [ ] Crear directorio `~/vps-do/nexus-core` en VPS
+- [ ] Crear `docker-compose.yml` con servicio nexus-db
+- [ ] Crear `.env` con password seguro
+- [ ] Levantar contenedor `docker-compose up -d`
+- [ ] Verificar health check y conectividad
+- [ ] Crear script de backup `backup.sh`
+- [ ] Configurar cron para backups diarios (3 AM)
+- [ ] Aplicar schema Prisma a nueva BD
+- [ ] Actualizar `.env` local con connection string
 
 #### 2. **APIs de Perfil** (DÍAS 2-3)
 - [ ] Endpoint GET /api/users/profile
@@ -685,7 +778,8 @@ Trigger (diario) →
 ### Conjunto
 
 #### 1. **Sesión Estratégica** (SÁBADO - 4 horas)
-- [ ] Decidir base de datos final (Neon vs VPS)
+- [x] ✅ Decidir base de datos final → PostgreSQL Dedicado en VPS
+- [ ] Revisar progreso setup PostgreSQL
 - [ ] Definir roadmap detallado Fase 1
 - [ ] Asignar tareas específicas por semana
 - [ ] Primera sesión Platzi: "Fundamentos y Validación de Ideas"
@@ -698,10 +792,15 @@ Trigger (diario) →
 
 ---
 
-## ❓ Decisiones Pendientes (CRÍTICAS)
+## ❓ Decisiones Pendientes
+
+### ✅ Decisiones Tomadas Recientemente:
+1. **Base de datos para Fase 1:** ✅ **RESUELTO** → PostgreSQL Dedicado en VPS
+   - Decisión: Self-hosted en contenedor Docker independiente
+   - Puerto: 5433 (aislado de N8N en 5432)
+   - Beneficios: $0 costo, control total, aislamiento, PostGIS incluido
 
 ### 🔴 Prioridad ALTA (Decidir esta semana):
-1. **Base de datos para Fase 1:** Neon vs VPS PostgreSQL vs Híbrido
 2. **Nombre definitivo de la plataforma:** Nexus Core vs Urbe Libre vs otros
 3. **Pricing modelo freemium:** ¿Cuándo empezar a cobrar?
 
