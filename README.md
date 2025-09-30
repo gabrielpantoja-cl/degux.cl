@@ -1,38 +1,228 @@
-# Base de Datos de Referenciales para Tasación 📊
+# Nexus Core - Ecosistema Digital Colaborativo 🏗️
 
-[![Project Status: Active Development](https://img.shields.io/badge/status-active%20development-brightgreen)](https://github.com/TheCuriousSloth/referenciales.cl) 
+[![Project Status: Active Development](https://img.shields.io/badge/status-active%20development-brightgreen)](https://github.com/gabrielpantoja-cl/new-project-nexus-core)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
-[![API Status](https://img.shields.io/badge/API%20P%C3%BAblica-Disponible-success)](https://referenciales.cl/api/public/docs)
-[![Statistics Module](https://img.shields.io/badge/Estadísticas%20Avanzadas-Completo-brightgreen)](/dashboard/estadisticas)
+[![API Status](https://img.shields.io/badge/API%20P%C3%BAblica-Disponible-success)](#-api-pública)
+[![Statistics Module](https://img.shields.io/badge/Estadísticas%20Avanzadas-Completo-brightgreen)](#-módulo-de-estadísticas-avanzadas)
+[![Infrastructure](https://img.shields.io/badge/VPS-Digital%20Ocean-blue)](#%EF%B8%8F-infraestructura-actual)
 
-Sistema de gestión para referenciales de tasación inmobiliaria construido con Next.js 15 (App Router), PostgreSQL + PostGIS, autenticación Google OAuth y módulo avanzado de estadísticas.
+**Plataforma colaborativa de datos inmobiliarios abiertos para Chile, con foco en la región del Sur**
 
-## Tabla de Contenidos
-- [Descripción](#descripción)
-- [🆕 API Pública](#-api-pública)
-- [📊 Módulo de Estadísticas Avanzadas](#-módulo-de-estadísticas-avanzadas)
-- [Estado del Proyecto](#estado-del-proyecto)
-- [Características Clave](#características-clave)
-- [Tech Stack](#tech-stack)
-- [Sistema de Autenticación](#sistema-de-autenticación)
-- [Guía Definitiva de Autenticación](#guía-definitiva-de-autenticación)
-- [Prerrequisitos](#prerrequisitos)
-- [Instalación y Configuración](#instalación-y-configuración)
-- [Variables de Entorno](#variables-de-entorno)
-- [Uso](#uso)
-- [Base de Datos](#base-de-datos)
-- [Reportar Problemas](#reportar-problemas)
-- [Contribuciones](#contribuciones)
-- [Licencia](#licencia)
+Ecosistema digital que democratiza el acceso a información inmobiliaria de origen público, construyendo la infraestructura base de datos del mercado inmobiliario del sur de Chile y expandiendo gradualmente a nivel nacional.
 
-## Descripción
-Este proyecto busca crear una base de datos colaborativa 🤝 de referenciales inmobiliarios para facilitar el trabajo de tasación en Chile. Permite a usuarios autenticados gestionar información relevante, incluyendo datos espaciales.
+---
 
-## 🆕 API Pública
+## 🎯 Visión del Proyecto
 
-**¡Nueva característica!** Ahora puedes acceder a los datos del mapa de referenciales inmobiliarias **sin autenticación** a través de nuestra API pública.
+**De PropTech regional a InfraTech nacional**: Transformarnos en la infraestructura base de datos inmobiliarios para Valdivia, Los Ríos y zona sur, siendo la "Bloomberg del mercado inmobiliario chileno".
 
-### 🚀 Acceso Rápido
+### Filosofía Core:
+- 🌐 **Datos Abiertos**: Información de origen público accesible para todos
+- 🤝 **Crowdsourcing**: Los usuarios aportan datos, todos se benefician
+- 🔌 **API-First**: Otros desarrolladores pueden construir sobre nuestra infraestructura
+- 💰 **Freemium Radical**: Tasaciones gratuitas, monetización vía servicios enterprise
+- 🚀 **Open Source**: Herramientas libres y conocimiento compartido
+
+---
+
+## 📋 Tabla de Contenidos
+
+- [Estado del Proyecto](#-estado-del-proyecto)
+- [Infraestructura Actual](#%EF%B8%8F-infraestructura-actual)
+- [Componentes del Ecosistema](#-componentes-del-ecosistema)
+- [API Pública](#-api-pública)
+- [Módulo de Estadísticas Avanzadas](#-módulo-de-estadísticas-avanzadas)
+- [Tech Stack](#-tech-stack)
+- [Roadmap](#-roadmap)
+- [Instalación](#-instalación-y-configuración)
+- [Contribuciones](#-contribuciones)
+
+---
+
+## 🚀 Estado del Proyecto
+
+### ✅ Funcionalidades Completadas (Fase 0)
+
+#### Infraestructura Productiva
+- ✅ **VPS Digital Ocean** - 7 servicios activos, 99%+ uptime
+- ✅ **Nginx Proxy** - Gateway con SSL automático (Let's Encrypt)
+- ✅ **Portainer** - Gestión visual de Docker
+- ✅ **N8N Automation** - Workflows de scraping y notificaciones
+- ✅ **PostgreSQL + PostGIS** - Base de datos geoespacial
+
+#### Aplicación Core
+- ✅ **API Pública** - REST endpoints sin autenticación, CORS habilitado
+- ✅ **Estadísticas Avanzadas** - Análisis interactivo con reportes PDF para CBR
+- ✅ **Autenticación Google OAuth** - Sistema seguro y estable
+- ✅ **Gestión CRUD Referenciales** - Interfaz optimizada para tasadores
+- ✅ **Data Ingestion Automatizada** - Scraping de Portal Inmobiliario y Mercado Libre
+
+### 🔄 En Desarrollo (Fase 1)
+
+- 🔄 **Sistema de Perfiles Profesionales** - 40% completado (schema diseñado)
+- 🔜 **Gestión de Propiedades por Usuario** - Modelo descentralizado
+- 🔜 **Base de datos escalable** - Decisión entre Neon vs VPS PostgreSQL
+
+### 📅 Planificado (Fases 2-5)
+
+- 🔜 **Networking** - Red de profesionales + foro + mensajería
+- 🔜 **Blog & Data Stories** - Centro de contenido educativo
+- 🔜 **Sofía (Bot RAG)** - Asistente IA con contexto de mercado
+- 🔜 **CRM Inmobiliario** - Pipeline de ventas para corredores
+
+---
+
+## 🖥️ Infraestructura Actual
+
+### VPS Digital Ocean (Productivo desde Agosto 2025)
+
+**IP:** 167.172.251.27
+**Documentación:** `/vps-do-docs/`
+**Estado:** ✅ Operativo - 7 servicios activos
+
+#### Servicios Core:
+
+| Servicio | Puerto | Estado | Descripción |
+|----------|--------|--------|-------------|
+| **Nginx** | 80/443 | ✅ Running | Proxy reverso con SSL |
+| **Portainer** | 9443 | ✅ Running | Panel de admin Docker |
+| **N8N** | 5678 | ✅ Healthy | Automatización workflows |
+| **PostgreSQL** | Interno | ✅ Healthy | Base de datos principal |
+| **Redis** | Interno | ✅ Healthy | Cache N8N |
+
+#### Arquitectura:
+```
+Internet
+  ↓
+Nginx Proxy (80/443)
+  ├─ N8N (n8n.gabrielpantoja.cl)
+  ├─ Nexus Core App (en desarrollo)
+  └─ Otros servicios
+
+Portainer (9443) → Gestión independiente
+```
+
+### Filosofía de Infraestructura:
+- ✅ **Sostenible y Reproducible** - Todo como código (Docker Compose)
+- ✅ **Infraestructura como Código** - Repositorio `vps-do`
+- ✅ **Documentación Viviente** - `vps-do-docs` con estado real
+- ✅ **Modular** - Servicios independientes, fácil escalamiento
+
+---
+
+## 🌐 Componentes del Ecosistema
+
+### ✅ Implementados
+
+#### 1. **Mapa con Estadísticas Avanzadas** ✅
+**Ruta:** `/dashboard/estadisticas`
+
+- Mapa interactivo con PostGIS + React Leaflet
+- Selección de áreas con herramienta de círculo
+- 6 tipos de gráficos (scatter, tendencias, histogramas)
+- Reportes PDF de 3 páginas para CBR
+- Integración completa con datos del Conservador
+
+**[Ver documentación completa →](docs/ADVANCED_STATISTICS_MODULE_GUIDE.md)**
+
+#### 2. **Data Ingestion Automatizada (N8N)** ✅
+
+- ✅ Scraping Portal Inmobiliario
+- ✅ Scraping Mercado Libre
+- ✅ Notificaciones Gmail
+- ✅ Persistencia en PostgreSQL
+- ✅ Frecuencia configurable
+
+#### 3. **API Pública** ✅
+
+REST API sin autenticación para integración externa:
+
+```javascript
+fetch('https://referenciales.cl/api/public/map-data?comuna=valdivia')
+  .then(res => res.json())
+  .then(data => console.log(data));
+```
+
+**[Ver documentación de API →](#-api-pública)**
+
+---
+
+### 🔜 En Desarrollo (Fase 1)
+
+#### 4. **Sistema de Perfiles Profesionales** 🔄
+**Prioridad:** ALTA (Base para todo lo demás)
+
+**Modelos diseñados:**
+- `User` - Perfil extendido con bio, profesión, empresa, región
+- `Property` - Propiedades listadas por usuarios
+- `Connection` - Red de networking entre profesionales
+
+**Rutas planificadas:**
+- `/dashboard/perfil` - Editar mi perfil
+- `/networking/[userId]` - Perfil público
+- `/networking/mis-propiedades` - Mis propiedades
+
+**Estado:** Schema diseñado, pendiente decisión de BD y API implementation
+
+---
+
+### 🔜 Planificados (Fases 2-5)
+
+#### 5. **Networking - Red de Profesionales** 🔜
+**Fase 2 (Oct-Nov 2025)**
+
+- Directorio de profesionales (corredores, tasadores, arquitectos)
+- Sistema de conexiones (LinkedIn-style)
+- Foro de discusión por categorías
+- Mensajería privada entre conexiones
+- Búsqueda por región/especialidad
+
+#### 6. **Blog y Centro de Datos** 🔜
+**Fase 3 (Nov-Dic 2025)**
+
+- Blog educativo con MDX support
+- Data stories con visualizaciones interactivas
+- Reportes de mercado automatizados (vía N8N)
+- SEO optimizado para captar tráfico orgánico
+- CMS para administradores y autores invitados
+
+#### 7. **Sofía - Agente Bot RAG** 🔜
+**Fase 4 (Dic 2025-Ene 2026)**
+
+- RAG sobre base de datos de referenciales
+- Vector DB (Supabase pgvector o Pinecone)
+- Contexto sobre tasaciones, documentos CBR/SII, mercado
+- Widget flotante disponible globalmente
+- Casos de uso: consultas de mercado, explicación legal, búsqueda de propiedades
+
+#### 8. **CRM Inmobiliario** 🔜
+**Fase 5 (Feb-Mar 2026)**
+
+- Gestión de clientes y leads
+- Pipeline visual (Kanban drag & drop)
+- Automatización de tareas y recordatorios
+- Reportes de desempeño
+- Integración con propiedades de usuario
+
+---
+
+### ❌ Componentes Excluidos (Filosofía Descentralizada)
+
+#### No habrá página de propiedades dedicada
+- ❌ Sin listado centralizado `/propiedades`
+- ✅ Propiedades visibles en perfil de cada usuario/corredor
+- **Razón:** Fomenta networking y visibilidad de profesionales
+
+#### No habrá página "Quiénes Somos"
+- ❌ Sin página institucional tradicional
+- ✅ Información integrada en landing + FAQ
+- **Razón:** Foco en comunidad, no en la empresa
+
+---
+
+## 🔌 API Pública
+
+### Acceso Rápido
 
 ```javascript
 // Obtener datos del mapa
@@ -45,27 +235,24 @@ fetch('https://referenciales.cl/api/public/map-data')
   });
 ```
 
-### 📊 Endpoints Disponibles
+### Endpoints Disponibles
 
-- **📍 Datos del Mapa**: `GET /api/public/map-data`
-  - Parámetros: `comuna`, `anio`, `limit`
-  - Ejemplo: `/api/public/map-data?comuna=santiago&limit=50`
+| Endpoint | Método | Descripción | Parámetros |
+|----------|--------|-------------|------------|
+| `/api/public/map-data` | GET | Datos de referenciales | `comuna`, `anio`, `limit` |
+| `/api/public/map-config` | GET | Metadatos de la API | - |
+| `/api/public/health` | GET | Health check | `stats` (opcional) |
+| `/api/public/docs` | GET | Documentación completa | - |
 
-- **⚙️ Configuración**: `GET /api/public/map-config`
-  - Metadatos de la API y configuración del mapa
-
-- **📚 Documentación**: `GET /api/public/docs`
-  - Documentación completa con ejemplos de código
-
-### ✨ Características de la API
+### Características
 
 - ✅ **Sin autenticación** - Completamente pública
 - ✅ **CORS habilitado** - Funciona desde cualquier dominio
-- ✅ **Datos en tiempo real** - Directamente desde la base de datos
-- ✅ **Filtros disponibles** - Comuna, año, límite de resultados
-- ✅ **Información detallada** - Monto, superficie, CBR, ubicación, etc.
+- ✅ **Datos en tiempo real** - Directamente desde PostgreSQL
+- ✅ **Filtros disponibles** - Comuna, año, límite
+- ✅ **PostGIS integrado** - Datos geoespaciales precisos
 
-### 🗺️ Integración con React Leaflet
+### Ejemplo React + Leaflet
 
 ```tsx
 import { MapContainer, TileLayer, CircleMarker, Popup } from 'react-leaflet';
@@ -83,7 +270,7 @@ const ReferencialMap = () => {
   }, []);
 
   return (
-    <MapContainer center={[-33.4489, -70.6693]} zoom={10}>
+    <MapContainer center={[-39.8196, -73.2452]} zoom={10}>
       <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
       {points.map(point => (
         <CircleMarker key={point.id} center={[point.lat, point.lng]}>
@@ -91,7 +278,7 @@ const ReferencialMap = () => {
             <div>
               <h3>{point.predio}</h3>
               <p><strong>Comuna:</strong> {point.comuna}</p>
-              <p><strong>Monto:</strong> {point.monto}</p>
+              <p><strong>Monto:</strong> ${point.monto?.toLocaleString()}</p>
               <p><strong>Superficie:</strong> {point.superficie} m²</p>
             </div>
           </Popup>
@@ -102,324 +289,409 @@ const ReferencialMap = () => {
 };
 ```
 
-### 📖 Documentación Completa
-
-- **📚 API Docs**: [https://referenciales.cl/api/public/docs](https://referenciales.cl/api/public/docs)
-- **🔧 Guía de Integración**: [`docs/integration-examples/integration-guide.md`](docs/integration-examples/integration-guide.md)
-- **⚛️ Componentes React**: [`docs/integration-examples/ReferencialMapComponent.tsx`](docs/integration-examples/ReferencialMapComponent.tsx)
-- **🌐 Ejemplo Vanilla JS**: [`docs/integration-examples/vanilla-example.html`](docs/integration-examples/vanilla-example.html)
-
-### 🧪 Probar la API
-
-```bash
-# Bash/Linux
-./scripts/test-api-public.sh
-
-# PowerShell/Windows
-.\scripts\test-api-public.ps1
-
-# cURL
-curl "https://referenciales.cl/api/public/map-data?comuna=santiago&limit=5"
-```
+**[Ver más ejemplos →](docs/integration-examples/)**
 
 ---
 
 ## 📊 Módulo de Estadísticas Avanzadas
 
-**¡Nueva funcionalidad completa!** El sistema ahora incluye un módulo de análisis estadístico avanzado para profesionales de la tasación.
+### Características Principales
 
-### 🎯 Características Principales
+- 🗺️ **Mapa Interactivo** - Selección de áreas mediante círculos
+- 📈 **Análisis en Tiempo Real** - 6 tipos de gráficos diferentes
+- 📊 **Estadísticas Siempre Visibles** - Métricas clave permanentes
+- 📄 **Reportes PDF Completos** - 3 páginas optimizado para CBR
 
-- **🗺️ Mapa Interactivo**: Selección de áreas mediante círculos con herramientas de dibujo
-- **📈 Análisis en Tiempo Real**: 6 tipos de gráficos diferentes (dispersión, tendencias, histogramas)
-- **📊 Estadísticas Siempre Visibles**: Métricas clave permanentemente disponibles
-- **📄 Reportes PDF Completos**: Sistema de 3 páginas optimizado para CBR
-
-### 📑 Estructura del Reporte PDF
+### Estructura del Reporte PDF
 
 | Página | Formato | Contenido |
 |--------|---------|-----------|
-| **1** | Vertical | Resumen ejecutivo, estadísticas clave, gráfico principal |
-| **2** | Horizontal | **Tabla completa para CBR** con fojas, número, año, ROL |
+| **1** | Vertical | Resumen ejecutivo + gráfico principal |
+| **2** | Horizontal | Tabla completa para CBR (fojas, número, año, ROL) |
 | **3** | Vertical | Información adicional y guía de campos |
 
-### 🏢 Integración con Conservador de Bienes Raíces (CBR)
+### Integración con Conservador de Bienes Raíces (CBR)
 
-El reporte PDF incluye **todos los campos necesarios** para la revisión en el Conservador:
+El reporte PDF incluye **todos los campos requeridos**:
 
-- ✅ **Fojas**: Número de fojas del registro
-- ✅ **Número**: Número específico del registro  
-- ✅ **Año**: Año de inscripción de la escritura
-- ✅ **CBR**: Conservador de Bienes Raíces correspondiente
-- ✅ **ROL**: Rol de avalúo fiscal de la propiedad
-- ✅ **Fecha Escritura**: Fecha de otorgamiento
-- ✅ **Comuna, Superficie, Monto**: Datos complementarios
+- ✅ Fojas, Número, Año
+- ✅ CBR correspondiente
+- ✅ ROL de avalúo fiscal
+- ✅ Fecha de escritura
+- ✅ Comuna, Superficie, Monto
 
-### 🚀 Acceso y Uso
+### Acceso
 
 ```
 Dashboard → Estadísticas → /dashboard/estadisticas
 ```
 
-1. **Seleccionar área** dibujando un círculo en el mapa
-2. **Revisar estadísticas** actualizadas automáticamente
-3. **Cambiar tipo de gráfico** según el análisis necesario
-4. **Generar PDF completo** para revisión en CBR
-5. **Imprimir listado** optimizado para consulta oficial
+1. Seleccionar área dibujando círculo
+2. Revisar estadísticas actualizadas
+3. Cambiar tipo de gráfico
+4. Generar PDF completo
+5. Imprimir listado optimizado
 
-### 📚 Documentación Completa
-
-- **📖 Guía Completa**: [`docs/ADVANCED_STATISTICS_MODULE_GUIDE.md`](docs/ADVANCED_STATISTICS_MODULE_GUIDE.md)
-- **🔧 Implementación Técnica**: React Leaflet + Recharts + jsPDF
-- **🗃️ Integración**: PostGIS spatial queries + análisis estadístico
+**[Documentación completa →](docs/ADVANCED_STATISTICS_MODULE_GUIDE.md)**
 
 ---
 
-## Estado del Proyecto
-🚀 **Sistema Completamente Funcional** 🚀
+## 🛠️ Tech Stack
 
-### Funcionalidades Completadas:
-- ✅ **API Pública Implementada** - Lista para integración externa 🎉
-- ✅ **Módulo de Estadísticas Avanzadas** - Análisis completo con reportes PDF para CBR 📊
-- ✅ **Sistema de Autenticación con Google** - Completamente estable 🔒
-- ✅ **Gestión CRUD de Referenciales** - Interfaz optimizada 📝
-- ✅ **Integración PostGIS** - Datos espaciales funcionales 🗺️
+### Frontend
+- **Framework:** Next.js 15.2.0 (App Router)
+- **Lenguaje:** TypeScript
+- **Estilos:** Tailwind CSS
+- **UI:** React 19
+- **Mapas:** React Leaflet
+- **Gráficos:** Recharts
+- **PDF:** jsPDF + html2canvas
 
-### En Desarrollo Continuo:
-- Optimización de performance y UX
-- Nuevas funcionalidades según feedback de usuarios
-- Integración con APIs externas del ecosistema inmobiliario
+### Backend
+- **Database:** PostgreSQL 15 + PostGIS
+- **ORM:** Prisma
+- **Auth:** NextAuth.js v4 (Google OAuth)
+- **API:** Next.js API Routes (REST)
 
-## Características Clave
--   **🆕 API Pública:** Acceso sin autenticación a datos del mapa para integración externa 🌐
--   **📊 Estadísticas Avanzadas:** Módulo completo de análisis con reportes PDF para CBR 📄
--   **Autenticación Segura:** Inicio de sesión exclusivo con Google OAuth 2.0 🔐
--   **Panel de Administración:** Interfaz protegida para usuarios autenticados 🛡️
--   **Gestión CRUD:** Crear, leer, actualizar y eliminar referenciales inmobiliarios 📋
--   **Análisis Geoespacial:** PostGIS + selección de áreas circulares en mapas interactivos 🗺️
--   **Reportes Profesionales:** PDFs de 3 páginas optimizados para revisión en Conservador 📑
--   **Interfaz Moderna:** Construida con Next.js App Router y Tailwind CSS ✨
+### Infraestructura
+- **VPS:** Digital Ocean Droplet
+- **Container:** Docker + Docker Compose
+- **Proxy:** Nginx + Let's Encrypt SSL
+- **Automation:** N8N
+- **Monitoring:** Portainer
+- **Cache:** Redis
 
-## Tech Stack
--   **Framework:** Next.js 15.2.0 (App Router)
--   **Lenguaje:** TypeScript
--   **Estilos:** Tailwind CSS
--   **Base de Datos:** PostgreSQL con extensión PostGIS
--   **ORM:** Prisma
--   **Autenticación:** NextAuth.js v4 (Google Provider)
--   **UI:** React
--   **🆕 API Pública:** REST endpoints con CORS habilitado
--   **📊 Mapas y Gráficos:** React Leaflet + Recharts
--   **📄 Generación PDF:** jsPDF + html2canvas
--   **🗺️ Análisis Espacial:** PostGIS spatial queries
+### DevOps
+- **CI/CD:** GitHub Actions (planificado)
+- **Registry:** GitHub Container Registry
+- **Backups:** Automatizados vía Docker volumes
+- **Docs:** Markdown + GitHub
 
-## Sistema de Autenticación
+---
 
-El proyecto utiliza **NextAuth.js v4.24.11** para la autenticación, con las siguientes características:
+## 📅 Roadmap
 
-- **Proveedor único:** Google OAuth 2.0 para simplificar el proceso de registro e inicio de sesión
-- **Adaptador de base de datos:** @next-auth/prisma-adapter para persistencia en PostgreSQL
-- **Estrategia de sesión:** JWT para mejor rendimiento
-- **Estado actual:** Configuración estable y funcional en entornos Linux y Windows
-- **🆕 Rutas públicas:** API pública disponible sin autenticación en `/api/public/*`
+### ✅ Fase 0: Infraestructura Base (COMPLETADA - Agosto 2025)
 
-### Notas sobre migración futura
+- [x] VPS Digital Ocean configurado
+- [x] Nginx + SSL automático
+- [x] Portainer para gestión Docker
+- [x] N8N + PostgreSQL + Redis
+- [x] Workflows de scraping Portal Inmobiliario
+- [x] Workflows de scraping Mercado Libre
+- [x] Backups automatizados
+- [x] Documentación en vps-do-docs
 
-Se planea migrar a **Auth.js v5** (NextAuth.js v5) en el futuro para aprovechar:
+**Resultado:** Infraestructura productiva con 7 servicios activos
 
-- Mejor integración con Next.js App Router
-- Mejor soporte para Edge Runtime
-- API más intuitiva con funciones como `signIn` y `signOut` exportadas directamente
+---
 
-Consulta el archivo `auth-notes.md` para obtener detalles completos sobre la configuración actual y el plan de migración.
+### 🔄 Fase 1: Perfiles de Usuario (EN PROGRESO - Sept-Oct 2025)
+**Duración:** 1-2 semanas | **Prioridad:** ALTA | **Estado:** 40% completado
 
-## Guía Definitiva de Autenticación
+#### ✅ Completado:
+- [x] Diseño de modelos Prisma (User, Property, Connection)
+- [x] Enums (ProfessionType, PropertyType, PropertyStatus)
+- [x] Schema validado y generado
 
-> **¿Problemas con el login, bucles infinitos o errores de OAuth?**
->
-> Consulta la [Guía Definitiva para la Prevención y Solución de Bucles de Autenticación](docs/GUIA-DEFINITIVA-AUTENTICACION.md) para diagnóstico, checklist y buenas prácticas. Es el manual oficial para debugging y referencia de autenticación en este proyecto.
+#### 🔄 En Progreso:
+- [ ] **Decisión de Base de Datos** (Neon vs VPS PostgreSQL)
+- [ ] Aplicar schema a BD elegida
+- [ ] Migración de datos existentes
 
-## Prerrequisitos
--   Node.js (v18 o superior recomendado)
--   npm o yarn
--   Git
--   Una instancia de PostgreSQL con la extensión PostGIS habilitada.
+#### 🔜 Pendiente:
+- [ ] APIs de perfil (GET, PUT /api/users/profile)
+- [ ] APIs de propiedades (CRUD /api/properties)
+- [ ] Página `/dashboard/perfil`
+- [ ] Página `/networking/[userId]`
+- [ ] Sección `/networking/mis-propiedades`
 
-## Instalación y Configuración
+**Entregables:**
+- Sistema funcional de perfiles profesionales
+- Usuarios pueden publicar y gestionar propiedades
+- Perfiles públicos accesibles vía URL
 
-1.  **Clonar el repositorio:**
-    ```bash
-    git clone https://github.com/TheCuriousSloth/referenciales.cl.git
-    cd referenciales.cl
-    ```
+---
 
-2.  **Instalar dependencias:**
-    ```bash
-    npm install
-    # o
-    # yarn install
-    ```
+### 🔜 Fase 2: Networking y Conexiones (Oct-Nov 2025)
+**Duración:** 2-3 semanas | **Prioridad:** ALTA
 
-3.  **Configurar Variables de Entorno:**
-    Crea un archivo `.env` en la raíz del proyecto y copia el contenido de `.env.example` (si existe) o añade las variables necesarias (ver [Variables de Entorno](#variables-de-entorno)).
+- [ ] Sistema de conexiones (solicitudes, aceptar/rechazar)
+- [ ] Directorio de profesionales con filtros
+- [ ] Mensajería básica 1-a-1
+- [ ] Foro de discusión con categorías
+- [ ] Notificaciones vía N8N
 
-4.  **Sincronizar Esquema de Base de Datos:**
-    Este comando aplica el esquema de Prisma a tu base de datos. ¡Úsalo con cuidado en producción! (Considera usar `prisma migrate dev` para desarrollo con migraciones).
-    ```bash
-    npx prisma db push
-    ```
+---
 
-5.  **Generar Cliente Prisma:**
-    Este comando genera el cliente Prisma basado en tu esquema.
-    ```bash
-    npx prisma generate
-    ```
+### 🔜 Fase 3: Blog y Centro de Datos (Nov-Dic 2025)
+**Duración:** 2 semanas | **Prioridad:** MEDIA
 
-6.  **🆕 Probar la API Pública:**
-    ```bash
-    # Iniciar servidor de desarrollo
-    npm run dev
+- [ ] Blog sistema con MDX support
+- [ ] CMS para autores (admin + invited)
+- [ ] Data stories con gráficos interactivos
+- [ ] Reportes de mercado automatizados (N8N)
+- [ ] 10 posts educativos iniciales
 
-    # En otra terminal, probar la API
-    ./scripts/test-api-public.sh
-    # o en Windows PowerShell:
-    .\scripts\test-api-public.ps1
-    ```
+---
 
-## Variables de Entorno
-Asegúrate de definir las siguientes variables en tu archivo `.env`:
+### 🔜 Fase 4: Sofía - Bot RAG (Dic 2025-Ene 2026)
+**Duración:** 3-4 semanas | **Prioridad:** MEDIA-ALTA
 
--   `POSTGRES_PRISMA_URL`: Cadena de conexión a tu base de datos PostgreSQL (incluyendo usuario, contraseña, host, puerto, nombre de base de datos y `schema=public`). Ejemplo: `postgresql://USER:PASSWORD@HOST:PORT/DATABASE?schema=public`
--   `GOOGLE_CLIENT_ID`: Tu Client ID de Google Cloud Console para OAuth.
--   `GOOGLE_CLIENT_SECRET`: Tu Client Secret de Google Cloud Console para OAuth.
--   `NEXTAUTH_URL`: La URL base de tu aplicación (ej. `http://localhost:3000` para desarrollo).
--   `NEXTAUTH_SECRET`: Una cadena secreta aleatoria para firmar los tokens de sesión (puedes generar una con `openssl rand -base64 32`).
+- [ ] Vector DB setup (Supabase pgvector o Pinecone)
+- [ ] Embeddings de referenciales + blog + docs
+- [ ] Integración Anthropic Claude API
+- [ ] Widget flotante global
+- [ ] Historial de conversaciones por usuario
 
-## Uso
+**Casos de uso:**
+- "¿Cuál es el precio promedio en Valdivia Centro?"
+- "Explica cómo hacer una tasación MOP"
+- "¿Qué documentos necesito del CBR?"
 
--   **Ejecutar en modo desarrollo:**
-    ```bash
-    npm run dev
-    # o
-    # yarn dev
-    ```
-    Abre [http://localhost:3000](http://localhost:3000) en tu navegador.
+---
 
--   **🆕 Probar API Pública:**
-    ```bash
-    # Probar endpoints de la API pública
-    curl http://localhost:3000/api/public/map-data
-    curl http://localhost:3000/api/public/map-config
-    curl http://localhost:3000/api/public/docs
-    ```
+### 🔜 Fase 5: CRM Inmobiliario (Feb-Mar 2026)
+**Duración:** 4-5 semanas | **Prioridad:** MEDIA
 
--   **Crear build de producción:**
-    ```bash
-    npm run build
-    # o
-    # yarn build
-    ```
+- [ ] Modelos: CrmClient, CrmDeal, CrmNote, CrmTask
+- [ ] Pipeline Kanban (drag & drop)
+- [ ] Automatizaciones de tareas
+- [ ] Reportes de métricas
+- [ ] Integración con Property model
 
--   **Ejecutar en modo producción:**
-    ```bash
-    npm run start
-    # o
-    # yarn start
-    ```
+---
 
-## Base de Datos 🗄️
-Usamos PostgreSQL + Prisma ORM con la extensión PostGIS. El esquema actual (`prisma/schema.prisma`) incluye:
--   **User**: Información de usuarios autenticados 👤
--   **Referencial**: Datos de referenciales inmobiliarios, con campos `lat` y `lng` para datos espaciales 🗺️.
--   **Account**: Gestión de cuentas OAuth 🔐 (manejado por NextAuth).
--   **Session**: Gestión de sesiones de usuario (manejado por NextAuth).
--   **VerificationToken**: Tokens para verificación (ej. email, manejado por NextAuth).
--   **Conservador**: Información sobre Conservadores de Bienes Raíces.
+## 💰 Modelo de Monetización
 
-### 🆕 API Pública de Datos
-Los datos de la tabla `referenciales` están disponibles públicamente a través de la API, excluyendo información sensible como nombres de compradores/vendedores.
+### Revenue Streams Actuales (Mantener)
+1. **Tasaciones MOP** - Contratos gubernamentales
+2. **Tasaciones privadas** - Clientes particulares
+3. **Corretaje tradicional** - Propiedades en venta
 
-## Reportar Problemas 🐛
+### Nuevos Revenue Streams (Escalables)
 
-¿Encontraste un bug, tienes una sugerencia o necesitas ayuda?
+#### 1. Freemium Tasaciones
+- **Free:** Tasaciones automáticas (contribuyendo datos)
+- **Pro:** Tasaciones certificadas ($20k-50k CLP)
+- **Enterprise:** API access para bancos
 
-### 📋 GitHub Issues
-Usa nuestro sistema de issues para:
-- **🐛 Reportar bugs**: Incluye pasos para reproducir el problema
-- **💡 Sugerir mejoras**: Nuevas funcionalidades o optimizaciones  
-- **❓ Hacer preguntas**: Sobre uso, integración o desarrollo
-- **📊 Issues del módulo de estadísticas**: Problemas específicos con análisis o PDFs
-- **🌐 Issues de la API pública**: Problemas de integración externa
+#### 2. Suscripciones CRM (Post Fase 5)
+- **Free:** Hasta 10 clientes
+- **Profesional:** $15k CLP/mes - Clientes ilimitados
+- **Equipo:** $40k CLP/mes - Multi-usuario + reportes
 
-### 🔗 Enlaces Útiles
-- **[Crear nuevo issue](https://github.com/TheCuriousSloth/referenciales.cl/issues/new)**
-- **[Ver issues existentes](https://github.com/TheCuriousSloth/referenciales.cl/issues)**
-- **[Discusiones](https://github.com/TheCuriousSloth/referenciales.cl/discussions)**
+#### 3. Data Services B2B
+- Licencias de datos agregados
+- Reports de mercado zona sur ($100k-300k CLP)
+- Consultoría en automatización
 
-### 📝 Información a Incluir
-Para reportar problemas efectivamente:
-- Versión del navegador y sistema operativo
-- Pasos para reproducir el problema
-- Screenshots o videos si es necesario
-- Logs de consola relevantes
+#### 4. Featured Listings (Post Fase 1)
+- Propiedades destacadas: $5k CLP/mes
+- Destacado en directorio: $10k CLP/mes
 
-## 🆕 Scripts Útiles
+---
+
+## 📦 Instalación y Configuración
+
+### Prerrequisitos
+- Node.js v18+
+- npm o yarn
+- Git
+- PostgreSQL 15+ con PostGIS
+
+### Instalación
+
+1. **Clonar el repositorio:**
+```bash
+git clone https://github.com/gabrielpantoja-cl/new-project-nexus-core.git
+cd new-project-nexus-core
+```
+
+2. **Instalar dependencias:**
+```bash
+npm install
+```
+
+3. **Configurar variables de entorno:**
+```bash
+cp .env.example .env
+# Editar .env con tus credenciales
+```
+
+4. **Sincronizar schema de base de datos:**
+```bash
+npx prisma db push
+npx prisma generate
+```
+
+5. **Iniciar servidor de desarrollo:**
+```bash
+npm run dev
+```
+
+6. **Probar API pública:**
+```bash
+./scripts/test-api-public.sh
+```
+
+### Variables de Entorno
+
+```env
+# Database
+POSTGRES_PRISMA_URL="postgresql://USER:PASSWORD@HOST:PORT/DATABASE?schema=public"
+
+# Auth
+GOOGLE_CLIENT_ID="your_google_client_id"
+GOOGLE_CLIENT_SECRET="your_google_client_secret"
+NEXTAUTH_URL="http://localhost:3000"
+NEXTAUTH_SECRET="your_random_secret"
+
+# Optional
+NEXT_PUBLIC_CALLBACK_URL="http://localhost:3000/api/auth/callback/google"
+```
+
+---
+
+## 🧪 Scripts Útiles
 
 ```bash
 # Desarrollo
 npm run dev               # Servidor de desarrollo con Turbo
-npm run build             # Build de producción (incluye Prisma generate)
-
-# Probar API pública
-npm run test:api          # Ejecuta test-api-public.sh
-npm run test:api:windows  # Ejecuta test-api-public.ps1
+npm run build             # Build de producción
 
 # Testing
 npm run test              # Jest tests completos
 npm run test:watch        # Jest en modo watch
-npm run test:public-api   # Tests específicos de API pública
+npm run test:public-api   # Tests de API pública
 
 # Base de datos
 npm run prisma:generate   # Generar cliente Prisma
 npm run prisma:push       # Aplicar schema a DB
 npm run prisma:studio     # Abrir Prisma Studio
-npm run prisma:reset      # Reset completo de schema
+npm run prisma:reset      # Reset completo
 
 # Validación
 npm run lint              # ESLint
-npx tsc --noEmit         # Verificación de TypeScript
+npx tsc --noEmit         # TypeScript check
 ```
 
-## Contribuciones 🤝
-¡Las contribuciones son bienvenidas! Si encuentras un error o tienes una sugerencia, por favor abre un issue. Si quieres contribuir con código, siéntete libre de hacer un Pull Request.
+---
 
-### 🆕 Para Desarrolladores Externos
-Si quieres integrar la API pública en tu proyecto:
+## 📊 Métricas de Éxito (6 meses)
 
-1. **Revisa la documentación**: [https://referenciales.cl/api/public/docs](https://referenciales.cl/api/public/docs)
+### Infraestructura ✅
+- [x] VPS 99%+ uptime
+- [x] 7 servicios activos
+- [x] Backups automatizados
+
+### Datos
+- **Objetivo:** 5,000+ propiedades Los Ríos
+- **Actual:** ~1,000+ (Portal + Mercado Libre)
+- **Gap:** Implementar CBR + SII + crowdsourcing
+
+### Producto (Fase 1-2)
+- [ ] 100+ usuarios registrados
+- [ ] 50+ propiedades listadas
+- [ ] 20+ conexiones activas
+- [ ] 5+ posts blog (>100 visitas c/u)
+
+### Negocio
+- Mantener tasaciones MOP (revenue base)
+- $2M+ CLP/mes revenue total
+- 3+ clientes B2B
+- 2+ suscripciones CRM (post Fase 5)
+
+---
+
+## 🤝 Contribuciones
+
+¡Las contribuciones son bienvenidas!
+
+### Para Desarrolladores
+
+1. **Fork el proyecto**
+2. **Crea una rama** (`git checkout -b feature/AmazingFeature`)
+3. **Commit cambios** (`git commit -m 'Add AmazingFeature'`)
+4. **Push a la rama** (`git push origin feature/AmazingFeature`)
+5. **Abre un Pull Request**
+
+### Para Integraciones Externas
+
+Si quieres integrar la API pública:
+
+1. **Revisa la documentación**: [API Docs](#-api-pública)
 2. **Usa los ejemplos**: Disponibles en [`docs/integration-examples/`](docs/integration-examples/)
-3. **Módulo de estadísticas**: Consulta [`docs/ADVANCED_STATISTICS_MODULE_GUIDE.md`](docs/ADVANCED_STATISTICS_MODULE_GUIDE.md)
-4. **Reporta issues**: Si encuentras problemas con la API pública o el módulo de estadísticas
+3. **Módulo de estadísticas**: [`docs/ADVANCED_STATISTICS_MODULE_GUIDE.md`](docs/ADVANCED_STATISTICS_MODULE_GUIDE.md)
+4. **Reporta issues**: Si encuentras problemas
 
-## Licencia 📄
+---
+
+## 📝 Reportar Problemas
+
+¿Encontraste un bug o tienes una sugerencia?
+
+### GitHub Issues
+- 🐛 **Bugs**: Incluye pasos para reproducir
+- 💡 **Mejoras**: Nuevas funcionalidades
+- ❓ **Preguntas**: Sobre uso o integración
+- 📊 **Estadísticas**: Problemas con análisis o PDFs
+- 🌐 **API**: Problemas de integración externa
+
+**[Crear nuevo issue →](https://github.com/gabrielpantoja-cl/new-project-nexus-core/issues/new)**
+
+---
+
+## 📚 Documentación Adicional
+
+### Guías Técnicas
+- **[Plan de Trabajo V3](Plan_Trabajo_Ecosistema_Digital_V3.md)** - Roadmap completo
+- **[Guía de Autenticación](docs/GUIA-DEFINITIVA-AUTENTICACION.md)** - Debugging OAuth
+- **[Estadísticas Avanzadas](docs/ADVANCED_STATISTICS_MODULE_GUIDE.md)** - Módulo completo
+- **[Guía de Integración API](docs/integration-examples/integration-guide.md)** - Ejemplos externos
+
+### Infraestructura
+- **[VPS Guide](vps-do-docs/guides/vps-guide.md)** - Gestión del servidor
+- **[N8N Guide](vps-do-docs/services/n8n/n8n-guide.md)** - Automatización workflows
+- **[Scraping Portal](vps-do-docs/projects/portalinmobiliario-complete-guide.md)** - Data ingestion
+
+---
+
+## 👥 Equipo
+
+**Gabriel** - Tech Lead (Backend, Infraestructura, Data)
+**Mona** - Product Lead (Frontend, UX/UI, Estrategia)
+
+### Organización
+- **GitHub Org:** pp-technologies (en configuración)
+- **Repositorio actual:** new-project-nexus-core
+- **Repositorio infra:** vps-do (privado)
+- **Docs:** vps-do-docs
+
+---
+
+## 📄 Licencia
+
 Este proyecto está licenciado bajo la [Licencia MIT](https://opensource.org/licenses/MIT).
 
 ---
 
-## 🌟 ¿Usas nuestras funcionalidades?
+## 🌟 ¿Usas Nexus Core?
 
-Si estás integrando la API pública o usando el módulo de estadísticas de referenciales.cl, ¡nos encantaría saberlo!
+Si estás integrando la API pública o usando el módulo de estadísticas, ¡nos encantaría saberlo!
 
-### 🌐 API Pública
-- **URL**: `https://referenciales.cl/api/public`
-- **Documentación**: [https://referenciales.cl/api/public/docs](https://referenciales.cl/api/public/docs)
+### Enlaces
+- **API Pública:** `/api/public`
+- **Estadísticas:** `/dashboard/estadisticas`
+- **GitHub:** [new-project-nexus-core](https://github.com/gabrielpantoja-cl/new-project-nexus-core)
+- **VPS Status:** [vps-status.md](vps-do-docs/reports/vps-status-20250908.md)
 
-### 📊 Módulo de Estadísticas
-- **URL**: `/dashboard/estadisticas`
-- **Documentación**: [`docs/ADVANCED_STATISTICS_MODULE_GUIDE.md`](docs/ADVANCED_STATISTICS_MODULE_GUIDE.md)
+### Contacto
+- **Issues:** Para reportar problemas
+- **Discussions:** Para compartir casos de uso
+- **Ejemplos:** Contribuye con ejemplos
+- **Feedback:** Comparte tu experiencia
 
-### 💬 Contacto
-- **GitHub Issues**: Para reportar problemas o sugerir mejoras
-- **Discussions**: Para compartir casos de uso o hacer preguntas  
-- **Ejemplos**: Contribuye con ejemplos para otros desarrolladores
-- **Feedback**: Comparte tu experiencia usando las herramientas
+---
+
+*Proyecto en desarrollo activo - Última actualización: Septiembre 2025*
