@@ -1,239 +1,227 @@
-# 📚 Documentación Técnica - Degux.cl
+# Degux - Documentación del Proyecto
 
-## 🎯 Introducción
-
-Bienvenido a la documentación técnica completa de **Degux.cl**, una plataforma digital innovadora. Esta documentación está diseñada para desarrolladores, arquitectos de software y stakeholders técnicos que necesiten comprender, mantener y escalar el proyecto.
-
-> **¿Qué es Degux.cl?** Una plataforma web moderna construida con Next.js, diseñada para [DESCRIBIR EL PROPÓSITO PRINCIPAL AQUÍ]. Nuestra misión es utilizar tecnología de vanguardia y principios de software de código abierto para ofrecer una solución robusta y escalable.
+**Ecosistema Digital Colaborativo del Sector Inmobiliario Chileno**
 
 ---
 
-## 📋 Índice de Navegación
+## 📌 Estado del Proyecto
 
-### 🚀 [01. Introducción](./01-introduccion/)
-Conceptos fundamentales y visión general del proyecto
-- **[Visión General](./01-introduccion/index.md)** - Propósito y funcionalidades clave
-- **Arquitectura General** - Overview técnico de alto nivel
-- **Tecnologías** - Stack tecnológico y justificación
+| Item | Estado |
+|------|--------|
+| Dominio | ✅ degux.cl (activo) |
+| Infraestructura VPS | ✅ Completada |
+| Base de Datos | ✅ PostgreSQL + PostGIS (n8n-db compartido) |
+| SSL/HTTPS | ✅ Configurado |
+| Aplicación Web | 🔄 En desarrollo |
+| Repositorio Web | https://github.com/gabrielpantoja-cl/degux.cl.git |
 
-### 💻 [02. Desarrollo](./02-desarrollo/)
-Guías para configurar y desarrollar en el proyecto
-- **[Guía de Desarrollo](./02-desarrollo/index.md)** - Setup completo y comandos esenciales
-- **Configuración de Entorno** - Variables y dependencias
-- **Comandos Esenciales** - npm scripts y utilidades
-- **Convenciones de Código** - Estándares y patterns
-
-### 🏗️ [03. Arquitectura](./03-arquitectura/)
-Arquitectura técnica y componentes del sistema
-- **[Base de Datos](./03-arquitectura/base-datos.md)** - Schema Prisma + PostGIS
-- **[Autenticación](./03-arquitectura/autenticacion.md)** - NextAuth + Google OAuth
-- **[Estructura del Proyecto](./03-arquitectura/estructura-proyecto.md)** - Organización de código
-
-### 🔌 [04. APIs](./04-api/)
-Documentación de interfaces públicas y privadas
-- **[API Pública](./04-api/api-publica.md)** - Endpoints sin autenticación
-- **[Integraciones](./04-api/integraciones.md)** - Guía de integración completa
-- **API Privada** - Dashboard y operaciones autenticadas
-
-### 🧩 [05. Módulos](./05-modulos/)
-Módulos funcionales del sistema
-- **[Referenciales CRUD](./05-modulos/referenciales.md)** - Gestión completa de referencias
-- **[Estadísticas Avanzadas](./05-modulos/estadisticas-avanzadas.md)** - Analytics y reportes PDF
-- **[Mapa Interactivo](./05-modulos/mapa-interactivo.md)** - Visualización geoespacial
-- **[Chatbot](./05-modulos/chatbot.md)** - Asistente IA
-
-### 🚢 [06. Deployment](./06-deployment/)
-Despliegue y configuración en producción
-- **[Guía de Deployment](./06-deployment/index.md)** - Proceso completo de despliegue
-- **Vercel Deployment** - Configuración específica
-- **Variables de Entorno** - Setup completo
-- **Monitoreo** - Health checks y logging
-
-### 🔧 [07. Mantenimiento](./07-mantenimiento/)
-Solución de problemas y mantenimiento
-- **[Soluciones Comunes](./07-mantenimiento/soluciones-comunes.md)** - Troubleshooting completo
-- **Actualizaciones** - Proceso de updates
-- **Seguridad** - Prácticas de seguridad
-
-### 📖 [08. Recursos](./08-recursos/)
-Recursos adicionales y compliance
-- **[Compliance de Cookies](./08-recursos/cookies-compliance.md)** - Ley 21.719 Chile
-- **[Roles y Permisos](./08-recursos/roles-permisos.md)** - RBAC system
-- **[GitHub Automation](./08-recursos/github-automation.md)** - API de stars
+**Última actualización**: 01 de Octubre, 2025
 
 ---
 
-## 🎯 Navegación Rápida
+## 🚀 PRÓXIMOS PASOS (IMPORTANTE)
 
-### 📚 Para Nuevos Desarrolladores
-1. **Comenzar aquí:** [01. Introducción](./01-introduccion/index.md)
-2. **Setup local:** [02. Desarrollo](./02-desarrollo/index.md)
-3. **Entender la arquitectura:** [03. Arquitectura](./03-arquitectura/)
-4. **Primer commit:** [07. Mantenimiento](./07-mantenimiento/soluciones-comunes.md)
+**⚠️ La infraestructura está 100% lista. Sigue estos pasos para completar el deployment:**
 
-### 🔧 Para Mantenimiento
-1. **Errores comunes:** [Soluciones](./07-mantenimiento/soluciones-comunes.md)
-2. **Base de datos:** [Schema Guide](./03-arquitectura/base-datos.md)
-3. **Autenticación:** [Auth Issues](./03-arquitectura/autenticacion.md)
-4. **Deployment:** [Despliegue](./06-deployment/index.md)
+### **[→ Ver PRÓXIMOS PASOS Detallados](./NEXT-STEPS.md)** ⭐ EMPEZAR AQUÍ
 
-### 🔌 Para Integraciones
-1. **API Pública:** [Guía completa](./04-api/api-publica.md)
-2. **Integraciones:** [Ejemplos de código](./04-api/integraciones.md)
-3. **Autenticación:** [OAuth Setup](./03-arquitectura/autenticacion.md)
+**Resumen rápido:**
+1. **[CRÍTICO]** Configurar DNS del dominio (5 min + 30 min propagación)
+2. **[CRÍTICO]** Generar certificados SSL (5 min)
+3. **[CRÍTICO]** Activar HTTPS en Nginx (10 min)
+4. **[IMPORTANTE]** Configurar backups automáticos (5 min)
+5. **[IMPORTANTE]** Preparar app web en desarrollo local (1-2 horas)
+6. **[IMPORTANTE]** Deploy a producción en Vercel (30 min)
+7. **[OPCIONAL]** Configurar N8N workflows (1-2 horas)
+8. **[OPCIONAL]** Setup monitoring (30 min)
 
-### 📊 Para Business/Analytics
-1. **Módulo de Estadísticas:** [Analytics avanzado](./05-modulos/estadisticas-avanzadas.md)
-2. **Mapas:** [Visualización geoespacial](./05-modulos/mapa-interactivo.md)
-3. **Reportes:** [PDFs automáticos](./05-modulos/estadisticas-avanzadas.md#generación-de-reportes-pdf)
+**Tiempo estimado total**: 4-6 horas (mínimo viable) | 5-9 horas (completo)
 
 ---
 
-## 🏢 Información del Proyecto
+## 📚 Documentación Disponible
 
-### 📊 Estadísticas
-- **Framework:** Next.js 15 (App Router)
-- **Base de Datos:** PostgreSQL + PostGIS
-- **Autenticación:** NextAuth.js v4 + Google OAuth
-- **Frontend:** React 18 + TypeScript + Tailwind CSS
-- **Mapas:** React Leaflet + OpenStreetMap
-- **Deployment:** Vercel + Neon Database
+### 🏗️ Guías de Infraestructura
 
-### 🔧 Estado Actual
-- ✅ **MVP en Producción:** Core functionality implementada
-- ✅ **API Pública:** Disponible para integraciones
-- ✅ **Autenticación:** Google OAuth funcionando
-- ✅ **CRUD Completo:** Gestión de referencias
-- ✅ **Mapa Interactivo:** Visualización geoespacial
-- ✅ **Estadísticas:** Analytics y reportes PDF
-- 🚧 **Chatbot:** En desarrollo avanzado
-- 🚧 **Mobile App:** Planeado para v2.0
+- **[Guía Completa de Infraestructura](./degux-infrastructure-guide.md)** ⭐ PRINCIPAL
+  - Arquitectura del sistema
+  - Base de datos compartida con N8N
+  - Configuración de dominios y SSL
+  - Deployment completo
+  - Backups y monitoreo
+  - Troubleshooting
 
-### 👥 Equipo y Contacto
-- **Lead Developer:** Gabriel Pantoja
-- **Repositorio:** [GitHub](https://github.com/gabrielpantoja-cl/degux.cl)
-- **Issues:** [GitHub Issues](https://github.com/gabrielpantoja-cl/degux.cl/issues)
-- **WhatsApp:** +56 9 3176 9472
+- **[Decisiones de Arquitectura](./architecture-decisions.md)**
+  - ADRs (Architecture Decision Records)
+  - Por qué compartir contenedor con N8N
+  - Elección de PostgreSQL + PostGIS
+  - Estrategia de deployment
+
+### 📖 Documentación Relacionada
+
+**En el repositorio vps-do:**
+
+- `/docs/DEPLOYMENT_DEGUX.md` - Guía paso a paso de deployment
+- `/degux/README.md` - Documentación de base de datos
+- `/docs/projects/Plan_Trabajo_Ecosistema_Digital_V4.md` - Plan maestro del proyecto
+- `/nginx/conf.d/degux.cl.conf` - Configuración Nginx
+- `/scripts/setup-degux-db.sh` - Script de setup de BD
+- `/scripts/backup-degux.sh` - Script de backups
+- `/scripts/restore-degux.sh` - Script de restore
+
+**En el repositorio web:**
+
+- https://github.com/gabrielpantoja-cl/degux.cl.git - Código de la aplicación
 
 ---
 
 ## 🚀 Quick Start
 
-### 💻 Para Desarrolladores
+### Ver Estado Actual
 
 ```bash
-# 1. Clonar repositorio
-git clone https://github.com/gabrielpantoja-cl/degux.cl.git
-cd degux.cl
+# SSH al VPS
+ssh gabriel@167.172.251.27
 
-# 2. Instalar dependencias
-npm install
+# Ver contenedores activos
+docker ps | grep -E "n8n-db|nginx"
 
-# 3. Configurar variables de entorno
-cp .env.example .env.local
-# Editar .env.local con tus credenciales
+# Verificar base de datos degux
+docker exec -it n8n-db psql -U degux_user -d degux -c "SELECT PostGIS_Version();"
 
-# 4. Configurar base de datos
-npx prisma generate
-npx prisma db push
-
-# 5. Ejecutar en desarrollo
-npm run dev
+# Ver sitio web
+curl https://degux.cl
 ```
 
-### 🔌 Para Integraciones
+### Acceso Rápido
 
-```javascript
-// Ejemplo básico de uso de API pública
-const response = await fetch('https://degux.cl/api/public/map-data?comuna=santiago&limit=10');
-const data = await response.json();
+| Servicio | URL |
+|----------|-----|
+| Sitio Principal | https://degux.cl |
+| API | https://api.degux.cl |
+| Portainer (gestión) | https://167.172.251.27:9443 |
+| N8N (workflows) | http://n8n.gabrielpantoja.cl |
 
-if (data.success) {
-  console.log(`Encontradas ${data.data.length} referencias en Santiago`);
-  data.data.forEach(ref => {
-    console.log(`${ref.predio}: ${ref.monto}`);
-  });
-}
+---
+
+## 🔑 Información Clave
+
+### Arquitectura
+
+**⚠️ IMPORTANTE**: Degux **NO tiene su propio contenedor PostgreSQL**.
+
+En su lugar, aprovecha el contenedor `n8n-db` existente, creando una base de datos independiente dentro del mismo servidor. Esta decisión:
+
+- Ahorra ~300MB de RAM
+- Reduce costos (vs servicios externos como Neon)
+- Mantiene aislamiento total de datos
+- Simplifica operaciones
+
+**Diagrama simplificado:**
+
+```
+n8n-db (container)
+  ├── BD: n8n      (para N8N workflows)
+  └── BD: degux    (para Degux app) ← Completamente aislada
 ```
 
-### 📊 Para Analytics
+### Connection Strings
 
-Acceder al módulo de estadísticas avanzadas:
-1. **Login:** [https://degux.cl/auth/signin](https://degux.cl/auth/signin)
-2. **Dashboard:** [https://degux.cl/dashboard](https://degux.cl/dashboard)
-3. **Estadísticas:** [https://degux.cl/dashboard/estadisticas](https://degux.cl/dashboard/estadisticas)
+```env
+# Desarrollo (desde tu máquina)
+DATABASE_URL="postgresql://degux_user:PASSWORD@167.172.251.27:5432/degux?schema=public"
 
----
+# Producción (dentro del VPS)
+DATABASE_URL="postgresql://degux_user:PASSWORD@n8n-db:5432/degux?schema=public"
+```
 
-## 📖 Convenciones de Documentación
-
-### 📝 Formato y Estilo
-- **Headers:** Uso de emojis para navegación visual
-- **Code blocks:** Syntax highlighting apropiado
-- **Links:** Relativos para navegación interna
-- **Examples:** Código real y funcional
-- **Status:** Badges de estado (✅ ✨ 🚧 📋)
-
-### 🔄 Mantenimiento
-- **Actualización:** Mensual o con cambios significativos
-- **Versionado:** Seguimiento en cada documento
-- **Responsables:** Equipo asignado por área
-- **Review:** Code review includes doc updates
-
-### 🎯 Audiencia
-- **Desarrolladores:** Guías técnicas detalladas
-- **Arquitectos:** Decisiones de diseño y patterns
-- **DevOps:** Configuración y deployment
-- **Business:** Funcionalidades y capacidades
-- **Usuarios:** Guías de uso cuando aplique
+**Nota**: El password se encuentra en `.env.local` (respaldado localmente, NO en GitHub)
 
 ---
 
-## ⚡ Accesos Rápidos
+## 🛠️ Comandos Útiles
 
-### 🔗 Enlaces Importantes
-- **🌐 Aplicación:** [https://degux.cl](https://degux.cl)
-- **🔧 Dashboard:** [https://degux.cl/dashboard](https://degux.cl)
-- **📊 Estadísticas:** [https://degux.cl/dashboard/estadisticas](https://degux.cl/dashboard/estadisticas)
-- **🔌 API Docs:** [https://degux.cl/api/public/docs](https://degux.cl/api/public/docs)
-- **💾 GitHub:** [https://github.com/gabrielpantoja-cl/degux.cl](https://github.com/gabrielpantoja-cl/degux.cl)
+### Base de Datos
 
-### 📞 Soporte
-- **📧 Email:** desarrollo@degux.cl
-- **💬 WhatsApp:** +56 9 3176 9472
-- **🐛 Issues:** [GitHub Issues](https://github.com/gabrielpantoja-cl/degux.cl/issues)
-- **📖 Docs:** Esta documentación (siempre actualizada)
+```bash
+# Conectarse a la BD degux
+docker exec -it n8n-db psql -U degux_user -d degux
+
+# Ver bases de datos en n8n-db
+docker exec -it n8n-db psql -U n8n -d postgres -c "\l"
+
+# Backup manual
+./scripts/backup-degux.sh
+
+# Restore desde backup
+./scripts/restore-degux.sh degux_backup_YYYYMMDD_HHMMSS.sql.gz
+```
+
+### Nginx
+
+```bash
+# Reiniciar Nginx
+docker compose restart nginx
+
+# Ver logs
+docker logs nginx-proxy -f
+
+# Verificar sintaxis
+docker exec nginx-proxy nginx -t
+```
+
+### SSL
+
+```bash
+# Generar certificados (después de configurar DNS)
+docker compose --profile ssl-setup run --rm certbot
+
+# Verificar certificados
+docker exec nginx-proxy ls -la /etc/nginx/ssl/live/degux.cl/
+```
 
 ---
 
-## 📅 Historial de Versiones
+## 📞 Soporte y Troubleshooting
 
-### v2.0 (Agosto 2025)
-- ✨ **Restructuración completa de documentación**
-- ✅ **Organización por categorías lógicas**
-- ✅ **Navegación intuitiva y visual**
-- ✅ **Consolidación de archivos duplicados**
-- ✅ **Preparación para renderizado web**
+Si encuentras problemas, consulta:
 
-### v1.x (2024-2025)
-- ✅ **MVP implementado y en producción**
-- ✅ **API pública disponible**
-- ✅ **Módulos core funcionales**
-- ✅ **Integración con PostGIS**
-- ✅ **Sistema de autenticación**
-
----
-
-**📍 ¿Perdido? Comienza por [01. Introducción](./01-introduccion/index.md) o ve directo a [02. Desarrollo](./02-desarrollo/index.md) para setup rápido.**
+1. **[Guía de Infraestructura](./degux-infrastructure-guide.md#troubleshooting)** - Sección de troubleshooting completa
+2. **Logs del sistema**:
+   ```bash
+   docker logs n8n-db --tail 100
+   docker logs nginx-proxy --tail 100
+   ```
+3. **Estado de servicios**:
+   ```bash
+   ./scripts/deploy.sh status
+   ```
 
 ---
 
-<div align="center">
+## 🎯 Próximos Pasos
 
-**🏠 Hecho con ❤️ para el mercado inmobiliario chileno**
+### Para Desarrollo Local
 
-*Última actualización: 28 de Agosto de 2025*
-*Versión de la documentación: 2.0*
-*Estado: ✅ Completa y actualizada*
+1. Clonar repo web: `git clone https://github.com/gabrielpantoja-cl/degux.cl.git`
+2. Configurar `.env.local` con connection string de desarrollo
+3. Instalar dependencias: `npm install`
+4. Ejecutar migrations: `npx prisma migrate dev`
+5. Iniciar dev server: `npm run dev`
 
-</div>
+### Para Production Deployment
+
+Ver guía completa: `/docs/DEPLOYMENT_DEGUX.md`
+
+---
+
+## 📧 Contacto
+
+- **Repositorio VPS**: https://github.com/gabrielpantoja-cl/vps-do.git
+- **Repositorio Web**: https://github.com/gabrielpantoja-cl/degux.cl.git
+- **VPS IP**: 167.172.251.27
+- **Dominio**: degux.cl
+
+---
+
+**¿Primera vez aquí?** → Lee la **[Guía Completa de Infraestructura](./degux-infrastructure-guide.md)**
