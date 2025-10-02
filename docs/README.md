@@ -81,7 +81,7 @@
 
 ```bash
 # SSH al VPS
-ssh gabriel@167.172.251.27
+ssh gabriel@[IP_VPS]
 
 # Ver contenedores activos
 docker ps | grep -E "n8n-db|nginx"
@@ -99,8 +99,8 @@ curl https://degux.cl
 |----------|-----|
 | Sitio Principal | https://degux.cl |
 | API | https://api.degux.cl |
-| Portainer (gestión) | https://167.172.251.27:9443 |
-| N8N (workflows) | http://n8n.gabrielpantoja.cl |
+| Portainer (gestión) | https://[URL_PORTAINER] |
+| N8N (workflows) | http://n8n.degux.cl |
 
 ---
 
@@ -129,7 +129,7 @@ n8n-db (container)
 
 ```env
 # Desarrollo (desde tu máquina)
-DATABASE_URL="postgresql://degux_user:PASSWORD@167.172.251.27:5432/degux?schema=public"
+DATABASE_URL="postgresql://degux_user:PASSWORD@[IP_VPS]:5432/degux?schema=public"
 
 # Producción (dentro del VPS)
 DATABASE_URL="postgresql://degux_user:PASSWORD@n8n-db:5432/degux?schema=public"
