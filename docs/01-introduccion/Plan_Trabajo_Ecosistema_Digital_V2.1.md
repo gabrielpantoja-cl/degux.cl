@@ -50,8 +50,8 @@ Basados en investigación profunda del mercado (Gemini Deep Research - Oct 2025)
 
 ## 🏗️ Infraestructura Actual (✅ YA IMPLEMENTADA)
 
-### 🖥️ VPS Digital Ocean - Servidor Productivo
-**IP:** 167.172.251.27
+### 🖥️ VPS - Servidor Productivo
+**IP:** [IP_VPS]
 **Estado:** ✅ Operativo desde Agosto 2025
 **Documentación:** `/vps-do-docs/`
 
@@ -63,12 +63,12 @@ Basados en investigación profunda del mercado (Gemini Deep Research - Oct 2025)
    - SSL configurado vía Let's Encrypt
 
 2. **Portainer (Gestión Docker)** ✅
-   - URL: `https://167.172.251.27:9443`
+   - URL: `https://[URL_PORTAINER]`
    - Panel de administración visual
    - Gestión de contenedores, volúmenes, redes
 
 3. **N8N (Automatización de Workflows)** ✅
-   - URL: `http://n8n.gabrielpantoja.cl`
+   - URL: `http://n8n.degux.cl`
    - PostgreSQL + Redis incluidos
    - **Casos de uso actuales:**
      - Scraping de Portal Inmobiliario
@@ -405,10 +405,10 @@ VPS Digital Ocean (167.172.251.27)
 
 ```env
 # Local development (desde tu máquina)
-POSTGRES_PRISMA_URL="postgresql://nexus_user:PASSWORD@167.172.251.27:5433/nexus_core?schema=public"
+POSTGRES_PRISMA_URL="postgresql://nexus_user:[PASSWORD]@[IP_VPS]:5433/nexus_core?schema=public"
 
 # Production (dentro del VPS)
-POSTGRES_PRISMA_URL="postgresql://nexus_user:PASSWORD@nexus-db:5432/nexus_core?schema=public"
+POSTGRES_PRISMA_URL="postgresql://nexus_user:[PASSWORD]@nexus-db:5432/nexus_core?schema=public"
 ```
 
 ---
