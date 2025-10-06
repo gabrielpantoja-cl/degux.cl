@@ -292,3 +292,102 @@ Si encuentras problemas:
 📅 6 de Octubre, 2025
 
 **¿Listo para ejecutar?** → `./scripts/deploy-to-vps.sh`
+
+---
+
+## 🎉 UPDATE: Problema Resuelto - Deployment Exitoso
+
+**Fecha**: 6 de Octubre, 2025 (Actualización Final)
+**Estado**: ✅ RESUELTO
+
+### 📊 Diagnóstico Completo
+
+#### PROBLEMA RAÍZ:
+- Contenedor `degux-web` ejecutando versión antigua (4 días)
+- GitHub Actions no ejecutó correctamente el deployment
+- Health endpoint `/api/health` ausente → contenedor marcado "unhealthy"
+- Código actualizado en VPS (commit `281ece2`) pero imagen Docker obsoleta
+
+#### CAUSA:
+- El workflow de GitHub Actions probablemente falló silenciosamente
+- La imagen Docker no se rebuildeó con los últimos cambios
+- El contenedor seguía corriendo con la imagen antigua
+
+---
+
+### 🔧 Solución Aplicada
+
+#### 1. Rebuild de imagen Docker con código actualizado
+```bash
+cd /home/gabriel/vps-do
+docker compose -f docker-compose.yml -f docker-compose.n8n.yml \
+  -f docker-compose.degux.yml build degux-web
+```
+
+#### 2. Recrear contenedor con nueva imagen
+```bash
+docker compose -f docker-compose.yml -f docker-compose.n8n.yml \
+  -f docker-compose.degux.yml up -d degux-web
+```
+
+---
+
+### ✅ Verificación de Deployment
+
+| Check           | Status    | Resultado                              |
+|-----------------|-----------|----------------------------------------|
+| Contenedor      | ✅ healthy | Up 24 seconds (healthy)                |
+| Health interno  | ✅ OK      | {"status":"ok","database":"connected"} |
+| Health público  | ✅ OK      | https://degux.cl/api/health → 200      |
+| Sitio principal | ✅ OK      | https://degux.cl/ → HTTP 200           |
+| Nginx proxy     | ✅ OK      | Routing correcto                       |
+
+---
+
+### 📝 Próximos Pasos Recomendados
+
+#### 1. Verificar GitHub Actions:
+- Revisar por qué el último workflow no se ejecutó correctamente
+- Verificar secrets en GitHub (VPS_HOST, VPS_USER, VPS_SSH_KEY)
+- Probar trigger manual del workflow
+
+#### 2. Monitoreo:
+```bash
+# Ver logs en tiempo real
+ssh gabriel@167.172.251.27 'docker logs degux-web -f'
+
+# Verificar estado
+ssh gabriel@167.172.251.27 'docker ps | grep degux'
+```
+
+#### 3. Documentar en el repo vps-do:
+- Crear guía de troubleshooting para este tipo de problemas
+- Documentar comandos de deployment manual
+
+---
+
+### 🔗 URLs Funcionales
+
+- **App**: https://degux.cl/
+- **Health**: https://degux.cl/api/health
+- **API**: https://api.degux.cl/
+
+---
+
+### 📌 Lección Aprendida
+
+**Importancia del Health Check:**
+- El endpoint `/api/health` es CRÍTICO para Docker healthcheck
+- Sin este endpoint, el contenedor se marca como "unhealthy"
+- GitHub Actions debe verificar que el deployment se complete exitosamente
+- En caso de fallo de CI/CD, el deployment manual siempre debe incluir rebuild de imagen
+
+**Comando de Deployment Manual de Emergencia:**
+```bash
+# SIEMPRE usar este comando en caso de problemas
+cd /home/gabriel/vps-do && \
+docker compose -f docker-compose.yml -f docker-compose.n8n.yml \
+  -f docker-compose.degux.yml build degux-web && \
+docker compose -f docker-compose.yml -f docker-compose.n8n.yml \
+  -f docker-compose.degux.yml up -d degux-web
+```
