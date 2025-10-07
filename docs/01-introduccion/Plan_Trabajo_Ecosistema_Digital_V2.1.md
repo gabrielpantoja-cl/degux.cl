@@ -3,8 +3,8 @@
 **Fecha:** 01 de Octubre, 2025
 **Autores:** Gabriel & Mona
 **Versión:** 4.1 - Modelo Sin Suscripciones + Monetización de Blog
-**Proyecto:** Nexus Core (P&P Technologies / Pantoja & Partners)
-**Repositorio:** https://github.com/gabrielpantoja-cl/new-project-nexus-core
+**Proyecto:** degux.cl (P&P Technologies / Pantoja & Partners)
+**Repositorio:** https://github.com/gabrielpantoja-cl/degux.cl
 
 **Changelog V4.1:**
 - ✅ Eliminación total de planes de suscripción recurrentes
@@ -322,23 +322,23 @@ Usuario busca propiedad en Valdivia
 ```yaml
 # Docker Compose en VPS
 services:
-  nexus-db:
+  degux-db:
     image: postgis/postgis:15-3.4
-    container_name: nexus-db
+    container_name: degux-db
     ports:
       - "5433:5432"  # Puerto independiente
     volumes:
-      - nexus_db_data:/var/lib/postgresql/data
+      - degux_db_data:/var/lib/postgresql/data
       - ./backups:/backups
     environment:
-      POSTGRES_DB: nexus_core
-      POSTGRES_USER: nexus_user
-      POSTGRES_PASSWORD: ${NEXUS_DB_PASSWORD}
+      POSTGRES_DB: degux
+      POSTGRES_USER: degux_user
+      POSTGRES_PASSWORD: ${DEGUX_DB_PASSWORD}
     networks:
-      - nexus-network
+      - degux-network
     restart: unless-stopped
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U nexus_user"]
+      test: ["CMD-SHELL", "pg_isready -U degux_user"]
       interval: 10s
 ```
 
@@ -360,16 +360,16 @@ VPS Digital Ocean (167.172.251.27)
   │  ├─ n8n (workflow engine)
   │  └─ n8n-redis
   │
-  └─ Nexus Core Stack (puerto 5433)
-     ├─ nexus-db (PostgreSQL + PostGIS) ← NUEVO
-     └─ nexus-app (Next.js) ← Por desplegar
+  └─ degux Stack (puerto 5433)
+     ├─ degux-db (PostgreSQL + PostGIS) ← NUEVO
+     └─ degux-app (Next.js) ← Por desplegar
 ```
 
 #### **Recursos Utilizados:**
 
 | Recurso | Uso Adicional | Total Estimado |
 |---------|---------------|----------------|
-| RAM | ~300MB | N8N: 500MB + Nexus DB: 300MB = 800MB |
+| RAM | ~300MB | N8N: 500MB + degux DB: 300MB = 800MB |
 | Disco | ~2GB inicial | Crece con datos |
 | CPU | Mínima en idle | Picos en queries |
 
@@ -395,20 +395,20 @@ VPS Digital Ocean (167.172.251.27)
 
 ```bash
 # Script ejecutado diariamente (3 AM)
-/home/gabriel/vps-do/nexus-core/backup.sh
+/home/gabriel/vps-do/degux/backup.sh
 
 # Retiene últimos 7 días
-/backups/nexus_backup_YYYYMMDD_HHMMSS.sql.gz
+/backups/degux_backup_YYYYMMDD_HHMMSS.sql.gz
 ```
 
 #### **Connection String:**
 
 ```env
 # Local development (desde tu máquina)
-POSTGRES_PRISMA_URL="postgresql://nexus_user:[PASSWORD]@[IP_VPS]:5433/nexus_core?schema=public"
+POSTGRES_PRISMA_URL="postgresql://degux_user:[PASSWORD]@[IP_VPS]:5433/degux?schema=public"
 
 # Production (dentro del VPS)
-POSTGRES_PRISMA_URL="postgresql://nexus_user:[PASSWORD]@nexus-db:5432/nexus_core?schema=public"
+POSTGRES_PRISMA_URL="postgresql://degux_user:[PASSWORD]@degux-db:5432/degux?schema=public"
 ```
 
 ---
@@ -1157,8 +1157,8 @@ Trigger (diario) →
 
 #### 1. **Setup PostgreSQL Dedicado en VPS** (DÍA 1)
 - [x] ✅ Decisión tomada: PostgreSQL Dedicado en VPS
-- [ ] Crear directorio `~/vps-do/nexus-core` en VPS
-- [ ] Crear `docker-compose.yml` con servicio nexus-db
+- [ ] Crear directorio `~/vps-do/degux` en VPS
+- [ ] Crear `docker-compose.yml` con servicio degux-db
 - [ ] Crear `.env` con password seguro
 - [ ] Levantar contenedor `docker-compose up -d`
 - [ ] Verificar health check y conectividad
@@ -1303,7 +1303,7 @@ Trigger (diario) →
 
 ### 🔴 Prioridad ALTA (Decidir esta semana):
 4. **Nombre definitivo de la plataforma:**
-   - Opciones: Nexus Core, degux.cl, MLS Chile, InfraProperty
+   - Decisión: degux.cl
    - Consideración: ¿Enfatizar "MLS" en el nombre para claridad de propuesta?
 
 5. **Licencia Open Source:**
@@ -1358,7 +1358,7 @@ Trigger (diario) →
 ## 🔗 Links de Referencia
 
 ### Repositorios:
-- **Nexus Core:** https://github.com/gabrielpantoja-cl/new-project-nexus-core
+- **degux.cl:** https://github.com/gabrielpantoja-cl/degux.cl
 - **VPS Management:** (privado - compartir acceso)
 - **VPS Docs:** Local en `/vps-do-docs/`
 
@@ -1380,7 +1380,7 @@ Trigger (diario) →
 - ✅ Infraestructura VPS completamente operativa
 - ✅ N8N + scraping de 2 portales funcionando
 - ✅ Schema Prisma Fase 1 diseñado y validado
-- ✅ Repositorio Nexus Core creado y configurado
+- ✅ Repositorio degux.cl creado y configurado
 - ✅ Plan de Trabajo V3 con progreso real documentado
 - ✅ Decisión arquitectónica de base de datos evaluada
 

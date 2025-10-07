@@ -96,7 +96,7 @@ Internet
   ↓
 Nginx Proxy (80/443)
   ├─ N8N (n8n.gabrielpantoja.cl)
-  ├─ Nexus Core App (en desarrollo)
+  ├─ degux.cl App (en desarrollo)
   └─ Otros servicios
 
 Portainer (9443) → Gestión independiente
@@ -676,7 +676,7 @@ Este proyecto está licenciado bajo la [Licencia MIT](https://opensource.org/lic
 
 ---
 
-## 🌟 ¿Usas Nexus Core?
+## 🌟 ¿Usas degux.cl?
 
 Si estás integrando la API pública o usando el módulo de estadísticas, ¡nos encantaría saberlo!
 
